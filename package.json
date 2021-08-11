@@ -1,0 +1,96 @@
+{
+    "name": "eslint-plugin-node-dependencies",
+    "version": "0.1.0",
+    "description": "ESLint plugin to check Node.js dependencies.",
+    "engines": {
+        "node": "^12 || >=14"
+    },
+    "main": "dist/index.js",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "prebuild": "npm run -s clean",
+        "build": "tsc --project ./tsconfig.build.json",
+        "clean": "rimraf .nyc_output dist coverage",
+        "lint": "eslint . --ext .js,.vue,.ts,.json,.yaml,.yml",
+        "eslint-fix": "eslint . --ext .js,.vue,.ts,.json,.yaml,.yml --fix",
+        "pretest": "npm run build",
+        "test:base": "mocha --require ts-node/register \"tests/**/*.ts\" --reporter dot --timeout 60000",
+        "test": "npm run test:nyc",
+        "test:nyc": "nyc --reporter=lcov npm run test:base",
+        "test:debug": "mocha --require ts-node/register/transpile-only \"tests/**/*.ts\" --reporter dot --timeout 60000",
+        "test:watch": "npm run test:base -- --watch",
+        "update": "ts-node --transpile-only ./tools/update.ts && npm run eslint-fix",
+        "new": "ts-node ./tools/new-rule.ts",
+        "docs:watch": "vuepress dev --debug docs",
+        "docs:build": "npm run build && vuepress build docs --no-cache",
+        "preversion": "npm test && git add .",
+        "version": "env-cmd -e version npm run update && git add ."
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ota-meshi/eslint-plugin-node-dependencies.git"
+    },
+    "keywords": [
+        "eslint",
+        "eslintplugin",
+        "eslint-plugin",
+        "nodejs",
+        "dependencies",
+        "json"
+    ],
+    "author": "Yosuke Ota (https://github.com/ota-meshi)",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/ota-meshi/eslint-plugin-node-dependencies/issues"
+    },
+    "homepage": "https://github.com/ota-meshi/eslint-plugin-node-dependencies#readme",
+    "peerDependencies": {
+        "eslint": ">=6.0.0"
+    },
+    "devDependencies": {
+        "@ota-meshi/eslint-plugin": "^0.7.0",
+        "@types/chai": "^4.2.18",
+        "@types/eslint": "^7.2.0",
+        "@types/eslint-scope": "^3.7.0",
+        "@types/eslint-visitor-keys": "^1.0.0",
+        "@types/estree": "^0.0.50",
+        "@types/mocha": "^9.0.0",
+        "@types/node": "^14.14.39",
+        "@typescript-eslint/eslint-plugin": "^4.14.0",
+        "@typescript-eslint/parser": "^4.14.0",
+        "babel-eslint": "^10.1.0",
+        "chai": "^4.3.4",
+        "env-cmd": "^10.1.0",
+        "eslint": "^7.3.0",
+        "eslint-config-prettier": "^8.0.0",
+        "eslint-plugin-eslint-comments": "^3.2.0",
+        "eslint-plugin-eslint-plugin": "^3.0.0",
+        "eslint-plugin-json-schema-validator": "^1.0.9",
+        "eslint-plugin-jsonc": "^1.0.0",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-prettier": "^3.4.0",
+        "eslint-plugin-regexp": "^0.13.1",
+        "eslint-plugin-vue": "^7.5.0",
+        "eslint-plugin-yml": "^0.10.0",
+        "eslint4b": "^7.3.1",
+        "mocha": "^9.0.0",
+        "mocha-chai-jest-snapshot": "^1.1.2",
+        "nyc": "^15.1.0",
+        "prettier": "^2.0.5",
+        "raw-loader": "^4.0.1",
+        "stylelint": "^13.6.1",
+        "stylelint-config-standard": "^22.0.0",
+        "stylelint-plugin-stylus": "^0.11.0",
+        "ts-node": "^10.0.0",
+        "typescript": "^4.0.0",
+        "vue-eslint-editor": "^1.1.0",
+        "vue-eslint-parser": "^7.4.1",
+        "vuepress": "^1.5.2"
+    },
+    "dependencies": {
+        "jsonc-eslint-parser": "^1.1.0",
+        "semver": "^7.3.5"
+    }
+}
