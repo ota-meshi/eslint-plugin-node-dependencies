@@ -1,5 +1,6 @@
 import type { AST } from "jsonc-eslint-parser"
 import { getStaticJSONValue } from "jsonc-eslint-parser"
+import type { SemverData } from "../utils"
 import {
     getEngines,
     createRule,
@@ -42,7 +43,7 @@ export default createRule("valid-engines", {
             key: string | number | null
         }
         let stack: ObjectStack | null = null
-        const engines: Map<string, semver.Range> = new Map()
+        const engines: Map<string, SemverData> = new Map()
 
         /**
          * Verify
@@ -55,14 +56,14 @@ export default createRule("valid-engines", {
             let valid = true
             for (const [module, ver] of engines) {
                 const depVer = getSemverRange(depEngines.get(module))
-                if (depVer && !semver.subset(ver, depVer)) {
+                if (depVer && !semver.subset(ver.range, depVer.range)) {
                     context.report({
                         loc: node.loc,
                         message: `${modules
                             .map((m) => `"${m}"`)
-                            .join(
-                                ">",
-                            )} is not compatible with "${module}@${ver}". Allowed is: "${module}@${depVer}"`,
+                            .join(" > ")} is not compatible with "${module}@${
+                            ver.v
+                        }". Allowed is: "${module}@${depVer.v}"`,
                     })
                     valid = false
                 }

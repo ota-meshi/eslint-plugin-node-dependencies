@@ -65,7 +65,7 @@ tester.run("valid-engines", rule as any, {
             errors: [
                 {
                     message:
-                        '"semver@^7.3.5" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
+                        '"semver@^7.3.5" is not compatible with "node@>=8". Allowed is: "node@>=10"',
                     line: 7,
                     column: 21,
                 },
@@ -85,7 +85,7 @@ tester.run("valid-engines", rule as any, {
             `,
             options: [{ deep: true }],
             errors: [
-                '"semver@^7.3.5" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
+                '"semver@^7.3.5" is not compatible with "node@>=8". Allowed is: "node@>=10"',
             ],
         },
         {
@@ -101,7 +101,7 @@ tester.run("valid-engines", rule as any, {
             }
             `,
             errors: [
-                '"semver@latest" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
+                '"semver@latest" is not compatible with "node@>=8". Allowed is: "node@>=10"',
             ],
         },
         {
@@ -109,7 +109,7 @@ tester.run("valid-engines", rule as any, {
             code: `
             {
                 "engines": {
-                    "node": ">=8"
+                    "node": ">=8.0"
                 },
                 "dependencies": {
                     "express": "expressjs/express",
@@ -118,7 +118,7 @@ tester.run("valid-engines", rule as any, {
             }
             `,
             errors: [
-                '"mocha@mochajs/mocha#4727d357ea" is not compatible with "node@>=8.0.0". Allowed is: "node@>=12.0.0"',
+                '"mocha@mochajs/mocha#4727d357ea" is not compatible with "node@>=8.0". Allowed is: "node@>=12.0.0"',
             ],
         },
     ],

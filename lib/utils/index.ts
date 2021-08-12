@@ -54,7 +54,7 @@ export function getMeta(
             const vr = getSemverRange(ver)
             if (
                 typeof pkg.version === "string" &&
-                (!vr || semver.satisfies(pkg.version, vr))
+                (!vr || semver.satisfies(pkg.version, vr.range))
             ) {
                 return pkg
             }
@@ -135,15 +135,20 @@ export function getDependencies(
     return getStrMap(meta[kind])
 }
 
+export type SemverData = {
+    range: semver.Range
+    v: string
+}
+
 /** Get the semver range instance from given value */
 export function getSemverRange(
     value: string | undefined | null,
-): semver.Range | null {
+): SemverData | null {
     if (value == null) {
         return null
     }
     try {
-        return new semver.Range(value)
+        return { range: new semver.Range(value), v: value.replace(/\s/gu, "") }
     } catch {
         return null
     }
