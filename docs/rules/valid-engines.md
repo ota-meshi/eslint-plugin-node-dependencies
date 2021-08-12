@@ -2,11 +2,11 @@
 pageClass: "rule-details"
 sidebarDepth: 0
 title: "node-dependencies/valid-engines"
-description: "enforce the versions of the engines of the dependencies to be valid."
+description: "enforce the versions of the engines of the dependencies to be compatible."
 ---
 # node-dependencies/valid-engines
 
-> enforce the versions of the engines of the dependencies to be valid.
+> enforce the versions of the engines of the dependencies to be compatible.
 
 - :exclamation: <badge text="This rule has not been released yet." vertical="middle" type="error"> ***This rule has not been released yet.*** </badge>
 - :gear: This rule is included in `"plugin:node-dependencies/recommended"`.

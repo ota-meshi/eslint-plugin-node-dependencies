@@ -14,7 +14,7 @@ export default createRule("valid-engines", {
     meta: {
         docs: {
             description:
-                "enforce the versions of the engines of the dependencies to be valid.",
+                "enforce the versions of the engines of the dependencies to be compatible.",
             category: "Possible Errors",
             recommended: true,
         },

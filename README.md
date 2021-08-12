@@ -89,7 +89,7 @@ The rules with the following star :star: are included in the `plugin:node-depend
 
 | Rule ID | Description |    |
 |:--------|:------------|:---|
-| [node-dependencies/valid-engines](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/valid-engines.html) | enforce the versions of the engines of the dependencies to be valid. | :star: |
+| [node-dependencies/valid-engines](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/valid-engines.html) | enforce the versions of the engines of the dependencies to be compatible. | :star: |
 | [node-dependencies/valid-semver](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/valid-semver.html) | enforce versions that is valid as a semantic version. | :star: |
 
 <!--RULES_TABLE_END-->
