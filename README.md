@@ -9,8 +9,8 @@
 [![NPM downloads](https://img.shields.io/npm/dm/eslint-plugin-node-dependencies.svg)](http://www.npmtrends.com/eslint-plugin-node-dependencies)
 [![NPM downloads](https://img.shields.io/npm/dy/eslint-plugin-node-dependencies.svg)](http://www.npmtrends.com/eslint-plugin-node-dependencies)
 [![NPM downloads](https://img.shields.io/npm/dt/eslint-plugin-node-dependencies.svg)](http://www.npmtrends.com/eslint-plugin-node-dependencies)
-[![Build Status](https://github.com/ota-meshi/eslint-plugin-node-dependencies/workflows/CI/badge.svg?branch=master)](https://github.com/ota-meshi/eslint-plugin-node-dependencies/actions?query=workflow%3ACI)
-[![Coverage Status](https://coveralls.io/repos/github/ota-meshi/eslint-plugin-node-dependencies/badge.svg?branch=master)](https://coveralls.io/github/ota-meshi/eslint-plugin-node-dependencies?branch=master)
+[![Build Status](https://github.com/ota-meshi/eslint-plugin-node-dependencies/workflows/CI/badge.svg?branch=main)](https://github.com/ota-meshi/eslint-plugin-node-dependencies/actions?query=workflow%3ACI)
+[![Coverage Status](https://coveralls.io/repos/github/ota-meshi/eslint-plugin-node-dependencies/badge.svg?branch=main)](https://coveralls.io/github/ota-meshi/eslint-plugin-node-dependencies?branch=main)
 
 <!--DOCS_IGNORE_START-->
 
@@ -41,7 +41,7 @@ and either use one of the two configurations available (`recommended`) or config
 ### The recommended configuration
 
 The `plugin:node-dependencies/recommended` config enables a subset of [the rules](#white_check_mark-rules) that should be most useful to most users.
-*See [lib/configs/recommended.ts](https://github.com/ota-meshi/eslint-plugin-node-dependencies/blob/master/lib/configs/recommended.ts) for more details.*
+*See [lib/configs/recommended.ts](https://github.com/ota-meshi/eslint-plugin-node-dependencies/blob/main/lib/configs/recommended.ts) for more details.*
 
 ```js
 // .eslintrc.js
