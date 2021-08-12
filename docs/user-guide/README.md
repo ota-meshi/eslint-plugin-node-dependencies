@@ -23,7 +23,7 @@ and either use one of the two configurations available (`recommended`) or config
 ### The recommended configuration
 
 The `plugin:node-dependencies/recommended` config enables a subset of [the rules](../rules/README.md) that should be most useful to most users.
-*See [lib/configs/recommended.ts](https://github.com/ota-meshi/eslint-plugin-node-dependencies/blob/master/lib/configs/recommended.ts) for more details.*
+*See [lib/configs/recommended.ts](https://github.com/ota-meshi/eslint-plugin-node-dependencies/blob/main/lib/configs/recommended.ts) for more details.*
 
 ```js
 // .eslintrc.js

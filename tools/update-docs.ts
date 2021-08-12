@@ -136,8 +136,8 @@ This rule was introduced in eslint-plugin-node-dependencies ${this.since}
                 : ""
         }## :mag: Implementation
 
-- [Rule source](https://github.com/ota-meshi/eslint-plugin-node-dependencies/blob/master/lib/rules/${ruleName}.ts)
-- [Test source](https://github.com/ota-meshi/eslint-plugin-node-dependencies/blob/master/tests/lib/rules/${ruleName}.ts)
+- [Rule source](https://github.com/ota-meshi/eslint-plugin-node-dependencies/blob/main/lib/rules/${ruleName}.ts)
+- [Test source](https://github.com/ota-meshi/eslint-plugin-node-dependencies/blob/main/tests/lib/rules/${ruleName}.ts)
 `
         if (footerPattern.test(this.content)) {
             this.content = this.content.replace(

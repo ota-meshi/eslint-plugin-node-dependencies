@@ -49,7 +49,7 @@ module.exports = {
         repo: "ota-meshi/eslint-plugin-node-dependencies",
         docsRepo: "ota-meshi/eslint-plugin-node-dependencies",
         docsDir: "docs",
-        docsBranch: "master",
+        docsBranch: "main",
         editLinks: true,
         lastUpdated: true,
         serviceWorker: {
