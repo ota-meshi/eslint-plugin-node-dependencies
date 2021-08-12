@@ -3,12 +3,11 @@ pageClass: "rule-details"
 sidebarDepth: 0
 title: "node-dependencies/no-deprecated"
 description: "disallow having dependencies on deprecate packages."
+since: "v0.2.0"
 ---
 # node-dependencies/no-deprecated
 
 > disallow having dependencies on deprecate packages.
-
-- :exclamation: <badge text="This rule has not been released yet." vertical="middle" type="error"> ***This rule has not been released yet.*** </badge>
 
 ## :book: Rule Details
 
@@ -28,6 +27,10 @@ This rule disallows having dependencies on deprecate packages.
 ## :wrench: Options
 
 Nothing.
+
+## :rocket: Version
+
+This rule was introduced in eslint-plugin-node-dependencies v0.2.0
 
 ## :mag: Implementation
 
