@@ -72,11 +72,11 @@ module.exports = {
                     collapsable: false,
                     children: categories["Possible Errors"].map(ruleToLink),
                 },
-                // {
-                //     title: "Best Practices",
-                //     collapsable: false,
-                //     children: categories["Best Practices"].map(ruleToLink),
-                // },
+                {
+                    title: "Best Practices",
+                    collapsable: false,
+                    children: categories["Best Practices"].map(ruleToLink),
+                },
                 // {
                 //     title: "Stylistic Issues",
                 //     collapsable: false,
