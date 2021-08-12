@@ -21,16 +21,16 @@ ${createTable(categories["Possible Errors"], buildRulePath)}
 `
     if (categories["Best Practices"].length)
         md += `
-    ### Best Practices
+### Best Practices
 
-    ${createTable(categories["Best Practices"], buildRulePath)}
-    `
+${createTable(categories["Best Practices"], buildRulePath)}
+`
     if (categories["Stylistic Issues"].length)
         md += `
-    ### Stylistic Issues
+### Stylistic Issues
 
-    ${createTable(categories["Stylistic Issues"], buildRulePath)}
-    `
+${createTable(categories["Stylistic Issues"], buildRulePath)}
+`
 
     if (categories.deprecated.length >= 1) {
         md += `

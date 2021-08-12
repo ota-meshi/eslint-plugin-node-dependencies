@@ -92,6 +92,12 @@ The rules with the following star :star: are included in the `plugin:node-depend
 | [node-dependencies/valid-engines](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/valid-engines.html) | enforce the versions of the engines of the dependencies to be compatible. | :star: |
 | [node-dependencies/valid-semver](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/valid-semver.html) | enforce versions that is valid as a semantic version. | :star: |
 
+### Best Practices
+
+| Rule ID | Description |    |
+|:--------|:------------|:---|
+| [node-dependencies/no-deprecated](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/no-deprecated.html) | disallow having dependencies on deprecate packages. |  |
+
 <!--RULES_TABLE_END-->
 <!--RULES_SECTION_END-->
 

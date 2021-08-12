@@ -1,10 +1,12 @@
-import type { RuleModule, PartialRuleModule } from "../types"
+import type { RuleModule, PartialRuleModule, RuleListener } from "../types"
 import { spawnSync } from "child_process"
 import path from "path"
 import fs from "fs"
 import semver from "semver"
 import Module from "module"
 import type { Rule } from "eslint"
+import type { AST } from "jsonc-eslint-parser"
+import { getKey } from "./ast-utils"
 
 const TTL = 1000 * 60 * 60 // 1h
 /**
@@ -30,11 +32,105 @@ export function createRule(
     }
 }
 
-export type ModuleMeta = {
+/**
+ * Define the JSON visitor rule.
+ */
+export function defineJsonVisitor(
+    visitor: Record<
+        string | "dependencies" | "peerDependencies",
+        ((node: AST.JSONProperty) => void) | undefined
+    >,
+): RuleListener {
+    type ObjectStack = {
+        node: AST.JSONObjectExpression | AST.JSONArrayExpression
+        upper: ObjectStack | null
+        key: string | number | null
+    }
+    let stack: ObjectStack | null = null
+
+    const visitors: {
+        test: (s: ObjectStack) => boolean
+        visit: (node: AST.JSONProperty) => void
+    }[] = []
+    for (const [selector, visit] of Object.entries(visitor)) {
+        if (visit) {
+            for (const sel of selector.split(",").map((s) => s.trim())) {
+                visitors.push({
+                    test: (s) => {
+                        if (
+                            !s.key ||
+                            !s.upper ||
+                            s.upper.key != null // root
+                        ) {
+                            return false
+                        }
+                        return s.key === sel
+                    },
+                    visit,
+                })
+            }
+        }
+    }
+
+    return {
+        "JSONObjectExpression, JSONArrayExpression"(
+            node: AST.JSONObjectExpression | AST.JSONArrayExpression,
+        ) {
+            stack = {
+                node,
+                upper: stack,
+                key: getKey(node),
+            }
+        },
+        "JSONObjectExpression, JSONArrayExpression:exit"() {
+            stack = stack && stack.upper
+        },
+        JSONProperty(node: AST.JSONProperty) {
+            if (!stack) {
+                return
+            }
+            for (const v of visitors) {
+                if (v.test(stack)) {
+                    v.visit(node)
+                }
+            }
+        },
+    }
+}
+
+/**
+ * Composite all given visitors.
+ */
+export function compositingVisitors(
+    visitor: RuleListener,
+    ...visitors: RuleListener[]
+): RuleListener {
+    for (const v of visitors) {
+        for (const key in v) {
+            const orig = visitor[key]
+            if (orig) {
+                visitor[key] = (...args: unknown[]) => {
+                    // @ts-expect-error -- ignore
+                    orig(...args)
+                    // @ts-expect-error -- ignore
+                    v[key](...args)
+                }
+            } else {
+                visitor[key] = v[key]
+            }
+        }
+    }
+    return visitor
+}
+
+export type PackageMeta = {
     engines?: Record<string, string | undefined>
     dependencies?: Record<string, string | undefined>
     peerDependencies?: Record<string, string | undefined>
     version?: string
+}
+export type NpmPackageMeta = PackageMeta & {
+    deprecated?: string
 }
 
 /**
@@ -44,7 +140,7 @@ export function getMeta(
     name: string,
     ver: string,
     context: Rule.RuleContext,
-): ModuleMeta | null {
+): PackageMeta | null {
     try {
         const cwd = getCwd(context)
         const relativeTo = path.join(cwd, "__placeholder__.js")
@@ -64,44 +160,58 @@ export function getMeta(
         // ignore
     }
 
-    if (ver.startsWith("npm:")) {
-        return getMetaFromNpm(`${ver.slice(4).replace(/\s/g, "")}`)
+    return getMetaFromNpm(name, ver)
+}
+/**
+ * Get the npm meta info from given module name and version
+ */
+export function getMetaFromNpm(
+    name: string,
+    ver: string,
+): NpmPackageMeta | null {
+    const cleanVer = ver.replace(/\s/g, "")
+
+    if (cleanVer.startsWith("npm:")) {
+        return getMetaFromNpmView(`${cleanVer.slice(4)}`)
     }
-    if (ver.includes("/") || ver.includes(":")) {
+    if (cleanVer.includes("/") || cleanVer.includes(":")) {
         return {} // unknown
     }
 
-    return getMetaFromNpm(`${name}@${ver.replace(/\s/g, "")}`)
+    return getMetaFromNpmView(`${name}${cleanVer ? `@${cleanVer}` : ""}`)
 }
 
 /**
- * Get the meta info from given module name
+ * Get the meta info from given package-arg
  */
-function getMetaFromNpm(npmName: string): ModuleMeta | null {
+function getMetaFromNpmView(packageArg: string): NpmPackageMeta | null {
     const cachedFilePath = path.join(
         __dirname,
-        `../../.cached_meta/${npmName}.json`,
+        `../../.cached_meta/${packageArg}.json`,
     )
     makeDirs(path.dirname(cachedFilePath))
 
     if (fs.existsSync(cachedFilePath)) {
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires -- ignore
         const { meta, timestamp } = require(cachedFilePath) as {
-            meta: ModuleMeta
+            meta: NpmPackageMeta
             timestamp: number
         }
         if (meta != null && typeof timestamp === "number") {
-            if (timestamp + TTL >= Date.now()) {
+            if (timestamp + TTL >= Date.now() || meta.deprecated) {
                 return meta
             }
             // Reload!
         }
     }
 
-    let meta: ModuleMeta = {}
+    let meta: NpmPackageMeta = {}
     try {
-        const json = exec("npm", ["view", `${npmName}`, "--json"])
-        meta = JSON.parse(json) as ModuleMeta
+        const json = exec("npm", ["view", `${packageArg}`, "--json"])
+        meta = JSON.parse(json)
+        if (Array.isArray(meta)) {
+            meta = meta[meta.length - 1]
+        }
     } catch (e) {
         return null
     }
@@ -175,7 +285,7 @@ function getStrMap(maybeObject: unknown): Map<string, string> {
 /**
  * Checks whether the given object is package.json meta data
  */
-function maybeMeta(json: unknown): json is ModuleMeta {
+function maybeMeta(json: unknown): json is PackageMeta {
     if (typeof json !== "object" || !json || Array.isArray(json)) {
         return false
     }

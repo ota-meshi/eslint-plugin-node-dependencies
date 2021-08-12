@@ -15,3 +15,9 @@ The rules with the following star :star: are included in the `plugin:node-depend
 |:--------|:------------|:---|
 | [node-dependencies/valid-engines](./valid-engines.md) | enforce the versions of the engines of the dependencies to be compatible. | :star: |
 | [node-dependencies/valid-semver](./valid-semver.md) | enforce versions that is valid as a semantic version. | :star: |
+
+### Best Practices
+
+| Rule ID | Description |    |
+|:--------|:------------|:---|
+| [node-dependencies/no-deprecated](./no-deprecated.md) | disallow having dependencies on deprecate packages. |  |

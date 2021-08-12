@@ -15,7 +15,7 @@ since: "v0.1.0"
 
 This rule checks the `engines` of the dependencies and reports if they are compatible with the `engines` defined in package.json.
 
-```json
+```json5
 {
   "engines": {
     "node": ">=8"

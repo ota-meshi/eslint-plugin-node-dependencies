@@ -2,6 +2,8 @@ import type { AST } from "jsonc-eslint-parser"
 import { getStaticJSONValue } from "jsonc-eslint-parser"
 import type { SemverData } from "../utils"
 import {
+    compositingVisitors,
+    defineJsonVisitor,
     getEngines,
     createRule,
     getMeta,
@@ -9,7 +11,7 @@ import {
     getSemverRange,
 } from "../utils"
 import semver from "semver"
-import { getKey, getKeyFromJSONProperty } from "../utils/ast-utils"
+import { getKeyFromJSONProperty } from "../utils/ast-utils"
 
 export default createRule("valid-engines", {
     meta: {
@@ -36,13 +38,6 @@ export default createRule("valid-engines", {
             return {}
         }
         const deep = context.options[0]?.deep !== false
-
-        type ObjectStack = {
-            node: AST.JSONObjectExpression | AST.JSONArrayExpression
-            upper: ObjectStack | null
-            key: string | number | null
-        }
-        let stack: ObjectStack | null = null
         const engines: Map<string, SemverData> = new Map()
 
         /**
@@ -109,45 +104,32 @@ export default createRule("valid-engines", {
             }
         }
 
-        return {
-            Program(node: AST.JSONProgram) {
-                for (const [key, val] of getEngines(getStaticJSONValue(node))) {
-                    const v = getSemverRange(val)
-                    if (v) {
-                        engines.set(key, v)
+        return compositingVisitors(
+            {
+                Program(node: AST.JSONProgram) {
+                    for (const [key, val] of getEngines(
+                        getStaticJSONValue(node),
+                    )) {
+                        const v = getSemverRange(val)
+                        if (v) {
+                            engines.set(key, v)
+                        }
                     }
-                }
+                },
             },
-            "JSONObjectExpression, JSONArrayExpression"(
-                node: AST.JSONObjectExpression | AST.JSONArrayExpression,
-            ) {
-                stack = {
-                    node,
-                    upper: stack,
-                    key: getKey(node),
-                }
-            },
-            "JSONObjectExpression, JSONArrayExpression:exit"() {
-                stack = stack && stack.upper
-            },
-            JSONProperty(node: AST.JSONProperty) {
-                if (
-                    engines.size === 0 ||
-                    !stack ||
-                    (stack.key !== "dependencies" &&
-                        stack.key !== "peerDependencies") ||
-                    !stack.upper ||
-                    stack.upper.key != null // root
-                ) {
-                    return
-                }
-                const name = getKeyFromJSONProperty(node)
-                const ver = getStaticJSONValue(node.value)
-                if (typeof name !== "string" || typeof ver !== "string") {
-                    return
-                }
-                processModule(name, ver, [], node)
-            },
-        }
+            defineJsonVisitor({
+                "dependencies, peerDependencies"(node) {
+                    if (engines.size === 0) {
+                        return
+                    }
+                    const name = getKeyFromJSONProperty(node)
+                    const ver = getStaticJSONValue(node.value)
+                    if (typeof name !== "string" || typeof ver !== "string") {
+                        return
+                    }
+                    processModule(name, ver, [], node)
+                },
+            }),
+        )
     },
 })

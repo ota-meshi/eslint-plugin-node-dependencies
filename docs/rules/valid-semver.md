@@ -15,7 +15,7 @@ since: "v0.1.0"
 
 This rule checks the versions defined in package.json and reports if it is a valid semver.
 
-```json
+```json5
 {
   "dependencies": {
     "semver": "^7.3.5 |" /* ✗ BAD */
