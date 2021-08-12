@@ -49,15 +49,15 @@ The following steps will walk you through the process of creating a new rule.
 
     Fill in the rule's meta information in the `meta` object. This includes a short description, its category, type, and more.
 
-    Note: Do not set `recommended: true`. This will add your rule to the `regex/recommended` configuration. We view additions to the `regex/recommended` configuration as breaking changes. If you want your rule to be included in the `regex/recommended` configuration in the next major release, leave the generated TODO comment as is.
+    Note: Do not set `recommended: true`. This will add your rule to the `node-dependencies/recommended` configuration. We view additions to the `node-dependencies/recommended` configuration as breaking changes. If you want your rule to be included in the `node-dependencies/recommended` configuration in the next major release, leave the generated TODO comment as is.
 
     Once you added a short description and the category, run `npm run update`. This will update a few generated files to include your rule in the website and more.
 
 1.  Implement your rule:
 
-    The `createVisitor` function will be where you implement your rule. The `regexpContext` object contains information and methods that you will need for static analysis, reporting, and fixing. Use `messageId`s for report and suggestion messages.
+    The `createRule` function will be where you implement your rule.
 
-    The [`no-empty-capturing-group`](./lib/rules/no-empty-capturing-group.ts) and [`no-octal`](./lib/rules/no-octal.ts) rules are good examples to see how we usually implement rules.
+    The [`valid-engines`](./lib/rules/valid-engines.ts) and [`valid-semver`](./lib/rules/valid-semver.ts) rules are good examples to see how we usually implement rules.
 
 1.  Test your rule:
 
@@ -93,14 +93,13 @@ After you changed the documentation, run `npm run update` to update all generate
 
 You can view changes to the website locally by running `npm run docs:watch`.
 
-
 ### Testing
 
 Aside from `npm test`, there are also a few other ways to manually test new features, changes, and new rules.
 
-1.  `npm run build && npm run docs:watch`:
+<!-- 1.  `npm run build && npm run docs:watch`:
 
-    The documentation page of each rule includes interactive examples. You can also use your local version of [the playground](https://ota-meshi.github.io/eslint-plugin-node-dependencies/playground/) to for testing.
+    The documentation page of each rule includes interactive examples. You can also use your local version of [the playground](https://ota-meshi.github.io/eslint-plugin-node-dependencies/playground/) to for testing. -->
 
 1.  Test your rule and the whole plugin by installing it.
 
@@ -127,4 +126,4 @@ Aside from `npm test`, there are also a few other ways to manually test new feat
 
 <!-- Important links -->
 
-[new-issue]: https://github.com/PrismJS/prism/issues/new/choose
+[new-issue]: https://github.com/ota-meshi/eslint-plugin-node-dependencies/issues/new/choose
