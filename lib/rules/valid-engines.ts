@@ -1,6 +1,5 @@
 import type { AST } from "jsonc-eslint-parser"
 import { getStaticJSONValue } from "jsonc-eslint-parser"
-import type { SemverData } from "../utils"
 import {
     compositingVisitors,
     defineJsonVisitor,
@@ -9,6 +8,7 @@ import {
     getMeta,
     getDependencies,
     getSemverRange,
+    stripExtraSpaces,
 } from "../utils"
 import semver from "semver"
 import { getKeyFromJSONProperty } from "../utils/ast-utils"
@@ -38,7 +38,10 @@ export default createRule("valid-engines", {
             return {}
         }
         const deep = context.options[0]?.deep !== false
-        const engines: Map<string, SemverData> = new Map()
+        const engines: Map<
+            string,
+            { adjust: semver.Range; original: semver.Range }
+        > = new Map()
 
         /**
          * Verify
@@ -51,14 +54,19 @@ export default createRule("valid-engines", {
             let valid = true
             for (const [module, ver] of engines) {
                 const depVer = getSemverRange(depEngines.get(module))
-                if (depVer && !semver.subset(ver.range, depVer.range)) {
+
+                if (depVer && !semver.subset(ver.adjust, depVer)) {
                     context.report({
                         loc: node.loc,
                         message: `${modules
                             .map((m) => `"${m}"`)
-                            .join(" > ")} is not compatible with "${module}@${
-                            ver.v
-                        }". Allowed is: "${module}@${depVer.v}"`,
+                            .join(
+                                " >> ",
+                            )} is not compatible with "${module}@${stripExtraSpaces(
+                            ver.original.raw,
+                        )}". Allowed is: "${module}@${stripExtraSpaces(
+                            depVer.raw,
+                        )}"`,
                     })
                     valid = false
                 }
@@ -111,9 +119,33 @@ export default createRule("valid-engines", {
                         getStaticJSONValue(node),
                     )) {
                         const v = getSemverRange(val)
-                        if (v) {
-                            engines.set(key, v)
+                        if (!v) {
+                            continue
                         }
+
+                        // Adjust "node@>=16" and "node@^16" to be considered compatible.
+                        const adjustVars: string[] = []
+                        for (const cc of v.set) {
+                            if (cc.length === 1) {
+                                if (
+                                    cc[0].operator === ">" ||
+                                    cc[0].operator === ">="
+                                ) {
+                                    adjustVars.push(
+                                        `${cc[0].value} <${semver.inc(
+                                            cc[0].semver.version,
+                                            "premajor",
+                                        )}`,
+                                    )
+                                    continue
+                                }
+                            }
+                            adjustVars.push(cc.map((c) => c.value).join(" "))
+                        }
+                        engines.set(key, {
+                            adjust: new semver.Range(adjustVars.join("||")),
+                            original: v,
+                        })
                     }
                 },
             },
