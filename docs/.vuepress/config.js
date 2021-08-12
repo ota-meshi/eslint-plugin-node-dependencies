@@ -34,6 +34,7 @@ module.exports = {
         return {
             resolve: {
                 alias: {
+                    module: require.resolve("./shim/module"),
                     eslint: require.resolve("eslint4b"),
                 },
             },

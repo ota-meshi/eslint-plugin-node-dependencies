@@ -8,4 +8,4 @@
 !/docs/.vuepress
 !/.vscode
 !/.github
-/tests/fixtures/integrations/eslint-plugin/package.json
+/tests/fixtures/integrations/eslint-plugin
