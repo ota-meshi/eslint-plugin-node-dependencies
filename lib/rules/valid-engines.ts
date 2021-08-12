@@ -5,10 +5,11 @@ import {
     defineJsonVisitor,
     getEngines,
     createRule,
-    getMeta,
+    iterateMeta,
     getDependencies,
     getSemverRange,
     stripExtraSpaces,
+    getMeta,
 } from "../utils"
 import semver from "semver"
 import { getKeyFromJSONProperty } from "../utils/ast-utils"
@@ -44,34 +45,25 @@ export default createRule("valid-engines", {
         > = new Map()
 
         /**
-         * Verify
+         * Remove valid modules
          */
-        function verify(
+        function removeValidModule(
+            targetEngines: Map<
+                string,
+                { adjust: semver.Range; original: semver.Range }
+            >,
             depEngines: Map<string, string>,
-            node: AST.JSONProperty,
-            modules: string[],
+            invalidEngines: Map<string, string>,
         ) {
-            let valid = true
-            for (const [module, ver] of engines) {
+            for (const [module, ver] of targetEngines) {
                 const depVer = getSemverRange(depEngines.get(module))
 
-                if (depVer && !semver.subset(ver.adjust, depVer)) {
-                    context.report({
-                        loc: node.loc,
-                        message: `${modules
-                            .map((m) => `"${m}"`)
-                            .join(
-                                " >> ",
-                            )} is not compatible with "${module}@${stripExtraSpaces(
-                            ver.original.raw,
-                        )}". Allowed is: "${module}@${stripExtraSpaces(
-                            depVer.raw,
-                        )}"`,
-                    })
-                    valid = false
+                if (!depVer || semver.subset(ver.adjust, depVer)) {
+                    targetEngines.delete(module)
+                } else {
+                    invalidEngines.set(module, depVer.raw)
                 }
             }
-            return valid
         }
 
         /**
@@ -84,11 +76,34 @@ export default createRule("valid-engines", {
             node: AST.JSONProperty,
         ) {
             const currModules = [...modules, `${name}@${ver}`]
+            const targetEngines = new Map(engines)
+            const invalidEngines = new Map<string, string>()
+
+            let allEmpty = true
+            for (const meta of iterateMeta(name, ver, context)) {
+                const depEngines = getEngines(meta)
+                if (depEngines.size) {
+                    allEmpty = false
+                }
+                removeValidModule(targetEngines, depEngines, invalidEngines)
+                if (targetEngines.size === 0) {
+                    break
+                }
+            }
             const meta = getMeta(name, ver, context)
             const depEngines = getEngines(meta)
-
-            if (!verify(depEngines, node, currModules)) {
-                return
+            for (const [module, moduleVer] of targetEngines) {
+                const depVer = invalidEngines.get(module)!
+                context.report({
+                    loc: node.loc,
+                    message: `${currModules
+                        .map((m) => `"${m}"`)
+                        .join(
+                            " >> ",
+                        )} is not compatible with "${module}@${stripExtraSpaces(
+                        moduleVer.original.raw,
+                    )}". Allowed is: "${module}@${stripExtraSpaces(depVer)}"`,
+                })
             }
             if (
                 engines.size === depEngines.size &&
@@ -96,8 +111,7 @@ export default createRule("valid-engines", {
             ) {
                 return
             }
-
-            if (deep) {
+            if (deep && allEmpty) {
                 const dependencies = getDependencies(meta, "dependencies")
                 const peerDependencies = getDependencies(
                     meta,

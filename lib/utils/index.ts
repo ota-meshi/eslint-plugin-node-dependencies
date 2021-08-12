@@ -141,6 +141,61 @@ export function getMeta(
     ver: string,
     context: Rule.RuleContext,
 ): PackageMeta | null {
+    const pkg = getMetaFromNodeModules(name, ver, context)
+    if (pkg) {
+        return pkg
+    }
+    const meta = getMetaFromNpm(name, ver, true)
+    if (meta) return meta[meta.length - 1]
+    return null
+}
+/**
+ * Iterate the meta info from given module name
+ */
+export function* iterateMeta(
+    name: string,
+    ver: string,
+    context: Rule.RuleContext,
+): IterableIterator<PackageMeta> {
+    const pkg = getMetaFromNodeModules(name, ver, context)
+    if (pkg) {
+        yield pkg
+    }
+    const meta = getMetaFromNpm(name, ver, !pkg)
+    if (meta) yield* meta
+}
+/**
+ * Get the npm meta info from given module name and version
+ */
+export function getMetaFromNpm(
+    name: string,
+    ver: string,
+    iterateUnknown?: boolean,
+): NpmPackageMeta[] | null {
+    const cleanVer = ver.replace(/\s/g, "")
+
+    if (cleanVer.startsWith("npm:")) {
+        return getMetaFromNpmView(`${cleanVer.slice(4)}`)
+    }
+    if (cleanVer.includes("/") || cleanVer.includes(":")) {
+        // unknown
+        if (iterateUnknown == null || iterateUnknown) {
+            return [{}]
+        }
+        return []
+    }
+
+    return getMetaFromNpmView(`${name}${cleanVer ? `@${cleanVer}` : ""}`)
+}
+
+/**
+ * Get the meta info from given module name
+ */
+function getMetaFromNodeModules(
+    name: string,
+    ver: string,
+    context: Rule.RuleContext,
+): PackageMeta | null {
     try {
         const cwd = getCwd(context)
         const relativeTo = path.join(cwd, "__placeholder__.js")
@@ -159,32 +214,13 @@ export function getMeta(
         // console.log(_e)
         // ignore
     }
-
-    return getMetaFromNpm(name, ver)
-}
-/**
- * Get the npm meta info from given module name and version
- */
-export function getMetaFromNpm(
-    name: string,
-    ver: string,
-): NpmPackageMeta | null {
-    const cleanVer = ver.replace(/\s/g, "")
-
-    if (cleanVer.startsWith("npm:")) {
-        return getMetaFromNpmView(`${cleanVer.slice(4)}`)
-    }
-    if (cleanVer.includes("/") || cleanVer.includes(":")) {
-        return {} // unknown
-    }
-
-    return getMetaFromNpmView(`${name}${cleanVer ? `@${cleanVer}` : ""}`)
+    return null
 }
 
 /**
  * Get the meta info from given package-arg
  */
-function getMetaFromNpmView(packageArg: string): NpmPackageMeta | null {
+function getMetaFromNpmView(packageArg: string): NpmPackageMeta[] | null {
     const cachedFilePath = path.join(
         __dirname,
         `../../.cached_meta/${packageArg}.json`,
@@ -194,23 +230,26 @@ function getMetaFromNpmView(packageArg: string): NpmPackageMeta | null {
     if (fs.existsSync(cachedFilePath)) {
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires -- ignore
         const { meta, timestamp } = require(cachedFilePath) as {
-            meta: NpmPackageMeta
+            meta: NpmPackageMeta[]
             timestamp: number
         }
         if (meta != null && typeof timestamp === "number") {
-            if (timestamp + TTL >= Date.now() || meta.deprecated) {
+            if (
+                timestamp + TTL >= Date.now() ||
+                (meta.length === 1 && meta[0].deprecated)
+            ) {
                 return meta
             }
             // Reload!
         }
     }
 
-    let meta: NpmPackageMeta = {}
+    let meta: NpmPackageMeta[] = []
     try {
         const json = exec("npm", ["view", `${packageArg}`, "--json"])
         meta = JSON.parse(json)
-        if (Array.isArray(meta)) {
-            meta = meta[meta.length - 1]
+        if (!Array.isArray(meta)) {
+            meta = [meta]
         }
     } catch (e) {
         return null

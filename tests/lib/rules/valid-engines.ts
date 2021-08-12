@@ -63,6 +63,19 @@ tester.run("valid-engines", rule as any, {
             }
             `,
         },
+        {
+            filename: "package.json",
+            code: `
+            {
+                "engines": {
+                    "node": ">=8"
+                },
+                "peerDependencies": {
+                    "eslint": ">=4"
+                },
+            }
+            `,
+        },
     ],
     invalid: [
         {
