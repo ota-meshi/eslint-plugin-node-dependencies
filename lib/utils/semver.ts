@@ -121,7 +121,7 @@ function normalizeComparators(comparators: readonly Comparator[]): string {
 /** Normalize comparator */
 function normalizeComparator(comparator: Comparator): string {
     if (comparator.operator === "") {
-        return "*"
+        return comparator.value || "*"
     }
     return comparator.value
 }
