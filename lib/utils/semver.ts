@@ -60,7 +60,9 @@ export function normalizeSemverRange(...values: Range[]): Range | null {
                     )
                     if (newComparators) {
                         target = {
-                            range: new Range(normalizeComparators(comparators)),
+                            range: new Range(
+                                normalizeComparators(newComparators),
+                            ),
                             comparators: newComparators,
                         }
                         map.delete(k)
@@ -104,8 +106,9 @@ function normalizeComparators(comparators: readonly Comparator[]): string {
             rangeComparator.max.operator === "<"
         ) {
             if (
+                rangeComparator.min.semver.major !== 0 &&
                 inc(rangeComparator.min.semver.version, "premajor") ===
-                rangeComparator.max.semver.version
+                    rangeComparator.max.semver.version
             )
                 return `^${rangeComparator.min.semver.version}`
             if (

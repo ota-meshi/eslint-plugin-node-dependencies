@@ -6,7 +6,7 @@ import Module from "module"
 import type { Rule } from "eslint"
 import type { AST } from "jsonc-eslint-parser"
 import { getKey } from "./ast-utils"
-import { getSemverRange } from "./semver"
+import { getSemverRange, normalizeSemverRange } from "./semver"
 import { satisfies } from "semver"
 
 const TTL = 1000 * 60 * 60 // 1h
@@ -176,6 +176,14 @@ export function getMetaFromNpm(
     if (trimmed.includes("/") || trimmed.includes(":")) {
         // unknown
         return []
+    }
+
+    let range = getSemverRange(ver)
+    if (range) {
+        range = normalizeSemverRange(range)
+        if (range) {
+            return getMetaFromNpmView(`${name}@${range.raw}`)
+        }
     }
 
     return getMetaFromNpmView(`${name}${trimmed ? `@${trimmed}` : ""}`)
