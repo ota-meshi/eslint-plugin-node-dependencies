@@ -2,11 +2,12 @@ import type { RuleModule, PartialRuleModule, RuleListener } from "../types"
 import { spawnSync } from "child_process"
 import path from "path"
 import fs from "fs"
-import semver from "semver"
 import Module from "module"
 import type { Rule } from "eslint"
 import type { AST } from "jsonc-eslint-parser"
 import { getKey } from "./ast-utils"
+import { getSemverRange } from "./semver"
+import { satisfies } from "semver"
 
 const TTL = 1000 * 60 * 60 // 1h
 /**
@@ -150,7 +151,7 @@ export function getMetaFromNodeModules(
             const vr = getSemverRange(ver)
             if (
                 typeof pkg.version === "string" &&
-                (!vr || semver.satisfies(pkg.version, vr))
+                (!vr || satisfies(pkg.version, vr))
             ) {
                 return pkg
             }
@@ -252,111 +253,6 @@ export function getDependencies(
         return new Map<string, string>()
     }
     return getStrMap(meta[kind])
-}
-
-/** Get the semver range instance from given value */
-export function getSemverRange(
-    value: string | undefined | null,
-): semver.Range | null {
-    if (value == null) {
-        return null
-    }
-    try {
-        return new semver.Range(value)
-    } catch {
-        return null
-    }
-}
-
-/** Normalize version */
-export function normalizeVer(ver: semver.Range): string {
-    const n = normalizeSemverRange(ver)
-    if (n) {
-        return n.raw
-    }
-    return ver.raw
-}
-
-/** Normalize semver ranges. */
-export function normalizeSemverRange(
-    ...values: semver.Range[]
-): semver.Range | null {
-    const rangeMap = new Map<string, semver.Range>()
-    for (const ver of values) {
-        for (const comps of ver.set) {
-            const targetVer = getSemverRange(normalizeComparators(comps))
-            if (!targetVer) {
-                continue
-            }
-            let consume = false
-            for (const [k, rangeVer] of rangeMap) {
-                if (semver.subset(targetVer, rangeVer)) {
-                    consume = true
-                    break
-                }
-                if (semver.subset(rangeVer, targetVer)) {
-                    rangeMap.delete(k)
-                    break
-                }
-            }
-            if (!consume) rangeMap.set(targetVer.raw, targetVer)
-        }
-    }
-    const ranges = [...rangeMap]
-        .sort(([, a], [, b]) => {
-            const aVer = getMinVer(a)
-            const bVer = getMinVer(b)
-
-            return aVer.compare(bVer)
-        })
-        .map(([v]) => v)
-    return getSemverRange(ranges.join("||"))
-
-    /** Get min version */
-    function getMinVer(r: semver.Range) {
-        let min: semver.SemVer | null = null
-        for (const comps of r.set) {
-            for (const comp of comps) {
-                if (!min || comp.semver.compare(min) < 0) {
-                    min = comp.semver
-                }
-            }
-        }
-        return min!
-    }
-}
-
-/** Normalize comparators */
-function normalizeComparators(comps: readonly semver.Comparator[]): string {
-    if (comps.length === 2) {
-        if (isCaret(comps[0], comps[1])) {
-            return `^${comps[0].semver.version}`
-        }
-        if (isCaret(comps[1], comps[0])) {
-            return `^${comps[1].semver.version}`
-        }
-    }
-    return comps.map(normalizeComparator).join(" ")
-
-    /** Checks whether then given comparators is caret version */
-    function isCaret(a: semver.Comparator, b: semver.Comparator) {
-        return (
-            a.operator === ">=" &&
-            b.operator === "<" &&
-            semver.inc(a.semver.version, "premajor") === b.semver.version
-        )
-    }
-}
-
-/** Normalize comparator */
-function normalizeComparator(comp: semver.Comparator): string {
-    if (comp.operator === "") {
-        return "*"
-    }
-    // if (comp.operator === ">=" && comp.value.endsWith(".0.0")) {
-    //     return comp.value.slice(0, -4)
-    // }
-    return comp.value
 }
 
 /** Get the map from given value */

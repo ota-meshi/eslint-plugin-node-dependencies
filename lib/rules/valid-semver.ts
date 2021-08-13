@@ -1,6 +1,7 @@
 import { getStaticJSONValue } from "jsonc-eslint-parser"
-import { createRule, defineJsonVisitor, getSemverRange } from "../utils"
+import { createRule, defineJsonVisitor } from "../utils"
 import { getKeyFromJSONProperty } from "../utils/ast-utils"
+import { getSemverRange } from "../utils/semver"
 
 export default createRule("valid-semver", {
     meta: {

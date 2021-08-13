@@ -2,19 +2,21 @@ import type { AST } from "jsonc-eslint-parser"
 import { getStaticJSONValue } from "jsonc-eslint-parser"
 import type { PackageMeta } from "../utils"
 import {
-    normalizeSemverRange,
     getMetaFromNpm,
     compositingVisitors,
     defineJsonVisitor,
     getEngines,
     createRule,
     getDependencies,
-    getSemverRange,
-    normalizeVer,
     getMetaFromNodeModules,
 } from "../utils"
 import semver from "semver"
 import { getKeyFromJSONProperty } from "../utils/ast-utils"
+import {
+    getSemverRange,
+    normalizeSemverRange,
+    normalizeVer,
+} from "../utils/semver"
 
 type ComparisonType = "normal" | "major"
 class EnginesContext {
@@ -35,14 +37,7 @@ class EnginesContext {
     }
 
     public nextContext(): EnginesContext {
-        const engineNames = new Set(this.engines)
-        for (const nm of this.validEngines) {
-            engineNames.delete(nm)
-        }
-        for (const nm of this.invalidEngines.keys()) {
-            engineNames.delete(nm)
-        }
-        return new EnginesContext(engineNames)
+        return new EnginesContext(this.unprocessedEngines)
     }
 
     public markAsProcessed(module: string) {
