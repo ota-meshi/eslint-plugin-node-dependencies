@@ -56,6 +56,29 @@ module.exports = {
 }
 ```
 
+#### Parser Configuration
+
+If you have specified a parser, you need to configure a parser for `.json`.
+
+For example, if you are using the `"@babel/eslint-parser"`, configure it as follows:
+
+```js
+module.exports = {
+  // ...
+  extends: [ "plugin:node-dependencies/recommended"],
+  // ...
+  parser: "@babel/eslint-parser",
+  // Add an `overrides` section to add a parser configuration for json.
+  overrides: [
+    {
+      files: ["*.json", "*.json5"],
+      parser: "jsonc-eslint-parser",
+    },
+  ],
+  // ...
+};
+```
+
 <!--USAGE_SECTION_END-->
 
 See [the rule list](../rules/README.md) to get the `rules` that this plugin provides.
