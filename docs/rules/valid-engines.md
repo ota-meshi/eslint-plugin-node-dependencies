@@ -31,12 +31,16 @@ This rule checks the `engines` of the dependencies and reports if they are compa
 ```json
 {
   "node-dependencies/valid-engines": ["error", {
-    "deep": true
+    "deep": true,
+    "comparisonType": "normal"
   }]
 }
 ```
 
 - `deep` ... If `true`, if the dependency does not have `engines`, it will be checked further dependencies.
+- `comparisonType` ... Defines the comparison method. Default is `"normal"`
+  - `"normal"` ... This is the normal comparison method.
+  - `"major"` ... If the versions match in the major version, it is considered a match. For example, `node@>=10` allows dependency modules for `node@>=10.12`.
 
 ## :rocket: Version
 

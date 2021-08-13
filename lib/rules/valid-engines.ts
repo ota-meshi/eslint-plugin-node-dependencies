@@ -16,6 +16,164 @@ import {
 import semver from "semver"
 import { getKeyFromJSONProperty } from "../utils/ast-utils"
 
+type ComparisonType = "normal" | "major"
+class EnginesContext {
+    public readonly engines: ReadonlySet<string>
+
+    private readonly unprocessedEngines = new Set<string>()
+
+    private readonly invalidEngines = new Map<
+        string,
+        Map<string, semver.Range>
+    >()
+
+    private readonly validEngines = new Set<string>()
+
+    public constructor(engineNames: Iterable<string>) {
+        this.engines = new Set(engineNames)
+        this.unprocessedEngines = new Set(this.engines)
+    }
+
+    public nextContext(): EnginesContext {
+        const engineNames = new Set(this.engines)
+        for (const nm of this.validEngines) {
+            engineNames.delete(nm)
+        }
+        for (const nm of this.invalidEngines.keys()) {
+            engineNames.delete(nm)
+        }
+        return new EnginesContext(engineNames)
+    }
+
+    public markAsProcessed(module: string) {
+        this.unprocessedEngines.delete(module)
+    }
+
+    public isAllProcessed(): boolean {
+        return this.unprocessedEngines.size === 0
+    }
+
+    public markAsValid(module: string) {
+        this.validEngines.add(module)
+        this.invalidEngines.delete(module)
+    }
+
+    public addInvalid(module: string, allowedVer: semver.Range) {
+        if (this.validEngines.has(module)) {
+            return
+        }
+        const vers = this.invalidEngines.get(module)
+        if (vers) {
+            vers.set(allowedVer.raw, allowedVer)
+        } else {
+            this.invalidEngines.set(
+                module,
+                new Map([[allowedVer.raw, allowedVer]]),
+            )
+        }
+    }
+
+    public clearInvalid() {
+        this.invalidEngines.clear()
+    }
+
+    public hasInvalid() {
+        return this.invalidEngines.size > 0
+    }
+
+    public getInvalid(): ReadonlyMap<string, Map<string, semver.Range>> {
+        return this.invalidEngines
+    }
+}
+
+/**
+ * Build adjusted version range for self.
+ */
+function buildAdjustRangeForSelf(
+    comparisonType: ComparisonType,
+    original: semver.Range,
+): semver.Range {
+    // Adjust "node@>=16" and "node@^16" to be considered compatible.
+    const adjustVers: string[] = []
+    for (const cc of original.set) {
+        if (cc.length === 1) {
+            if (cc[0].operator === ">" || cc[0].operator === ">=") {
+                adjustVers.push(
+                    `${cc[0].value} <${semver.inc(
+                        cc[0].semver.version,
+                        "premajor",
+                    )}`,
+                )
+                continue
+            }
+        }
+        adjustVers.push(cc.map((c) => c.value).join(" "))
+    }
+    const range = new semver.Range(adjustVers.join("||"))
+    if (comparisonType === "normal") {
+        return range
+    }
+    if (comparisonType === "major") {
+        return range
+    }
+
+    throw new Error(`Illegal comparisonType: ${comparisonType}`)
+}
+
+/**
+ * Build adjusted version range for dependencies.
+ */
+function buildAdjustRangeForDeps(
+    comparisonType: ComparisonType,
+    original: semver.Range,
+): semver.Range {
+    if (comparisonType === "normal") {
+        return original
+    }
+    if (comparisonType === "major") {
+        const majorVers: string[] = []
+        for (const cc of original.set) {
+            majorVers.push(
+                cc
+                    .map((c) => {
+                        if (c.operator === ">" || c.operator === ">=") {
+                            return `${c.operator}${c.semver.major}`
+                        }
+                        return c.value
+                    })
+                    .join(" "),
+            )
+        }
+        return new semver.Range(majorVers.join("||"))
+    }
+
+    throw new Error(`Illegal comparisonType: ${comparisonType}`)
+}
+
+/** Extract dependencies */
+function extractDependencies(metaList: PackageMeta[]) {
+    const dependencies = new Map<string, semver.Range[]>()
+    for (const meta of metaList) {
+        for (const [m, v] of [
+            ...getDependencies(meta, "dependencies"),
+            ...getDependencies(meta, "peerDependencies"),
+        ]) {
+            const range = getSemverRange(v)
+            if (!range) {
+                continue
+            }
+            const ranges = dependencies.get(m)
+            if (ranges) {
+                ranges.push(range)
+            } else {
+                dependencies.set(m, [range])
+            }
+        }
+    }
+
+    return dependencies
+}
+
 export default createRule("valid-engines", {
     meta: {
         docs: {
@@ -29,6 +187,7 @@ export default createRule("valid-engines", {
                 type: "object",
                 properties: {
                     deep: { type: "boolean" },
+                    comparisonType: { enum: ["normal", "major"] },
                 },
                 additionalProperties: false,
             },
@@ -41,82 +200,13 @@ export default createRule("valid-engines", {
             return {}
         }
         const deep = context.options[0]?.deep !== false
-        const engines: Map<
+        const comparisonType: ComparisonType =
+            context.options[0]?.comparisonType ?? "normal"
+
+        const selfEngines: Map<
             string,
             { adjust: semver.Range; original: semver.Range }
         > = new Map()
-
-        class EnginesContext {
-            public readonly engines: ReadonlySet<string>
-
-            private readonly unprocessedEngines = new Set<string>()
-
-            private readonly invalidEngines = new Map<
-                string,
-                Map<string, semver.Range>
-            >()
-
-            private readonly validEngines = new Set<string>()
-
-            public constructor(engineNames: Iterable<string>) {
-                this.engines = new Set(engineNames)
-                this.unprocessedEngines = new Set(this.engines)
-            }
-
-            public nextContext(): EnginesContext {
-                const engineNames = new Set(this.engines)
-                for (const nm of this.validEngines) {
-                    engineNames.delete(nm)
-                }
-                for (const nm of this.invalidEngines.keys()) {
-                    engineNames.delete(nm)
-                }
-                return new EnginesContext(engineNames)
-            }
-
-            public markAsProcessed(module: string) {
-                this.unprocessedEngines.delete(module)
-            }
-
-            public isAllProcessed(): boolean {
-                return this.unprocessedEngines.size === 0
-            }
-
-            public markAsValid(module: string) {
-                this.validEngines.add(module)
-                this.invalidEngines.delete(module)
-            }
-
-            public addInvalid(module: string, allowedVer: semver.Range) {
-                if (this.validEngines.has(module)) {
-                    return
-                }
-                const vers = this.invalidEngines.get(module)
-                if (vers) {
-                    vers.set(allowedVer.raw, allowedVer)
-                } else {
-                    this.invalidEngines.set(
-                        module,
-                        new Map([[allowedVer.raw, allowedVer]]),
-                    )
-                }
-            }
-
-            public clearInvalid() {
-                this.invalidEngines.clear()
-            }
-
-            public hasInvalid() {
-                return this.invalidEngines.size > 0
-            }
-
-            public getInvalid(): ReadonlyMap<
-                string,
-                Map<string, semver.Range>
-            > {
-                return this.invalidEngines
-            }
-        }
 
         /**
          * Process meta data
@@ -124,14 +214,19 @@ export default createRule("valid-engines", {
         function processMeta(ctx: EnginesContext, meta: PackageMeta | null) {
             const depEngines = getEngines(meta)
             for (const module of ctx.engines) {
-                const ver = engines.get(module)!
-                const e = depEngines.get(module)
-                if (e) {
+                const selfVer = selfEngines.get(module)!
+                const engineValue = depEngines.get(module)
+                if (engineValue) {
                     ctx.markAsProcessed(module)
-                    const depVer = getSemverRange(e)
+                    const depVer = getSemverRange(engineValue)
 
                     if (depVer) {
-                        if (semver.subset(ver.adjust, depVer)) {
+                        if (
+                            semver.subset(
+                                selfVer.adjust,
+                                buildAdjustRangeForDeps(comparisonType, depVer),
+                            )
+                        ) {
                             ctx.markAsValid(module)
                         } else {
                             ctx.addInvalid(module, depVer)
@@ -142,9 +237,9 @@ export default createRule("valid-engines", {
         }
 
         /**
-         * Process module
+         * Process dependency module
          */
-        function processModule(
+        function processDependencyModule(
             ctx: EnginesContext,
             name: string,
             ver: string,
@@ -169,11 +264,16 @@ export default createRule("valid-engines", {
                 }
             }
             for (const [module, allowedVers] of ctx.getInvalid()) {
-                const moduleVer = engines.get(module)!
+                const selfVer = selfEngines.get(module)!
                 const depVer =
                     normalizeSemverRange(...allowedVers.values()) ||
                     [...allowedVers.values()].pop()!
-                if (semver.subset(moduleVer.adjust, depVer)) {
+                if (
+                    semver.subset(
+                        selfVer.adjust,
+                        buildAdjustRangeForDeps(comparisonType, depVer),
+                    )
+                ) {
                     continue
                 }
                 context.report({
@@ -183,7 +283,7 @@ export default createRule("valid-engines", {
                         .join(
                             " >> ",
                         )} is not compatible with "${module}@${normalizeVer(
-                        moduleVer.original,
+                        selfVer.original,
                     )}". Allowed is: "${module}@${normalizeVer(depVer)}"`,
                 })
             }
@@ -194,7 +294,7 @@ export default createRule("valid-engines", {
                 for (const [n, ranges] of extractDependencies(metaList)) {
                     const v = normalizeSemverRange(...ranges)
                     if (v)
-                        processModule(
+                        processDependencyModule(
                             ctx.nextContext(),
                             n,
                             v.raw,
@@ -205,70 +305,40 @@ export default createRule("valid-engines", {
             }
         }
 
-        /** Extract dependencies */
-        function extractDependencies(metaList: PackageMeta[]) {
-            const dependencies = new Map<string, semver.Range[]>()
-            for (const meta of metaList) {
-                for (const [m, v] of [
-                    ...getDependencies(meta, "dependencies"),
-                    ...getDependencies(meta, "peerDependencies"),
-                ]) {
-                    const range = getSemverRange(v)
-                    if (!range) {
-                        continue
-                    }
-                    const ranges = dependencies.get(m)
-                    if (ranges) {
-                        ranges.push(range)
-                    } else {
-                        dependencies.set(m, [range])
-                    }
-                }
-            }
-
-            return dependencies
-        }
-
         return compositingVisitors(
             {
-                Program(node: AST.JSONProgram) {
-                    for (const [key, val] of getEngines(
-                        getStaticJSONValue(node),
-                    )) {
-                        const v = getSemverRange(val)
-                        if (!v) {
+                JSONExpressionStatement(node: AST.JSONExpressionStatement) {
+                    const expr = node.expression
+                    if (expr.type !== "JSONObjectExpression") {
+                        return
+                    }
+                    const enginesNode = expr.properties.find(
+                        (p) => getKeyFromJSONProperty(p) === "engines",
+                    )
+                    if (!enginesNode) {
+                        return
+                    }
+                    for (const [key, val] of getEngines({
+                        engines: getStaticJSONValue(enginesNode.value),
+                    })) {
+                        const selfVer = getSemverRange(val)
+                        if (!selfVer) {
                             continue
                         }
 
-                        // Adjust "node@>=16" and "node@^16" to be considered compatible.
-                        const adjustVars: string[] = []
-                        for (const cc of v.set) {
-                            if (cc.length === 1) {
-                                if (
-                                    cc[0].operator === ">" ||
-                                    cc[0].operator === ">="
-                                ) {
-                                    adjustVars.push(
-                                        `${cc[0].value} <${semver.inc(
-                                            cc[0].semver.version,
-                                            "premajor",
-                                        )}`,
-                                    )
-                                    continue
-                                }
-                            }
-                            adjustVars.push(cc.map((c) => c.value).join(" "))
-                        }
-                        engines.set(key, {
-                            adjust: new semver.Range(adjustVars.join("||")),
-                            original: v,
+                        selfEngines.set(key, {
+                            adjust: buildAdjustRangeForSelf(
+                                comparisonType,
+                                selfVer,
+                            ),
+                            original: selfVer,
                         })
                     }
                 },
             },
             defineJsonVisitor({
                 "dependencies, peerDependencies"(node) {
-                    if (engines.size === 0) {
+                    if (selfEngines.size === 0) {
                         return
                     }
                     const name = getKeyFromJSONProperty(node)
@@ -276,8 +346,8 @@ export default createRule("valid-engines", {
                     if (typeof name !== "string" || typeof ver !== "string") {
                         return
                     }
-                    const ctx = new EnginesContext(engines.keys())
-                    processModule(ctx, name, ver, [], node)
+                    const ctx = new EnginesContext(selfEngines.keys())
+                    processDependencyModule(ctx, name, ver, [], node)
                 },
             }),
         )

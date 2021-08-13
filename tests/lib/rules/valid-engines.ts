@@ -76,6 +76,19 @@ tester.run("valid-engines", rule as any, {
             }
             `,
         },
+        {
+            filename: "package.json",
+            code: `
+            {
+                "engines": {
+                    "node": "^10 || ^12 || >=14"
+                },
+                "peerDependencies": {
+                    "eslint": ">=6.0.0"
+                }
+            }`,
+            options: [{ comparisonType: "major" }],
+        },
     ],
     invalid: [
         {
@@ -254,6 +267,26 @@ tester.run("valid-engines", rule as any, {
                     message:
                         '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "jsdoctypeparser@^9.0.0" is not compatible with "node@>=8.10.0". Allowed is: "node@>=10.0.0"',
                     line: 8,
+                    column: 21,
+                },
+            ],
+        },
+        {
+            filename: "package.json",
+            code: `
+            {
+                "engines": {
+                    "node": "^10 || ^12 || >=14"
+                },
+                "peerDependencies": {
+                    "eslint": ">=6.0.0"
+                }
+            }`,
+            errors: [
+                {
+                    message:
+                        '"eslint@>=6.0.0" is not compatible with "node@^10.0.0||^12.0.0||>=14.0.0". Allowed is: "node@^8.10.0||^10.12.0||>=11.10.1"',
+                    line: 7,
                     column: 21,
                 },
             ],
