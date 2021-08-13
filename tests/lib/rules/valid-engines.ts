@@ -102,6 +102,68 @@ tester.run("valid-engines", rule as any, {
             }`,
             options: [{ comparisonType: "major" }],
         },
+        {
+            filename: "package.json",
+            code: `42`,
+        },
+        {
+            filename: "package.json",
+            code: `
+            {
+                "engines": 42,
+                "peerDependencies": {
+                    "eslint": ">=6.0.0"
+                }
+            }`,
+        },
+        {
+            filename: "package.json",
+            code: `
+            {
+                "engines": {
+                    "node": 42
+                },
+                "peerDependencies": {
+                    "eslint": ">=6.0.0"
+                }
+            }`,
+        },
+        {
+            filename: "package.json",
+            code: `
+            {
+                "engines": {
+                    "node": "latest"
+                },
+                "peerDependencies": {
+                    "eslint": ">=6.0.0"
+                }
+            }`,
+        },
+        {
+            filename: "package.json",
+            code: `
+            {
+                "engines": {
+                    "node": ">=6"
+                },
+                "peerDependencies": {
+                    "eslint": 7
+                }
+            }`,
+        },
+        {
+            filename: "package.json",
+            code: `
+            {
+                "engines": {
+                    "node": ">=6"
+                },
+                "peerDependencies": {
+                    "eslint": "foo"
+                }
+            }`,
+        },
     ],
     invalid: [
         {

@@ -68,10 +68,6 @@ class EnginesContext {
         }
     }
 
-    public clearInvalid() {
-        this.invalidEngines.clear()
-    }
-
     public hasInvalid() {
         return this.invalidEngines.size > 0
     }

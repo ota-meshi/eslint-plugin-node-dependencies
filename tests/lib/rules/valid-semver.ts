@@ -261,5 +261,53 @@ tester.run("valid-semver", rule as any, {
                 },
             ],
         },
+        {
+            filename: "package.json",
+            code: `
+            {
+                "engines": {
+                    "node": "^12 |"
+                }
+            }
+            `,
+            errors: [
+                {
+                    message: '"^12 |" is invalid.',
+                    line: 4,
+                },
+            ],
+        },
+        {
+            filename: "package.json",
+            code: `
+            {
+                "dependencies": {
+                    "semver": 7
+                }
+            }
+            `,
+            errors: [
+                {
+                    message: "`7` is invalid.",
+                    line: 4,
+                },
+            ],
+        },
+        {
+            filename: "package.json",
+            code: `
+            {
+                "engines": {
+                    "node": 12
+                }
+            }
+            `,
+            errors: [
+                {
+                    message: "`12` is invalid.",
+                    line: 4,
+                },
+            ],
+        },
     ],
 })

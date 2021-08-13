@@ -23,7 +23,11 @@ export default createRule("valid-semver", {
         return defineJsonVisitor({
             engines(node) {
                 const ver = getStaticJSONValue(node.value)
-                if (typeof ver !== "string" || !ver) {
+                if (typeof ver !== "string" || ver == null) {
+                    context.report({
+                        loc: node.value.loc,
+                        message: `\`${JSON.stringify(ver)}\` is invalid.`,
+                    })
                     return
                 }
                 if (getSemverRange(ver) == null) {
@@ -35,12 +39,15 @@ export default createRule("valid-semver", {
             },
             "dependencies, peerDependencies, devDependencies"(node) {
                 const name = getKeyFromJSONProperty(node)
+                if (typeof name !== "string") {
+                    return
+                }
                 const ver = getStaticJSONValue(node.value)
-                if (
-                    typeof name !== "string" ||
-                    typeof ver !== "string" ||
-                    !ver
-                ) {
+                if (typeof ver !== "string" || ver == null) {
+                    context.report({
+                        loc: node.value.loc,
+                        message: `\`${JSON.stringify(ver)}\` is invalid.`,
+                    })
                     return
                 }
                 if (maybeDepId(ver)) {
