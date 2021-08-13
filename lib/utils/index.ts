@@ -302,7 +302,28 @@ export function normalizeSemverRange(
             if (!consume) rangeMap.set(targetVer.raw, targetVer)
         }
     }
-    return getSemverRange([...rangeMap.keys()].join("||"))
+    const ranges = [...rangeMap]
+        .sort(([, a], [, b]) => {
+            const aVer = getMinVer(a)
+            const bVer = getMinVer(b)
+
+            return aVer.compare(bVer)
+        })
+        .map(([v]) => v)
+    return getSemverRange(ranges.join("||"))
+
+    /** Get min version */
+    function getMinVer(r: semver.Range) {
+        let min: semver.SemVer | null = null
+        for (const comps of r.set) {
+            for (const comp of comps) {
+                if (!min || comp.semver.compare(min) < 0) {
+                    min = comp.semver
+                }
+            }
+        }
+        return min!
+    }
 }
 
 /** Normalize comparators */

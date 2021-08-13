@@ -211,7 +211,7 @@ tester.run("valid-engines", rule as any, {
                 },
                 {
                     message:
-                        '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "eslint@>=6.0.0" is not compatible with "node@>=8.0.0". Allowed is: "node@^10.12.0||^8.10.0||>=11.10.1"',
+                        '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "eslint@>=6.0.0" is not compatible with "node@>=8.0.0". Allowed is: "node@^8.10.0||^10.12.0||>=11.10.1"',
                     line: 8,
                     column: 21,
                 },
