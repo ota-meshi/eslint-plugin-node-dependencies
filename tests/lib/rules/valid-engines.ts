@@ -93,7 +93,7 @@ tester.run("valid-engines", rule as any, {
             errors: [
                 {
                     message:
-                        '"semver@^7.3.5" is not compatible with "node@>=8". Allowed is: "node@>=10"',
+                        '"semver@^7.3.5" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
                     line: 7,
                     column: 21,
                 },
@@ -114,7 +114,7 @@ tester.run("valid-engines", rule as any, {
             errors: [
                 {
                     message:
-                        '"semver@^7.3.5" is not compatible with "node@>=8". Allowed is: "node@>=10"',
+                        '"semver@^7.3.5" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
                     line: 7,
                     column: 21,
                 },
@@ -134,7 +134,7 @@ tester.run("valid-engines", rule as any, {
             `,
             options: [{ deep: true }],
             errors: [
-                '"semver@^7.3.5" is not compatible with "node@>=8". Allowed is: "node@>=10"',
+                '"semver@^7.3.5" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
             ],
         },
         {
@@ -150,7 +150,7 @@ tester.run("valid-engines", rule as any, {
             }
             `,
             errors: [
-                '"semver@latest" is not compatible with "node@>=8". Allowed is: "node@>=10"',
+                '"semver@latest" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
             ],
         },
         {
@@ -167,7 +167,7 @@ tester.run("valid-engines", rule as any, {
             }
             `,
             errors: [
-                '"mocha@mochajs/mocha#4727d357ea" is not compatible with "node@>=8.0". Allowed is: "node@>=12.0.0"',
+                '"mocha@mochajs/mocha#4727d357ea" is not compatible with "node@>=8.0.0". Allowed is: "node@>=12.0.0"',
             ],
         },
         {
@@ -187,31 +187,72 @@ tester.run("valid-engines", rule as any, {
             errors: [
                 {
                     message:
-                        '"eslint@^7.0.0" is not compatible with "node@>=8". Allowed is: "node@^10.12.0 ||>=12.0.0"',
+                        '"eslint@^7.0.0" is not compatible with "node@>=8.0.0". Allowed is: "node@^10.12.0||>=12.0.0"',
                     line: 7,
                     column: 21,
                 },
                 {
                     message:
-                        '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "comment-parser@^1.1.2" is not compatible with "node@>=8". Allowed is: "node@^12.20 ||^14.14.0 || ^16"',
+                        '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "comment-parser@^1.1.2" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
                     line: 8,
                     column: 21,
                 },
                 {
                     message:
-                        '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "eslint-utils@^3.0.0" is not compatible with "node@>=8". Allowed is: "node@^10.0.0 ||^12.0.0 || >= 14.0.0"',
+                        '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "eslint-utils@^3.0.0" is not compatible with "node@>=8.0.0". Allowed is: "node@^10.0.0||^12.0.0||>=14.0.0"',
                     line: 8,
                     column: 21,
                 },
                 {
                     message:
-                        '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "jsdoctypeparser@^9.0.0" is not compatible with "node@>=8". Allowed is: "node@>=10"',
+                        '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "jsdoctypeparser@^9.0.0" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
                     line: 8,
                     column: 21,
                 },
                 {
                     message:
-                        '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "eslint@>=6.0.0" is not compatible with "node@>=8". Allowed is: "node@^10.12.0 ||>=12.0.0"',
+                        '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "eslint@>=6.0.0" is not compatible with "node@>=8.0.0". Allowed is: "node@^10.12.0||^8.10.0||>=11.10.1"',
+                    line: 8,
+                    column: 21,
+                },
+            ],
+        },
+        {
+            filename: "package.json",
+            code: `
+            {
+                "engines": {
+                    "node": ">=8.10"
+                },
+                "peerDependencies": {
+                    "eslint": "^7.0.0",
+                    "eslint-plugin-regexp": ">=0.13.0 <1.0.0",
+                    "eslint-plugin-eslint-comments": "^3.2.0"
+                },
+            }
+            `,
+            errors: [
+                {
+                    message:
+                        '"eslint@^7.0.0" is not compatible with "node@>=8.10.0". Allowed is: "node@^10.12.0||>=12.0.0"',
+                    line: 7,
+                    column: 21,
+                },
+                {
+                    message:
+                        '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "comment-parser@^1.1.2" is not compatible with "node@>=8.10.0". Allowed is: "node@>=10.0.0"',
+                    line: 8,
+                    column: 21,
+                },
+                {
+                    message:
+                        '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "eslint-utils@^3.0.0" is not compatible with "node@>=8.10.0". Allowed is: "node@^10.0.0||^12.0.0||>=14.0.0"',
+                    line: 8,
+                    column: 21,
+                },
+                {
+                    message:
+                        '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "jsdoctypeparser@^9.0.0" is not compatible with "node@>=8.10.0". Allowed is: "node@>=10.0.0"',
                     line: 8,
                     column: 21,
                 },

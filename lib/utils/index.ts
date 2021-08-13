@@ -136,62 +136,7 @@ export type NpmPackageMeta = PackageMeta & {
 /**
  * Get the meta info from given module name
  */
-export function getMeta(
-    name: string,
-    ver: string,
-    context: Rule.RuleContext,
-): PackageMeta | null {
-    const pkg = getMetaFromNodeModules(name, ver, context)
-    if (pkg) {
-        return pkg
-    }
-    const meta = getMetaFromNpm(name, ver, true)
-    if (meta) return meta[meta.length - 1]
-    return null
-}
-/**
- * Iterate the meta info from given module name
- */
-export function* iterateMeta(
-    name: string,
-    ver: string,
-    context: Rule.RuleContext,
-): IterableIterator<PackageMeta> {
-    const pkg = getMetaFromNodeModules(name, ver, context)
-    if (pkg) {
-        yield pkg
-    }
-    const meta = getMetaFromNpm(name, ver, !pkg)
-    if (meta) yield* meta
-}
-/**
- * Get the npm meta info from given module name and version
- */
-export function getMetaFromNpm(
-    name: string,
-    ver: string,
-    iterateUnknown?: boolean,
-): NpmPackageMeta[] | null {
-    const cleanVer = ver.replace(/\s/g, "")
-
-    if (cleanVer.startsWith("npm:")) {
-        return getMetaFromNpmView(`${cleanVer.slice(4)}`)
-    }
-    if (cleanVer.includes("/") || cleanVer.includes(":")) {
-        // unknown
-        if (iterateUnknown == null || iterateUnknown) {
-            return [{}]
-        }
-        return []
-    }
-
-    return getMetaFromNpmView(`${name}${cleanVer ? `@${cleanVer}` : ""}`)
-}
-
-/**
- * Get the meta info from given module name
- */
-function getMetaFromNodeModules(
+export function getMetaFromNodeModules(
     name: string,
     ver: string,
     context: Rule.RuleContext,
@@ -216,6 +161,24 @@ function getMetaFromNodeModules(
     }
     return null
 }
+/**
+ * Get the npm meta info from given module name and version
+ */
+export function getMetaFromNpm(
+    name: string,
+    ver: string,
+): NpmPackageMeta[] | null {
+    const trimmed = ver.trim()
+    if (trimmed.startsWith("npm:")) {
+        return getMetaFromNpmView(`${trimmed.slice(4).trim()}`)
+    }
+    if (trimmed.includes("/") || trimmed.includes(":")) {
+        // unknown
+        return []
+    }
+
+    return getMetaFromNpmView(`${name}${trimmed ? `@${trimmed}` : ""}`)
+}
 
 /**
  * Get the meta info from given package-arg
@@ -223,19 +186,24 @@ function getMetaFromNodeModules(
 function getMetaFromNpmView(packageArg: string): NpmPackageMeta[] | null {
     const cachedFilePath = path.join(
         __dirname,
-        `../../.cached_meta/${packageArg}.json`,
+        `../../.cached_meta/${packageArg
+            .replace(/[^\d+\-./<=>@\\^a-z|~]/giu, "_")
+            .toLowerCase()}.json`,
     )
     makeDirs(path.dirname(cachedFilePath))
 
     if (fs.existsSync(cachedFilePath)) {
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires -- ignore
-        const { meta, timestamp } = require(cachedFilePath) as {
-            meta: NpmPackageMeta[]
-            timestamp: number
+        const { meta, timestamp, expired } = require(cachedFilePath) as {
+            meta?: NpmPackageMeta[]
+            timestamp?: number
+            expired?: number
         }
-        if (meta != null && typeof timestamp === "number") {
+        if (meta != null) {
             if (
-                timestamp + TTL >= Date.now() ||
+                (typeof expired === "number" && expired >= Date.now()) ||
+                (typeof timestamp === "number" &&
+                    timestamp + TTL >= Date.now()) ||
                 (meta.length === 1 && meta[0].deprecated)
             ) {
                 return meta
@@ -254,11 +222,13 @@ function getMetaFromNpmView(packageArg: string): NpmPackageMeta[] | null {
     } catch (e) {
         return null
     }
+    const timestamp = Date.now()
     fs.writeFileSync(
         cachedFilePath,
         JSON.stringify({
             meta,
-            timestamp: Date.now(),
+            timestamp,
+            expired: timestamp + Math.floor(Math.random() * 1000 * 60 /* 1m */),
         }),
     )
     delete require.cache[cachedFilePath]
@@ -298,9 +268,74 @@ export function getSemverRange(
     }
 }
 
-/** Strip extra spaces */
-export function stripExtraSpaces(ver: string): string {
-    return ver.replace(/\s+/g, (v) => v[0]).replace(/([<=>^|~])\s/, "$1")
+/** Normalize version */
+export function normalizeVer(ver: semver.Range): string {
+    const n = normalizeSemverRange(ver)
+    if (n) {
+        return n.raw
+    }
+    return ver.raw
+}
+
+/** Normalize semver ranges. */
+export function normalizeSemverRange(
+    ...values: semver.Range[]
+): semver.Range | null {
+    const rangeMap = new Map<string, semver.Range>()
+    for (const ver of values) {
+        for (const comps of ver.set) {
+            const targetVer = getSemverRange(normalizeComparators(comps))
+            if (!targetVer) {
+                continue
+            }
+            let consume = false
+            for (const [k, rangeVer] of rangeMap) {
+                if (semver.subset(targetVer, rangeVer)) {
+                    consume = true
+                    break
+                }
+                if (semver.subset(rangeVer, targetVer)) {
+                    rangeMap.delete(k)
+                    break
+                }
+            }
+            if (!consume) rangeMap.set(targetVer.raw, targetVer)
+        }
+    }
+    return getSemverRange([...rangeMap.keys()].join("||"))
+}
+
+/** Normalize comparators */
+function normalizeComparators(comps: readonly semver.Comparator[]): string {
+    if (comps.length === 2) {
+        if (isCaret(comps[0], comps[1])) {
+            return `^${comps[0].semver.version}`
+        }
+        if (isCaret(comps[1], comps[0])) {
+            return `^${comps[1].semver.version}`
+        }
+    }
+    return comps.map(normalizeComparator).join(" ")
+
+    /** Checks whether then given comparators is caret version */
+    function isCaret(a: semver.Comparator, b: semver.Comparator) {
+        return (
+            a.operator === ">=" &&
+            b.operator === "<" &&
+            semver.inc(a.semver.version, "premajor") === b.semver.version
+        )
+    }
+}
+
+/** Normalize comparator */
+function normalizeComparator(comp: semver.Comparator): string {
+    if (comp.operator === "") {
+        return "*"
+    }
+    // if (comp.operator === ">=" && comp.value.endsWith(".0.0")) {
+    //     return comp.value.slice(0, -4)
+    // }
+    return comp.value
 }
 
 /** Get the map from given value */

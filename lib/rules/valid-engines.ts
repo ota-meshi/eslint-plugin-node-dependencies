@@ -1,15 +1,17 @@
 import type { AST } from "jsonc-eslint-parser"
 import { getStaticJSONValue } from "jsonc-eslint-parser"
+import type { PackageMeta } from "../utils"
 import {
+    normalizeSemverRange,
+    getMetaFromNpm,
     compositingVisitors,
     defineJsonVisitor,
     getEngines,
     createRule,
-    iterateMeta,
     getDependencies,
     getSemverRange,
-    stripExtraSpaces,
-    getMeta,
+    normalizeVer,
+    getMetaFromNodeModules,
 } from "../utils"
 import semver from "semver"
 import { getKeyFromJSONProperty } from "../utils/ast-utils"
@@ -44,24 +46,97 @@ export default createRule("valid-engines", {
             { adjust: semver.Range; original: semver.Range }
         > = new Map()
 
-        /**
-         * Remove valid modules
-         */
-        function removeValidModule(
-            targetEngines: Map<
-                string,
-                { adjust: semver.Range; original: semver.Range }
-            >,
-            depEngines: Map<string, string>,
-            invalidEngines: Map<string, string>,
-        ) {
-            for (const [module, ver] of targetEngines) {
-                const depVer = getSemverRange(depEngines.get(module))
+        class EnginesContext {
+            public readonly engines: ReadonlySet<string>
 
-                if (!depVer || semver.subset(ver.adjust, depVer)) {
-                    targetEngines.delete(module)
+            private readonly unprocessedEngines = new Set<string>()
+
+            private readonly invalidEngines = new Map<
+                string,
+                Map<string, semver.Range>
+            >()
+
+            private readonly validEngines = new Set<string>()
+
+            public constructor(engineNames: Iterable<string>) {
+                this.engines = new Set(engineNames)
+                this.unprocessedEngines = new Set(this.engines)
+            }
+
+            public nextContext(): EnginesContext {
+                const engineNames = new Set(this.engines)
+                for (const nm of this.validEngines) {
+                    engineNames.delete(nm)
+                }
+                for (const nm of this.invalidEngines.keys()) {
+                    engineNames.delete(nm)
+                }
+                return new EnginesContext(engineNames)
+            }
+
+            public markAsProcessed(module: string) {
+                this.unprocessedEngines.delete(module)
+            }
+
+            public isAllProcessed(): boolean {
+                return this.unprocessedEngines.size === 0
+            }
+
+            public markAsValid(module: string) {
+                this.validEngines.add(module)
+                this.invalidEngines.delete(module)
+            }
+
+            public addInvalid(module: string, allowedVer: semver.Range) {
+                if (this.validEngines.has(module)) {
+                    return
+                }
+                const vers = this.invalidEngines.get(module)
+                if (vers) {
+                    vers.set(allowedVer.raw, allowedVer)
                 } else {
-                    invalidEngines.set(module, depVer.raw)
+                    this.invalidEngines.set(
+                        module,
+                        new Map([[allowedVer.raw, allowedVer]]),
+                    )
+                }
+            }
+
+            public clearInvalid() {
+                this.invalidEngines.clear()
+            }
+
+            public hasInvalid() {
+                return this.invalidEngines.size > 0
+            }
+
+            public getInvalid(): ReadonlyMap<
+                string,
+                Map<string, semver.Range>
+            > {
+                return this.invalidEngines
+            }
+        }
+
+        /**
+         * Process meta data
+         */
+        function processMeta(ctx: EnginesContext, meta: PackageMeta | null) {
+            const depEngines = getEngines(meta)
+            for (const module of ctx.engines) {
+                const ver = engines.get(module)!
+                const e = depEngines.get(module)
+                if (e) {
+                    ctx.markAsProcessed(module)
+                    const depVer = getSemverRange(e)
+
+                    if (depVer) {
+                        if (semver.subset(ver.adjust, depVer)) {
+                            ctx.markAsValid(module)
+                        } else {
+                            ctx.addInvalid(module, depVer)
+                        }
+                    }
                 }
             }
         }
@@ -70,60 +145,88 @@ export default createRule("valid-engines", {
          * Process module
          */
         function processModule(
+            ctx: EnginesContext,
             name: string,
             ver: string,
             modules: string[],
             node: AST.JSONProperty,
         ) {
             const currModules = [...modules, `${name}@${ver}`]
-            const targetEngines = new Map(engines)
-            const invalidEngines = new Map<string, string>()
 
-            let allEmpty = true
-            for (const meta of iterateMeta(name, ver, context)) {
-                const depEngines = getEngines(meta)
-                if (depEngines.size) {
-                    allEmpty = false
-                }
-                removeValidModule(targetEngines, depEngines, invalidEngines)
-                if (targetEngines.size === 0) {
-                    break
+            processMeta(ctx, getMetaFromNodeModules(name, ver, context))
+
+            if (!ctx.hasInvalid() && ctx.isAllProcessed()) {
+                return
+            }
+            const metaList = getMetaFromNpm(name, ver)
+            if (!metaList) {
+                return
+            }
+            for (const meta of metaList) {
+                processMeta(ctx, meta)
+                if (!ctx.hasInvalid() && ctx.isAllProcessed()) {
+                    return
                 }
             }
-            const meta = getMeta(name, ver, context)
-            const depEngines = getEngines(meta)
-            for (const [module, moduleVer] of targetEngines) {
-                const depVer = invalidEngines.get(module)!
+            for (const [module, allowedVers] of ctx.getInvalid()) {
+                const moduleVer = engines.get(module)!
+                const depVer =
+                    normalizeSemverRange(...allowedVers.values()) ||
+                    [...allowedVers.values()].pop()!
+                if (semver.subset(moduleVer.adjust, depVer)) {
+                    continue
+                }
                 context.report({
                     loc: node.loc,
                     message: `${currModules
                         .map((m) => `"${m}"`)
                         .join(
                             " >> ",
-                        )} is not compatible with "${module}@${stripExtraSpaces(
-                        moduleVer.original.raw,
-                    )}". Allowed is: "${module}@${stripExtraSpaces(depVer)}"`,
+                        )} is not compatible with "${module}@${normalizeVer(
+                        moduleVer.original,
+                    )}". Allowed is: "${module}@${normalizeVer(depVer)}"`,
                 })
             }
-            if (
-                engines.size === depEngines.size &&
-                [...engines.keys()].every((m) => depEngines.has(m))
-            ) {
+            if (ctx.isAllProcessed()) {
                 return
             }
-            if (deep && allEmpty) {
-                const dependencies = getDependencies(meta, "dependencies")
-                const peerDependencies = getDependencies(
-                    meta,
-                    "peerDependencies",
-                )
-                for (const [n, v] of dependencies) {
-                    processModule(n, v, currModules, node)
-                }
-                for (const [n, v] of peerDependencies) {
-                    processModule(n, v, currModules, node)
+            if (deep) {
+                for (const [n, ranges] of extractDependencies(metaList)) {
+                    const v = normalizeSemverRange(...ranges)
+                    if (v)
+                        processModule(
+                            ctx.nextContext(),
+                            n,
+                            v.raw,
+                            currModules,
+                            node,
+                        )
                 }
             }
+        }
+
+        /** Extract dependencies */
+        function extractDependencies(metaList: PackageMeta[]) {
+            const dependencies = new Map<string, semver.Range[]>()
+            for (const meta of metaList) {
+                for (const [m, v] of [
+                    ...getDependencies(meta, "dependencies"),
+                    ...getDependencies(meta, "peerDependencies"),
+                ]) {
+                    const range = getSemverRange(v)
+                    if (!range) {
+                        continue
+                    }
+                    const ranges = dependencies.get(m)
+                    if (ranges) {
+                        ranges.push(range)
+                    } else {
+                        dependencies.set(m, [range])
+                    }
+                }
+            }
+
+            return dependencies
         }
 
         return compositingVisitors(
@@ -173,7 +276,8 @@ export default createRule("valid-engines", {
                     if (typeof name !== "string" || typeof ver !== "string") {
                         return
                     }
-                    processModule(name, ver, [], node)
+                    const ctx = new EnginesContext(engines.keys())
+                    processModule(ctx, name, ver, [], node)
                 },
             }),
         )
