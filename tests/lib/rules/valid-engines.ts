@@ -29,6 +29,19 @@ tester.run("valid-engines", rule as any, {
             code: `
             {
                 "engines": {
+                    "node": ">=8"
+                },
+                "dependencies": {
+                    "semver": "^6"
+                }
+            }
+            `,
+        },
+        {
+            filename: "package.json",
+            code: `
+            {
+                "engines": {
                     "node": ">=12"
                 },
                 "dependencies": {
@@ -107,6 +120,27 @@ tester.run("valid-engines", rule as any, {
                 {
                     message:
                         '"semver@^7.3.5" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
+                    line: 7,
+                    column: 21,
+                },
+            ],
+        },
+        {
+            filename: "package.json",
+            code: `
+            {
+                "engines": {
+                    "node": ">=8"
+                },
+                "dependencies": {
+                    "semver": "7.3.5"
+                }
+            }
+            `,
+            errors: [
+                {
+                    message:
+                        '"semver@7.3.5" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
                     line: 7,
                     column: 21,
                 },

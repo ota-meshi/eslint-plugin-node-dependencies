@@ -10,6 +10,31 @@ import { getSemverRange, normalizeSemverRange } from "./semver"
 import { satisfies } from "semver"
 
 const TTL = 1000 * 60 * 60 // 1h
+
+export type PackageMeta = {
+    engines?: Record<string, string | undefined>
+    dependencies?: Record<string, string | undefined>
+    peerDependencies?: Record<string, string | undefined>
+    version?: string
+}
+export type NpmPackageMeta = PackageMeta & {
+    deprecated?: string
+    versions?: string[]
+    "dist-tags"?: { [key: string]: string | void }
+}
+
+const NPM_INFO_PROPERTIES: (keyof NpmPackageMeta)[] = [
+    "version",
+    "engines",
+    "deprecated",
+    "dependencies",
+    "peerDependencies",
+    "versions",
+    "dist-tags",
+]
+
+const CACHED_META_ROOT = path.join(__dirname, `../../.cached_meta`)
+
 /**
  * Define the rule.
  * @param ruleName ruleName
@@ -37,10 +62,7 @@ export function createRule(
  * Define the JSON visitor rule.
  */
 export function defineJsonVisitor(
-    visitor: Record<
-        string | "dependencies" | "peerDependencies",
-        ((node: AST.JSONProperty) => void) | undefined
-    >,
+    visitor: Record<string, ((node: AST.JSONProperty) => void) | undefined>,
 ): RuleListener {
     type ObjectStack = {
         node: AST.JSONObjectExpression | AST.JSONArrayExpression
@@ -124,16 +146,6 @@ export function compositingVisitors(
     return visitor
 }
 
-export type PackageMeta = {
-    engines?: Record<string, string | undefined>
-    dependencies?: Record<string, string | undefined>
-    peerDependencies?: Record<string, string | undefined>
-    version?: string
-}
-export type NpmPackageMeta = PackageMeta & {
-    deprecated?: string
-}
-
 /**
  * Get the meta info from given module name
  */
@@ -162,6 +174,12 @@ export function getMetaFromNodeModules(
     }
     return null
 }
+
+type CachedFileContent = {
+    meta?: NpmPackageMeta[]
+    timestamp?: number
+    expired?: number
+}
 /**
  * Get the npm meta info from given module name and version
  */
@@ -178,15 +196,15 @@ export function getMetaFromNpm(
         return []
     }
 
+    let packageArg = `${name}${trimmed ? `@${trimmed}` : ""}`
     let range = getSemverRange(ver)
     if (range) {
         range = normalizeSemverRange(range)
         if (range) {
-            return getMetaFromNpmView(`${name}@${range.raw}`)
+            packageArg = `${name}@${range.raw}`
         }
     }
-
-    return getMetaFromNpmView(`${name}${trimmed ? `@${trimmed}` : ""}`)
+    return getMetaFromNpmView(packageArg)
 }
 
 /**
@@ -194,20 +212,17 @@ export function getMetaFromNpm(
  */
 function getMetaFromNpmView(packageArg: string): NpmPackageMeta[] | null {
     const cachedFilePath = path.join(
-        __dirname,
-        `../../.cached_meta/${packageArg
+        CACHED_META_ROOT,
+        `${packageArg
             .replace(/[^\d+\-./<=>@\\^a-z|~]/giu, "_")
             .toLowerCase()}.json`,
     )
     makeDirs(path.dirname(cachedFilePath))
 
     if (fs.existsSync(cachedFilePath)) {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires -- ignore
-        const { meta, timestamp, expired } = require(cachedFilePath) as {
-            meta?: NpmPackageMeta[]
-            timestamp?: number
-            expired?: number
-        }
+        const { meta, timestamp, expired } =
+            // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires -- ignore
+            require(cachedFilePath) as CachedFileContent
         if (meta != null) {
             if (
                 (typeof expired === "number" && expired >= Date.now()) ||
@@ -223,7 +238,12 @@ function getMetaFromNpmView(packageArg: string): NpmPackageMeta[] | null {
 
     let meta: NpmPackageMeta[] = []
     try {
-        const json = exec("npm", ["view", `${packageArg}`, "--json"])
+        const json = exec("npm", [
+            "view",
+            `${packageArg}`,
+            ...NPM_INFO_PROPERTIES,
+            "--json",
+        ])
         meta = JSON.parse(json)
         if (!Array.isArray(meta)) {
             meta = [meta]
@@ -232,14 +252,12 @@ function getMetaFromNpmView(packageArg: string): NpmPackageMeta[] | null {
         return null
     }
     const timestamp = Date.now()
-    fs.writeFileSync(
-        cachedFilePath,
-        JSON.stringify({
-            meta,
-            timestamp,
-            expired: timestamp + Math.floor(Math.random() * 1000 * 60 /* 1m */),
-        }),
-    )
+    const content: CachedFileContent = {
+        meta,
+        timestamp,
+        expired: timestamp + Math.floor(Math.random() * 1000 * 60 /* 1m */),
+    }
+    fs.writeFileSync(cachedFilePath, JSON.stringify(content))
     delete require.cache[cachedFilePath]
     return meta
 }
