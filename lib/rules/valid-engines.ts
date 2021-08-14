@@ -227,10 +227,12 @@ export default createRule("valid-engines", {
             }
         }
 
+        /* eslint-disable complexity -- ignore */
         /**
          * Process dependency module
          */
         function processDependencyModule(
+            /* eslint-enable complexity -- ignore */
             ctx: EnginesContext,
             name: string,
             ver: string,
@@ -244,7 +246,14 @@ export default createRule("valid-engines", {
             if (!ctx.hasInvalid() && ctx.isAllProcessed()) {
                 return
             }
-            const metaList = getMetaFromNpm(name, ver)
+            const metaData = getMetaFromNpm(name, ver)
+            for (const meta of metaData.cache) {
+                processMeta(ctx, meta)
+                if (!ctx.hasInvalid() && ctx.isAllProcessed()) {
+                    return
+                }
+            }
+            const metaList = metaData.get()
             if (!metaList) {
                 return
             }

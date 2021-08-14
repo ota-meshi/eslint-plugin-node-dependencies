@@ -186,14 +186,14 @@ type CachedFileContent = {
 export function getMetaFromNpm(
     name: string,
     ver: string,
-): NpmPackageMeta[] | null {
+): { cache: NpmPackageMeta[]; get: () => NpmPackageMeta[] | null } {
     const trimmed = ver.trim()
     if (trimmed.startsWith("npm:")) {
         return getMetaFromNpmView(`${trimmed.slice(4).trim()}`)
     }
     if (trimmed.includes("/") || trimmed.includes(":")) {
         // unknown
-        return []
+        return { cache: [], get: () => [] }
     }
 
     let packageArg = `${name}${trimmed ? `@${trimmed}` : ""}`
@@ -210,7 +210,10 @@ export function getMetaFromNpm(
 /**
  * Get the meta info from given package-arg
  */
-function getMetaFromNpmView(packageArg: string): NpmPackageMeta[] | null {
+function getMetaFromNpmView(packageArg: string): {
+    cache: NpmPackageMeta[]
+    get: () => NpmPackageMeta[] | null
+} {
     const cachedFilePath = path.join(
         CACHED_META_ROOT,
         `${packageArg
@@ -219,47 +222,57 @@ function getMetaFromNpmView(packageArg: string): NpmPackageMeta[] | null {
     )
     makeDirs(path.dirname(cachedFilePath))
 
+    const result: {
+        cache: NpmPackageMeta[]
+        get: () => NpmPackageMeta[] | null
+    } = { cache: [], get: () => [] }
     if (fs.existsSync(cachedFilePath)) {
         const { meta, timestamp, expired } =
             // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires -- ignore
             require(cachedFilePath) as CachedFileContent
         if (meta != null) {
+            result.cache.push(...meta)
             if (
                 (typeof expired === "number" && expired >= Date.now()) ||
                 (typeof timestamp === "number" &&
                     timestamp + TTL >= Date.now()) ||
                 (meta.length === 1 && meta[0].deprecated)
             ) {
-                return meta
+                result.get = () => meta
+                return result
             }
             // Reload!
         }
     }
 
-    let meta: NpmPackageMeta[] = []
-    try {
-        const json = exec("npm", [
-            "view",
-            `${packageArg}`,
-            ...NPM_INFO_PROPERTIES,
-            "--json",
-        ])
-        meta = JSON.parse(json)
-        if (!Array.isArray(meta)) {
-            meta = [meta]
+    result.get = () => {
+        let meta: NpmPackageMeta[] = []
+        try {
+            const json = exec("npm", [
+                "view",
+                `${packageArg}`,
+                ...NPM_INFO_PROPERTIES,
+                "--json",
+            ])
+            meta = JSON.parse(json)
+            if (!Array.isArray(meta)) {
+                meta = [meta]
+            }
+        } catch (e) {
+            return null
         }
-    } catch (e) {
-        return null
+        const timestamp = Date.now()
+        const content: CachedFileContent = {
+            meta,
+            timestamp,
+            expired: timestamp + Math.floor(Math.random() * 1000 * 60 /* 1m */),
+        }
+        fs.writeFileSync(cachedFilePath, JSON.stringify(content))
+        delete require.cache[cachedFilePath]
+        return meta
     }
-    const timestamp = Date.now()
-    const content: CachedFileContent = {
-        meta,
-        timestamp,
-        expired: timestamp + Math.floor(Math.random() * 1000 * 60 /* 1m */),
-    }
-    fs.writeFileSync(cachedFilePath, JSON.stringify(content))
-    delete require.cache[cachedFilePath]
-    return meta
+
+    return result
 }
 
 /** Get the engines from given package.json value */

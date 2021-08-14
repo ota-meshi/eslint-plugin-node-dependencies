@@ -30,10 +30,13 @@ export default createRule("no-deprecated", {
                     return
                 }
                 const meta = getMetaFromNpm(name, ver)
-                if (meta && meta[meta.length - 1].deprecated) {
+                const deprecated =
+                    [...meta.cache].pop()?.deprecated ||
+                    [...(meta.get() ?? [])].pop()?.deprecated
+                if (deprecated) {
                     context.report({
                         loc: node.loc,
-                        message: `${meta[meta.length - 1].deprecated}`,
+                        message: `${deprecated}`,
                     })
                 }
             },
