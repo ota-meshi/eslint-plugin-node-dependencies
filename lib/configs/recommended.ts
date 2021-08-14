@@ -6,7 +6,7 @@ export = {
             parser: require.resolve("jsonc-eslint-parser"),
             rules: {
                 // eslint-plugin-node-dependencies rules
-                "node-dependencies/valid-engines": "error",
+                "node-dependencies/compat-engines": "error",
                 "node-dependencies/valid-semver": "error",
             },
         },

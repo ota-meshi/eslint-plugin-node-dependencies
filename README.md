@@ -118,7 +118,7 @@ The rules with the following star :star: are included in the `plugin:node-depend
 
 | Rule ID | Description |    |
 |:--------|:------------|:---|
-| [node-dependencies/valid-engines](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/valid-engines.html) | enforce the versions of the engines of the dependencies to be compatible. | :star: |
+| [node-dependencies/compat-engines](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/compat-engines.html) | enforce the versions of the engines of the dependencies to be compatible. | :star: |
 | [node-dependencies/valid-semver](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/valid-semver.html) | enforce versions that is valid as a semantic version. | :star: |
 
 ### Best Practices
@@ -126,6 +126,15 @@ The rules with the following star :star: are included in the `plugin:node-depend
 | Rule ID | Description |    |
 |:--------|:------------|:---|
 | [node-dependencies/no-deprecated](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/no-deprecated.html) | disallow having dependencies on deprecate packages. |  |
+
+### Deprecated
+
+- :warning: We're going to remove deprecated rules in the next major release. Please migrate to successor/new rules.
+- :innocent: We don't fix bugs which are in deprecated rules since we don't have enough resources.
+
+| Rule ID | Replaced by |
+|:--------|:------------|
+| [node-dependencies/valid-engines](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/valid-engines.html) | [node-dependencies/compat-engines](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/compat-engines.html.md) |
 
 <!--RULES_TABLE_END-->
 <!--RULES_SECTION_END-->

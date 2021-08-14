@@ -1,6 +1,6 @@
 import path from "path"
 import assert from "assert"
-import { CLIEngine } from "eslint"
+import { ESLint } from "eslint"
 import plugin from "../../lib/index"
 
 // -----------------------------------------------------------------------------
@@ -10,17 +10,22 @@ import plugin from "../../lib/index"
 const TEST_CWD = path.join(__dirname, "../fixtures/integrations/eslint-plugin")
 
 describe("Integration with eslint-plugin-node-dependencies", () => {
-    it("should lint without errors", () => {
-        const engine = new CLIEngine({
+    if (!ESLint) {
+        return
+    }
+    it("should lint without errors", async () => {
+        const engine = new ESLint({
             cwd: TEST_CWD,
+            plugins: {
+                "eslint-plugin-node-dependencies": plugin,
+            },
         })
-        engine.addPlugin("eslint-plugin-node-dependencies", plugin)
-        const r = engine.executeOnFiles(["package.json"])
+        const results = await engine.lintFiles(["package.json"])
 
-        assert.strictEqual(r.results.length, 1)
+        assert.strictEqual(results.length, 1)
         assert.deepStrictEqual(
-            r.results[0].messages.map((m) => m.ruleId),
-            ["node-dependencies/valid-engines"],
+            results[0].messages.map((m) => m.ruleId),
+            ["node-dependencies/compat-engines"],
         )
     })
 })

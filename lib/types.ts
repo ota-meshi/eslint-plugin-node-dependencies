@@ -7,7 +7,7 @@ export interface RuleListener {
 
 export interface RuleModule {
     meta: RuleMetaData
-    create(context: Rule.RuleContext): RuleListener
+    create: (context: Rule.RuleContext) => RuleListener
 }
 
 export type RuleCategory =
