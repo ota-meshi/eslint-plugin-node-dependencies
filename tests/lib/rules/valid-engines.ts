@@ -395,13 +395,13 @@ tester.run("valid-engines", rule as any, {
                     "node": "^10 || ^12 || >=14"
                 },
                 "peerDependencies": {
-                    "eslint": "npm:eslint@^6"
+                    "eslint6": "npm:eslint@^6"
                 }
             }`,
             errors: [
                 {
                     message:
-                        '"eslint@npm:eslint@^6" is not compatible with "node@^10.0.0||^12.0.0||>=14.0.0". Allowed is: "node@^8.10.0||^10.12.0||>=11.10.1"',
+                        '"eslint6@npm:eslint@^6" is not compatible with "node@^10.0.0||^12.0.0||>=14.0.0". Allowed is: "node@^8.10.0||^10.13.0||>=11.10.1"',
                     line: 7,
                     column: 21,
                 },
