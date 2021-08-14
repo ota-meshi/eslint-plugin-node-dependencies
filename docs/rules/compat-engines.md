@@ -3,6 +3,7 @@ pageClass: "rule-details"
 sidebarDepth: 0
 title: "node-dependencies/compat-engines"
 description: "enforce the versions of the engines of the dependencies to be compatible."
+since: "v0.5.0"
 ---
 # node-dependencies/compat-engines
 
@@ -43,7 +44,7 @@ This rule checks the `engines` of the dependencies and reports if they are compa
 
 ## :rocket: Version
 
-This rule was introduced in eslint-plugin-node-dependencies v0.1.0
+This rule was introduced in eslint-plugin-node-dependencies v0.5.0
 
 ## :mag: Implementation
 
