@@ -1,14 +1,5 @@
 "use strict"
 
-const { rules } = require("eslint-plugin-regexp")
-
-const enableAllRules = Object.keys(rules)
-    .map((name) => `regexp/${name}`)
-    .reduce((p, c) => {
-        p[c] = "error"
-        return p
-    }, {})
-
 module.exports = {
     parserOptions: {
         sourceType: "script",
@@ -34,14 +25,6 @@ module.exports = {
 
         "no-shadow": "off", // ts bug?
         "@typescript-eslint/no-shadow": "error",
-
-        "no-empty-character-class": "error",
-
-        "regexp/no-dupe-disjunctions": ["error", { disallowNeverMatch: true }],
-        "regexp/letter-case": [
-            "error",
-            { hexadecimalEscape: "lowercase", controlEscape: "uppercase" },
-        ],
     },
     overrides: [
         {
