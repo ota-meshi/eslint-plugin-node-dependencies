@@ -1,15 +1,6 @@
 import type { AST } from "jsonc-eslint-parser"
 import { getStaticJSONValue } from "jsonc-eslint-parser"
-import type { PackageMeta } from "../utils"
-import {
-    getMetaFromNpm,
-    compositingVisitors,
-    defineJsonVisitor,
-    getEngines,
-    createRule,
-    getDependencies,
-    getMetaFromNodeModules,
-} from "../utils"
+import { compositingVisitors, defineJsonVisitor, createRule } from "../utils"
 import semver from "semver"
 import { getKeyFromJSONProperty } from "../utils/ast-utils"
 import {
@@ -17,6 +8,13 @@ import {
     normalizeSemverRange,
     normalizeVer,
 } from "../utils/semver"
+import type { PackageMeta } from "../utils/meta"
+import {
+    getDependencies,
+    getEngines,
+    getMetaFromNodeModules,
+    getMetaFromNpm,
+} from "../utils/meta"
 
 type ComparisonType = "normal" | "major"
 class EnginesContext {

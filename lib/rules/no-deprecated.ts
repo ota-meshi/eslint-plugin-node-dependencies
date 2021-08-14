@@ -1,6 +1,7 @@
 import { getStaticJSONValue } from "jsonc-eslint-parser"
-import { createRule, defineJsonVisitor, getMetaFromNpm } from "../utils"
+import { createRule, defineJsonVisitor } from "../utils"
 import { getKeyFromJSONProperty } from "../utils/ast-utils"
+import { getMetaFromNpm } from "../utils/meta"
 
 export default createRule("no-deprecated", {
     meta: {
@@ -40,10 +41,9 @@ export default createRule("no-deprecated", {
                 ) {
                     return
                 }
-                const meta = getMetaFromNpm(name, ver)
+                const meta = getMetaFromNpm(name, ver).get()
                 const deprecated =
-                    [...meta.cache].pop()?.deprecated ||
-                    [...(meta.get() ?? [])].pop()?.deprecated
+                    meta && meta.length && meta[meta.length - 1].deprecated
                 if (deprecated) {
                     context.report({
                         loc: node.loc,

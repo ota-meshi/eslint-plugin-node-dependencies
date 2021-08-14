@@ -1,5 +1,5 @@
-import type { Comparator, SemVer } from "semver"
-import { intersects, inc, Range, subset } from "semver"
+import type { Comparator } from "semver"
+import { lt, intersects, inc, Range, subset, SemVer } from "semver"
 
 type RangeComparator =
     | { min: Comparator; max: Comparator }
@@ -218,4 +218,46 @@ function toRangeComparator(
         }
     }
     return null
+}
+
+/** Get max version */
+export function maxNextVersion(range: Range): SemVer | null {
+    let maxVer: SemVer | null = null
+    for (const comparators of range.set) {
+        let max = null
+        let hasMin = false
+        for (const comparator of comparators) {
+            // Clone to avoid manipulating the comparators semver object.
+            const compVer = new SemVer(comparator.semver.version)
+            if (
+                comparator.operator === "<=" ||
+                comparator.operator === "<" ||
+                comparator.operator === ""
+            ) {
+                if (comparator.operator === "<=") {
+                    compVer.inc("prerelease")
+                }
+
+                if (!max || lt(max, compVer)) {
+                    max = compVer
+                }
+            } else if (
+                comparator.operator === ">=" ||
+                comparator.operator === ">"
+            ) {
+                hasMin = true
+            }
+        }
+        if (max) {
+            if (!maxVer || lt(maxVer, max)) {
+                maxVer = max
+            }
+        } else {
+            if (hasMin) {
+                return null
+            }
+        }
+    }
+
+    return maxVer
 }

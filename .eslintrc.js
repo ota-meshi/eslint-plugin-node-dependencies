@@ -32,7 +32,10 @@ module.exports = {
                 comparisonType: "major",
             },
         ],
-        "node-dependencies/no-deprecated": "error",
+        "node-dependencies/no-deprecated": [
+            "error",
+            //    {devDependencies:true}
+        ],
     },
     overrides: [
         {
