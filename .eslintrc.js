@@ -11,6 +11,7 @@ module.exports = {
         "plugin:@ota-meshi/+typescript",
         "plugin:@ota-meshi/+eslint-plugin",
         "plugin:@ota-meshi/+json",
+        "plugin:@ota-meshi/+package-json",
         "plugin:@ota-meshi/+yaml",
         // "plugin:@ota-meshi/+md",
         "plugin:@ota-meshi/+prettier",
@@ -24,6 +25,14 @@ module.exports = {
 
         "no-shadow": "off", // ts bug?
         "@typescript-eslint/no-shadow": "error",
+        "node-dependencies/valid-engines": [
+            "error",
+            {
+                deep: true,
+                comparisonType: "major",
+            },
+        ],
+        "node-dependencies/no-deprecated": "error",
     },
     overrides: [
         {

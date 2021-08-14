@@ -26,7 +26,15 @@ This rule disallows having dependencies on deprecate packages.
 
 ## :wrench: Options
 
-Nothing.
+```json
+{
+  "node-dependencies/no-deprecated": ["error", {
+    "devDependencies": false
+  }]
+}
+```
+
+- `devDependencies` ... If `true`, the rule also checks `devDependencies`.
 
 ## :rocket: Version
 

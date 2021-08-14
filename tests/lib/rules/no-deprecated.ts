@@ -21,6 +21,16 @@ tester.run("no-deprecated", rule as any, {
             }
             `,
         },
+        {
+            filename: "package.json",
+            code: `
+            {
+                "devDependencies": {
+                    "babel-eslint": "^10"
+                }
+            }
+            `,
+        },
     ],
     invalid: [
         {
@@ -50,6 +60,7 @@ tester.run("no-deprecated", rule as any, {
                 }
             }
             `,
+            options: [{ devDependencies: true }],
             errors: [
                 {
                     message:

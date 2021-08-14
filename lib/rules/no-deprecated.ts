@@ -9,7 +9,15 @@ export default createRule("no-deprecated", {
             category: "Best Practices",
             recommended: false,
         },
-        schema: [],
+        schema: [
+            {
+                type: "object",
+                properties: {
+                    devDependencies: { type: "boolean" },
+                },
+                additionalProperties: false,
+            },
+        ],
         messages: {},
         type: "suggestion",
     },
@@ -17,9 +25,12 @@ export default createRule("no-deprecated", {
         if (!context.parserServices.isJSON) {
             return {}
         }
+        const devDependencies = Boolean(context.options[0]?.devDependencies)
 
         return defineJsonVisitor({
-            "dependencies, peerDependencies, devDependencies"(node) {
+            [devDependencies
+                ? "dependencies, peerDependencies, devDependencies"
+                : "dependencies, peerDependencies"](node) {
                 const name = getKeyFromJSONProperty(node)
                 const ver = getStaticJSONValue(node.value)
                 if (

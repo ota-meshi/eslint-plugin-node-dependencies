@@ -70,6 +70,7 @@
         "eslint-plugin-json-schema-validator": "^1.0.9",
         "eslint-plugin-jsonc": "^1.0.0",
         "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-node-dependencies": "^0.3.4",
         "eslint-plugin-prettier": "^3.4.0",
         "eslint-plugin-regexp": "^1.0.0",
         "eslint-plugin-vue": "^7.5.0",
@@ -91,6 +92,7 @@
     },
     "dependencies": {
         "jsonc-eslint-parser": "^1.1.0",
+        "npm-package-arg": "^8.1.5",
         "semver": "^7.3.5"
     }
 }
