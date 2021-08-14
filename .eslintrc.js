@@ -16,7 +16,6 @@ module.exports = {
         "plugin:@ota-meshi/+prettier",
     ],
     rules: {
-        ...enableAllRules,
         "require-jsdoc": "error",
         "no-warning-comments": "warn",
         "no-lonely-if": "off",
