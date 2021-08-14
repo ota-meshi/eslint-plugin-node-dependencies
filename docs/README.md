@@ -2,6 +2,8 @@
 
 [eslint-plugin-node-dependencies](https://www.npmjs.com/package/eslint-plugin-node-dependencies) is ESLint plugin to check Node.js dependencies.
 
+::: This Plugin is still in an EXPERIMENTAL STATE :::
+
 [![NPM license](https://img.shields.io/npm/l/eslint-plugin-node-dependencies.svg)](https://www.npmjs.com/package/eslint-plugin-node-dependencies)
 [![NPM version](https://img.shields.io/npm/v/eslint-plugin-node-dependencies.svg)](https://www.npmjs.com/package/eslint-plugin-node-dependencies)
 [![NPM downloads](https://img.shields.io/badge/dynamic/json.svg?label=downloads&colorB=green&suffix=/day&query=$.downloads&uri=https://api.npmjs.org//downloads/point/last-day/eslint-plugin-node-dependencies&maxAge=3600)](http://www.npmtrends.com/eslint-plugin-node-dependencies)
