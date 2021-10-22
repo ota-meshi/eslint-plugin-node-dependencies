@@ -1,6 +1,6 @@
 import assert from "assert"
 
-import { normalizeSemverRange } from "../../../lib/utils/semver"
+import { normalizeSemverRange, maxNextVersion } from "../../../lib/utils/semver"
 import { Range, subset } from "semver"
 
 describe("normalizeSemverRange", () => {
@@ -80,6 +80,29 @@ describe("normalizeSemverRange", () => {
                     `"${inRange}" is a subset of "${outRange}".`,
                 )
             }
+        })
+    }
+})
+describe("maxNextVersion", () => {
+    const testcases = [
+        {
+            input: ">=10",
+            output: null,
+        },
+        {
+            input: "^10",
+            output: "11.0.0-0",
+        },
+        {
+            input: "*",
+            output: null,
+        },
+    ]
+    for (const { input, output } of testcases) {
+        it(`Get max next version "${input}" should result in "${output}".`, () => {
+            const inRange = new Range(input)
+            const outRange = maxNextVersion(inRange)
+            assert.strictEqual(outRange?.raw ?? null, output)
         })
     }
 })

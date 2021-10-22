@@ -227,6 +227,10 @@ export function maxNextVersion(range: Range): SemVer | null {
         let max = null
         let hasMin = false
         for (const comparator of comparators) {
+            if (!comparator.semver.version) {
+                // ANY
+                return null
+            }
             // Clone to avoid manipulating the comparators semver object.
             const compVer = new SemVer(comparator.semver.version)
             if (
