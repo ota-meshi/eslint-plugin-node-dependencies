@@ -164,32 +164,6 @@ tester.run("compat-engines", rule as any, {
                 }
             }`,
         },
-        {
-            filename: "package.json",
-            code: `
-            {
-                "engines": {
-                    "node": "^12 || >=14"
-                },
-                "peerDependencies": {
-                    "remark-parse": "10.0.0"
-                }
-            }`,
-            options: [{ deep: true }],
-        },
-        {
-            filename: "package.json",
-            code: `
-            {
-                "engines": {
-                    "node": "^12 || >=14"
-                },
-                "peerDependencies": {
-                    "remark": "13.0.0"
-                }
-            }`,
-            options: [{ deep: true }],
-        },
     ],
     invalid: [
         {
