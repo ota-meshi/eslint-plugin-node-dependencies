@@ -17,7 +17,10 @@ export function getKeyFromJSONProperty(
  */
 export function getKey(node: AST.JSONExpression): string | number | null {
     let parent = node.parent!
-    while (parent.type === "JSONUnaryExpression") {
+    while (
+        parent.type === "JSONUnaryExpression" ||
+        parent.type === "JSONBinaryExpression"
+    ) {
         parent = parent.parent
     }
     if (parent.type === "JSONExpressionStatement") {
