@@ -17,10 +17,12 @@ assignees: ''
 
 <!-- Add a few examples of regexes that the rule does and does not report. -->
 
-```js
-/* ✓ GOOD */
-var foo = /regex/
+```json5
+{
+  /* ✓ GOOD */
+  "foo": "bar",
 
-/* ✗ BAD */
-var foo = /regex/
+  /* ✗ BAD */
+  "foo": "bar"
+}
 ```
