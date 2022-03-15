@@ -104,19 +104,13 @@ tester.run("${ruleId}", rule as any, {
 
 This rule reports ???.
 
-<eslint-code-block>
-
-\`\`\`js
-/* eslint node-dependencies/${ruleId}: "error" */
-
+\`\`\`json5
 /* ✓ GOOD */
 
 
 /* ✗ BAD */
 
 \`\`\`
-
-</eslint-code-block>
 
 ## :wrench: Options
 

@@ -125,6 +125,7 @@ The rules with the following star :star: are included in the `plugin:node-depend
 
 | Rule ID | Description |    |
 |:--------|:------------|:---|
+| [node-dependencies/absolute-version](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/absolute-version.html) | require or disallow absolute version of dependency. |  |
 | [node-dependencies/no-deprecated](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/no-deprecated.html) | disallow having dependencies on deprecate packages. |  |
 
 ### Deprecated

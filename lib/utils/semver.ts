@@ -165,7 +165,7 @@ function joinComparators(
     return null
 }
 
-/** */
+/** Convert to RangeComparator */
 function toRangeComparator(
     comparators: readonly Comparator[],
 ): RangeComparator | null {
@@ -227,8 +227,7 @@ export function maxNextVersion(range: Range): SemVer | null {
         let max = null
         let hasMin = false
         for (const comparator of comparators) {
-            if (!comparator.semver.version) {
-                // ANY
+            if (isAnyComparator(comparator)) {
                 return null
             }
             // Clone to avoid manipulating the comparators semver object.
@@ -264,4 +263,9 @@ export function maxNextVersion(range: Range): SemVer | null {
     }
 
     return maxVer
+}
+
+/** Checks whether the given comparator is ANY comparator or not. */
+export function isAnyComparator(comparator: Comparator): boolean {
+    return !comparator.semver.version
 }

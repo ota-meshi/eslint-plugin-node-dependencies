@@ -67,11 +67,19 @@ module.exports = {
                     },
                     {
                         selector: "property",
-                        format: ["camelCase", "UPPER_CASE", "PascalCase"],
+                        format: null, // ["camelCase", "UPPER_CASE", "PascalCase"],
+                        custom: {
+                            regex: "[\\w _,]",
+                            match: true,
+                        },
                     },
                     {
                         selector: "method",
-                        format: ["camelCase", "UPPER_CASE", "PascalCase"],
+                        format: null, // ["camelCase", "UPPER_CASE", "PascalCase"],
+                        custom: {
+                            regex: "[\\w _,]",
+                            match: true,
+                        },
                     },
                 ],
             },
