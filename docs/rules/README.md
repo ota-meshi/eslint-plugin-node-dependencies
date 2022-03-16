@@ -14,6 +14,7 @@ The rules with the following star :star: are included in the `plugin:node-depend
 | Rule ID | Description |    |
 |:--------|:------------|:---|
 | [node-dependencies/compat-engines](./compat-engines.md) | enforce the versions of the engines of the dependencies to be compatible. | :star: |
+| [node-dependencies/no-dupe-deps](./no-dupe-deps.md) | disallow duplicate dependencies. |  |
 | [node-dependencies/valid-semver](./valid-semver.md) | enforce versions that is valid as a semantic version. | :star: |
 
 ### Best Practices
