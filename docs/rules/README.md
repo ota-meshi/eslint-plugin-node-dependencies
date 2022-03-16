@@ -20,6 +20,7 @@ The rules with the following star :star: are included in the `plugin:node-depend
 
 | Rule ID | Description |    |
 |:--------|:------------|:---|
+| [node-dependencies/absolute-version](./absolute-version.md) | require or disallow absolute version of dependency. |  |
 | [node-dependencies/no-deprecated](./no-deprecated.md) | disallow having dependencies on deprecate packages. |  |
 
 ### Deprecated
