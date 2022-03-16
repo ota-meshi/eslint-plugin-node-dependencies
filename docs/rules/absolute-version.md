@@ -3,12 +3,11 @@ pageClass: "rule-details"
 sidebarDepth: 0
 title: "node-dependencies/absolute-version"
 description: "require or disallow absolute version of dependency."
+since: "v0.7.0"
 ---
 # node-dependencies/absolute-version
 
 > require or disallow absolute version of dependency.
-
-- :exclamation: <badge text="This rule has not been released yet." vertical="middle" type="error"> ***This rule has not been released yet.*** </badge>
 
 ## :book: Rule Details
 
@@ -81,6 +80,10 @@ By default, `always` applies only to `devDependencies`.
 - `overridePackages` ... Configure an object with the package name as the key.
   - Property Key ... Specify the package name, or the pattern such as `/^@babel\//`.
   - Property Value ... Can use the Object Option or the String Option.
+
+## :rocket: Version
+
+This rule was introduced in eslint-plugin-node-dependencies v0.7.0
 
 ## :mag: Implementation
 
