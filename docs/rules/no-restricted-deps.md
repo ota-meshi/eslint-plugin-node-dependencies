@@ -52,7 +52,7 @@ Alternatively, the rule also accepts objects, where the package name, an optiona
 Object options can also be set to `deep` option. Specify `"local"` or `"server"`.
 
 - `"local"` ... Find the `package.json` in your local `node_modules` to check the dependencies deeply.
-- `"server"` ... Above plus, use the `npm` command to check  the dependencies deeply. **Note that this can be very time consuming**.
+- `"server"` ... Above plus, use the `npm` command to check the dependencies deeply. **Note that this can be very time consuming**.
 
 ### Examples for strings
 
