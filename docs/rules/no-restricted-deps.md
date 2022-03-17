@@ -3,12 +3,11 @@ pageClass: "rule-details"
 sidebarDepth: 0
 title: "node-dependencies/no-restricted-deps"
 description: "Disallows dependence on the specified package."
+since: "v0.8.0"
 ---
 # node-dependencies/no-restricted-deps
 
 > Disallows dependence on the specified package.
-
-- :exclamation: <badge text="This rule has not been released yet." vertical="middle" type="error"> ***This rule has not been released yet.*** </badge>
 
 ## :book: Rule Details
 
@@ -104,6 +103,10 @@ Object options can also be set to `deep` option. Specify `"local"` or `"server"`
   }
 }
 ```
+
+## :rocket: Version
+
+This rule was introduced in eslint-plugin-node-dependencies v0.8.0
 
 ## :mag: Implementation
 
