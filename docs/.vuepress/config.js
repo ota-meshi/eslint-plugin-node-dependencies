@@ -77,11 +77,11 @@ module.exports = {
                     collapsable: false,
                     children: categories["Best Practices"].map(ruleToLink),
                 },
-                // {
-                //     title: "Stylistic Issues",
-                //     collapsable: false,
-                //     children: categories["Stylistic Issues"].map(ruleToLink),
-                // },
+                {
+                    title: "Stylistic Issues",
+                    collapsable: false,
+                    children: categories["Stylistic Issues"].map(ruleToLink),
+                },
                 ...(categories.deprecated.length >= 1
                     ? [
                           {
