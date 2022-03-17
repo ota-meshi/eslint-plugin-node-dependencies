@@ -134,7 +134,7 @@ The rules with the following star :star: are included in the `plugin:node-depend
 
 | Rule ID | Description |    |
 |:--------|:------------|:---|
-| [node-dependencies/prefer-caret-range-version](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/prefer-caret-range-version.html) | require caret(^) version instead of range version. | :wrench: |
+| [node-dependencies/prefer-caret-range-version](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/prefer-caret-range-version.html) | require caret(`^`) version instead of range version. | :wrench: |
 
 ### Deprecated
 

@@ -29,7 +29,7 @@ The rules with the following star :star: are included in the `plugin:node-depend
 
 | Rule ID | Description |    |
 |:--------|:------------|:---|
-| [node-dependencies/prefer-caret-range-version](./prefer-caret-range-version.md) | require caret(^) version instead of range version. | :wrench: |
+| [node-dependencies/prefer-caret-range-version](./prefer-caret-range-version.md) | require caret(`^`) version instead of range version. | :wrench: |
 
 ### Deprecated
 
