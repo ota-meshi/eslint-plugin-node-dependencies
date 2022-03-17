@@ -45,6 +45,9 @@ export default createRule("no-dupe-deps", {
         type: "problem",
     },
     create(context) {
+        if (!context.parserServices.isJSON) {
+            return {}
+        }
         const allowDuplicates = new AllowDuplicates()
         allowDuplicates.add("devDependencies", "peerDependencies")
         allowDuplicates.add("devDependencies", "optionalDependencies")
