@@ -130,6 +130,12 @@ The rules with the following star :star: are included in the `plugin:node-depend
 | [node-dependencies/no-deprecated](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/no-deprecated.html) | disallow having dependencies on deprecate packages. |  |
 | [node-dependencies/no-restricted-deps](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/no-restricted-deps.html) | Disallows dependence on the specified package. |  |
 
+### Stylistic Issues
+
+| Rule ID | Description |    |
+|:--------|:------------|:---|
+| [node-dependencies/prefer-caret-range-version](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/prefer-caret-range-version.html) | require caret(^) version instead of range version. | :wrench: |
+
 ### Deprecated
 
 - :warning: We're going to remove deprecated rules in the next major release. Please migrate to successor/new rules.

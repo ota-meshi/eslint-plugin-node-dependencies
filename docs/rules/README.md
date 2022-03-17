@@ -25,6 +25,12 @@ The rules with the following star :star: are included in the `plugin:node-depend
 | [node-dependencies/no-deprecated](./no-deprecated.md) | disallow having dependencies on deprecate packages. |  |
 | [node-dependencies/no-restricted-deps](./no-restricted-deps.md) | Disallows dependence on the specified package. |  |
 
+### Stylistic Issues
+
+| Rule ID | Description |    |
+|:--------|:------------|:---|
+| [node-dependencies/prefer-caret-range-version](./prefer-caret-range-version.md) | require caret(^) version instead of range version. | :wrench: |
+
 ### Deprecated
 
 - :warning: We're going to remove deprecated rules in the next major release. Please migrate to successor/new rules.

@@ -4,6 +4,7 @@ import compatEngines from "../rules/compat-engines"
 import noDeprecated from "../rules/no-deprecated"
 import noDupeDeps from "../rules/no-dupe-deps"
 import noRestrictedDeps from "../rules/no-restricted-deps"
+import preferCaretRangeVersion from "../rules/prefer-caret-range-version"
 import validEngines from "../rules/valid-engines"
 import validSemver from "../rules/valid-semver"
 
@@ -13,6 +14,7 @@ export const rules = [
     noDeprecated,
     noDupeDeps,
     noRestrictedDeps,
+    preferCaretRangeVersion,
     validEngines,
     validSemver,
 ] as RuleModule[]
