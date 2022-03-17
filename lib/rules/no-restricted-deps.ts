@@ -31,36 +31,58 @@ type ValidateResult = { message: string }
 type Validate = (packageName: string, version: string) => ValidateResult | null
 
 class Deps {
-    private readonly map: Record<string, Range> = Object.create(null)
+    private readonly map: Record<
+        string,
+        { range: Range; ownerPackageJsonPath?: string }
+    > = Object.create(null)
 
-    private readonly list: [string, string][] = []
+    private readonly list: {
+        name: string
+        ver: string
+        ownerPackageJsonPath?: string
+    }[] = []
 
-    public push(name: string, ver: string) {
-        const version = getSemverRange(ver)
-        if (version) {
-            const range = this.map[name]
-            if (range) {
-                const newRange = normalizeSemverRange(range, version)!
-                this.map[name] = newRange
+    public push(name: string, ver: string, ownerPackageJsonPath?: string) {
+        const range = getSemverRange(ver)
+        if (range) {
+            const data = this.map[name]
+            if (data) {
+                const newRange = normalizeSemverRange(data.range, range)!
+                this.map[name] = {
+                    range: newRange,
+                    ownerPackageJsonPath:
+                        ownerPackageJsonPath || data.ownerPackageJsonPath,
+                }
             } else {
-                this.map[name] = version
+                this.map[name] = {
+                    range,
+                    ownerPackageJsonPath,
+                }
             }
             return
         }
 
-        this.list.push([name, ver])
+        this.list.push({ name, ver, ownerPackageJsonPath })
     }
 
-    public pop(): [string, string] | null {
+    public pop(): {
+        name: string
+        ver: string
+        ownerPackageJsonPath?: string
+    } | null {
         const resultForList = this.list.shift()
         if (resultForList) {
             return resultForList
         }
         const [key] = Object.keys(this.map)
         if (key) {
-            const range = this.map[key]
+            const data = this.map[key]
             delete this.map[key]
-            return [key, normalizeVer(range)]
+            return {
+                name: key,
+                ver: normalizeVer(data.range),
+                ownerPackageJsonPath: data.ownerPackageJsonPath,
+            }
         }
         return null
     }
@@ -98,14 +120,18 @@ class DeepValidateContext {
 
         let dep
         while ((dep = depsQueue.pop())) {
-            const key = `${dep[0]}@${dep[1]}`
+            const key = `${dep.name}@${dep.ver}`
             if (this.deepValidatedCache.has(key)) {
                 const result = this.deepValidatedCache.get(key)
                 if (result) {
                     return result
                 }
             } else {
-                const result = validateWithoutCache(dep[0], dep[1])
+                const result = validateWithoutCache(
+                    dep.name,
+                    dep.ver,
+                    dep.ownerPackageJsonPath,
+                )
                 this.deepValidatedCache.set(key, result)
                 if (result) {
                     return result
@@ -121,25 +147,37 @@ class DeepValidateContext {
         function validateWithoutCache(
             name: string,
             ver: string,
+            ownerPackageJsonPath?: string,
         ): ValidateResult | null {
             const result = validate(name, ver)
             if (result) {
                 return result
             }
-            for (const [n, v] of iterateDeps(name, ver)) {
+            for (const { name: n, ver: v, packageJsonPath } of iterateDeps(
+                name,
+                ver,
+                ownerPackageJsonPath,
+            )) {
                 const r = validate(n, v)
                 if (r) {
                     return r
                 }
-                depsQueue.push(n, v)
+                depsQueue.push(n, v, packageJsonPath)
             }
             return null
         }
 
         /** Iterate deps */
-        function* iterateDeps(name: string, ver: string) {
+        function* iterateDeps(
+            name: string,
+            ver: string,
+            ownerPackageJsonPath?: string,
+        ) {
             yield* iterateDepsForMeta(
-                getMetaFromNodeModules(name, ver, context),
+                getMetaFromNodeModules(name, ver, {
+                    context,
+                    ownerPackageJsonPath,
+                }),
             )
             if (deepOption === "server") {
                 const metaData = getMetaFromNpm(name, ver)
@@ -167,7 +205,7 @@ class DeepValidateContext {
                 }
                 for (const [n, v] of Object.entries(deps)) {
                     if (typeof v === "string") {
-                        yield [n, v]
+                        yield { name: n, ver: v, packageJsonPath: meta._where }
                     }
                 }
             }
@@ -292,8 +330,6 @@ export default createRule("no-restricted-deps", {
             )
 
             return deepValidateContext.buildDeepValidator(option.deep)
-
-            // (n, v) => deepDepsValidate(n, v, validator)
 
             /** Build default message for object option */
             function buildDefaultMessage(objectOption: Option) {

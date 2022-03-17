@@ -239,7 +239,7 @@ export default createRule("compat-engines", {
         ) {
             const currModules = [...modules, `${name}@${ver}`]
 
-            processMeta(ctx, getMetaFromNodeModules(name, ver, context))
+            processMeta(ctx, getMetaFromNodeModules(name, ver, { context }))
 
             if (!ctx.hasInvalid() && ctx.isAllProcessed()) {
                 return

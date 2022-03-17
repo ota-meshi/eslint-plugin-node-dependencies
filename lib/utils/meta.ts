@@ -1,6 +1,6 @@
 import Module from "module"
 import { spawnSync } from "child_process"
-import path from "path"
+import path, { dirname } from "path"
 import fs from "fs"
 import type { Rule } from "eslint"
 import { getSemverRange, maxNextVersion } from "./semver"
@@ -16,6 +16,7 @@ export type PackageMeta = {
     peerDependencies?: Record<string, string | undefined>
     optionalDependencies?: Record<string, string | undefined>
     version?: string
+    _where?: string
 }
 export type NpmPackageMeta = PackageMeta & {
     deprecated?: string
@@ -47,19 +48,27 @@ const CACHED_META_ROOT = path.join(__dirname, `../../.cached_meta`)
 export function getMetaFromNodeModules(
     name: string,
     ver: string,
-    context: Rule.RuleContext,
+    options: { context: Rule.RuleContext; ownerPackageJsonPath?: string },
 ): PackageMeta | null {
     try {
-        const cwd = getCwd(context)
-        const relativeTo = path.join(cwd, "__placeholder__.js")
+        const ownerJsonPath =
+            options.ownerPackageJsonPath || options.context.getFilename()
+        const relativeTo = path.join(
+            ownerJsonPath && path.isAbsolute(ownerJsonPath)
+                ? dirname(ownerJsonPath)
+                : getCwd(options.context),
+            "__placeholder__.js",
+        )
         const req = Module.createRequire(relativeTo)
-        const pkg = req(`${name}/package.json`)
+        const where = req.resolve(`${name}/package.json`)
+        const pkg = req(where)
         if (maybeMeta(pkg)) {
             const vr = getSemverRange(ver)
             if (
                 typeof pkg.version === "string" &&
                 (!vr || satisfies(pkg.version, vr))
             ) {
+                pkg._where = where
                 return pkg
             }
         }
