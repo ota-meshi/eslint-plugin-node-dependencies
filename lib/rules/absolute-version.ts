@@ -144,6 +144,9 @@ export default createRule("absolute-version", {
         type: "suggestion",
     },
     create(context) {
+        if (!context.parserServices.isJSON) {
+            return {}
+        }
         const getOption = parseOption(context.options[0])
 
         /** Define dependency visitor */

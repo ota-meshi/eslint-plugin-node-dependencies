@@ -14,6 +14,7 @@ export type PackageMeta = {
     engines?: Record<string, string | undefined>
     dependencies?: Record<string, string | undefined>
     peerDependencies?: Record<string, string | undefined>
+    optionalDependencies?: Record<string, string | undefined>
     version?: string
 }
 export type NpmPackageMeta = PackageMeta & {
@@ -34,6 +35,7 @@ const NPM_INFO_PROPERTIES: (keyof NpmPackageMeta)[] = [
     "deprecated",
     "dependencies",
     "peerDependencies",
+    "optionalDependencies",
     "dist-tags",
 ]
 
@@ -297,7 +299,7 @@ export function getEngines(meta: unknown): Map<string, string> {
 /** Get the dependencies from given package.json value */
 export function getDependencies(
     meta: unknown,
-    kind: "dependencies" | "peerDependencies",
+    kind: "dependencies" | "peerDependencies" | "optionalDependencies",
 ): Map<string, string> {
     if (!maybeMeta(meta)) {
         return new Map<string, string>()
