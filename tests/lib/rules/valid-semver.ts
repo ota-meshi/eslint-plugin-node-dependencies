@@ -309,5 +309,35 @@ tester.run("valid-semver", rule as any, {
                 },
             ],
         },
+        {
+            filename: "package.json",
+            code: `
+            {
+                "devDependencies": {
+                    "semver": "^7.3.5 |"
+                },
+                "peerDependencies": {
+                    "semver": "^7.3.5 |"
+                },
+                "optionalDependencies": {
+                    "semver": "^7.3.5 |"
+                }
+            }
+            `,
+            errors: [
+                {
+                    message: '"^7.3.5 |" is invalid.',
+                    line: 4,
+                },
+                {
+                    message: '"^7.3.5 |" is invalid.',
+                    line: 7,
+                },
+                {
+                    message: '"^7.3.5 |" is invalid.',
+                    line: 10,
+                },
+            ],
+        },
     ],
 })
