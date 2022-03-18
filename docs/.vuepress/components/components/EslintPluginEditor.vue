@@ -17,6 +17,7 @@
 
 <script>
 import EslintEditor from "vue-eslint-editor"
+import { Linter } from "eslint/lib/linter"
 import plugin from "../../../.."
 
 export default {
@@ -42,11 +43,23 @@ export default {
         dark: {
             type: Boolean,
         },
+        language: {
+            type: String,
+            default: "json",
+        },
+        fileName: {
+            type: String,
+            default: "package.json",
+        },
+        parser: {
+            type: String,
+            default: "jsonc-eslint-parser",
+        },
     },
 
     data() {
         return {
-            eslint4b: null,
+            jsoncESLintParser: null,
             format: {
                 insertSpaces: true,
                 tabSize: 2,
@@ -83,25 +96,19 @@ export default {
                     SharedArrayBuffer: false,
                 },
                 rules: this.rules,
+                parser: this.parser,
                 parserOptions: {
-                    sourceType: "module",
-                    ecmaVersion: 2019,
+                    sourceType: "script",
+                    ecmaVersion: 2021,
                 },
             }
         },
-        fileName() {
-            return "a.js"
-        },
-        language() {
-            return "javascript"
-        },
         linter() {
-            if (!this.eslint4b) {
+            if (!this.jsoncESLintParser) {
                 return null
             }
-            const Linter = this.eslint4b
-
             const linter = new Linter()
+            linter.defineParser("jsonc-eslint-parser", this.jsoncESLintParser)
 
             for (const k of Object.keys(plugin.rules)) {
                 const rule = plugin.rules[k]
@@ -113,9 +120,11 @@ export default {
     },
 
     async mounted() {
-        // Load linter asynchronously.
-        const { default: eslint4b } = await import("eslint4b")
-        this.eslint4b = eslint4b
+        // Load parser asynchronously.
+        const [jsoncESLintParser] = await Promise.all([
+            import("espree").then(() => import("jsonc-eslint-parser")),
+        ])
+        this.jsoncESLintParser = jsoncESLintParser
 
         const editor = this.$refs.editor
 
@@ -153,7 +162,7 @@ export default {
         onDidChangeModelDecorations(editor) {
             const { monaco } = this.$refs.editor
             const model = editor.getModel()
-            monaco.editor.setModelMarkers(model, "javascript", [])
+            monaco.editor.setModelMarkers(model, "json", [])
         },
     },
 }

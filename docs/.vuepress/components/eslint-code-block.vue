@@ -6,6 +6,9 @@
         :rules="rules"
         dark
         :fix="fix"
+        :language="language"
+        :file-name="fileName"
+        :parser="parser"
     />
 </template>
 
@@ -25,6 +28,18 @@ export default {
                 return {}
             },
         },
+        language: {
+            type: String,
+            default: undefined,
+        },
+        fileName: {
+            type: String,
+            default: undefined,
+        },
+        parser: {
+            type: String,
+            default: undefined,
+        },
     },
     data() {
         return {
@@ -33,22 +48,27 @@ export default {
         }
     },
     mounted() {
-        this.code = `${computeCodeFromSlot(this.$slots.default).trim()}\n`
+        this.code = `${this.computeCodeFromSlot(this.$slots.default).trim()}\n`
         const lines = this.code.split("\n").length
         this.height = `${Math.max(120, 20 * (1 + lines))}px`
     },
-}
 
-/**
- * @param {VNode[]} nodes
- * @returns {string}
- */
-function computeCodeFromSlot(nodes) {
-    if (!Array.isArray(nodes)) {
-        return ""
-    }
-    return nodes
-        .map((node) => node.text || computeCodeFromSlot(node.children))
-        .join("")
+    methods: {
+        /**
+         * @param {VNode[]} nodes
+         * @returns {string}
+         */
+        computeCodeFromSlot(nodes) {
+            if (!Array.isArray(nodes)) {
+                return ""
+            }
+            return nodes
+                .map(
+                    (node) =>
+                        node.text || this.computeCodeFromSlot(node.children),
+                )
+                .join("")
+        },
+    },
 }
 </script>

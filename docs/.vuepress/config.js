@@ -1,3 +1,4 @@
+const path = require("path")
 const { rules } = require("../../dist/utils/rules")
 
 function ruleToLink({
@@ -35,7 +36,15 @@ module.exports = {
             resolve: {
                 alias: {
                     module: require.resolve("./shim/module"),
-                    eslint: require.resolve("eslint4b"),
+                    eslint$: path.resolve(__dirname, "./shim/eslint"),
+                    esquery: path.resolve(
+                        __dirname,
+                        "../../node_modules/esquery/dist/esquery.min.js",
+                    ),
+                    "@eslint/eslintrc/universal": path.resolve(
+                        __dirname,
+                        "../../node_modules/@eslint/eslintrc/dist/eslintrc-universal.cjs",
+                    ),
                 },
             },
         }
