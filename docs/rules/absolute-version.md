@@ -13,6 +13,8 @@ since: "v0.7.0"
 
 This rule enforces the use of absolute version of dependency.
 
+<eslint-code-block file-name="package.json" :rules="{'node-dependencies/absolute-version': 'error'}">
+
 ```json5
 {
   "devDependencies": {
@@ -21,6 +23,8 @@ This rule enforces the use of absolute version of dependency.
   }
 }
 ```
+
+</eslint-code-block>
 
 ## :wrench: Options
 
