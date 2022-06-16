@@ -17,7 +17,7 @@ describe("Integration with eslint-plugin-node-dependencies", () => {
         const engine = new ESLint({
             cwd: TEST_CWD,
             plugins: {
-                "eslint-plugin-node-dependencies": plugin,
+                "eslint-plugin-node-dependencies": plugin as never,
             },
         })
         const results = await engine.lintFiles(["package.json"])
