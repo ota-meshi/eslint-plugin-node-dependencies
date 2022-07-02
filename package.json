@@ -3,7 +3,7 @@
   "version": "0.8.0",
   "description": "ESLint plugin to check Node.js dependencies.",
   "engines": {
-    "node": ">=14.16.0"
+    "node": ">=14.17.0"
   },
   "main": "dist/index.js",
   "files": [
@@ -94,7 +94,7 @@
     "vuepress": "^1.5.2"
   },
   "dependencies": {
-    "jsonc-eslint-parser": "^1 || ^2.0.2",
+    "jsonc-eslint-parser": "^2.0.2",
     "npm-package-arg": "^8.1.5",
     "package-json": "^8.1.0",
     "semver": "^7.3.5",
