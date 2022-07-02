@@ -95,7 +95,7 @@
   },
   "dependencies": {
     "jsonc-eslint-parser": "^2.0.2",
-    "npm-package-arg": "^8.1.5",
+    "npm-package-arg": "^9.0.0",
     "package-json": "^8.1.0",
     "semver": "^7.3.5",
     "synckit": "^0.7.1"
