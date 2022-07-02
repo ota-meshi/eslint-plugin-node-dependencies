@@ -9,7 +9,7 @@ npm install --save-dev eslint eslint-plugin-node-dependencies
 ::: tip Requirements
 
 - ESLint v6.0.0 and above
-- Node.js v12.x, v14.x and above
+- Node.js v14.16.0 and above
 
 :::
 
