@@ -45,6 +45,7 @@ module.exports = {
             __dirname,
             "../../node_modules/@eslint/eslintrc/dist/eslintrc-universal.cjs"
           ),
+          synckit: path.resolve(__dirname, "./shim/synckit"),
         },
       },
     };

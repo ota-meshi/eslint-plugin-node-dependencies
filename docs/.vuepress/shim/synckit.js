@@ -1,0 +1,3 @@
+module.exports = {
+  createSyncFn: () => () => null,
+};

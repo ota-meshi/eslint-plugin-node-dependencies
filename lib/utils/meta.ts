@@ -1,44 +1,32 @@
 import Module from "module"
-import { spawnSync } from "child_process"
 import path, { dirname } from "path"
 import fs from "fs"
 import type { Rule } from "eslint"
 import { getSemverRange, maxNextVersion } from "./semver"
-import type { SemVer } from "semver"
-import { minVersion, satisfies } from "semver"
+import { satisfies } from "semver"
 import npa from "npm-package-arg"
+import { syncPackageJson } from "./package-json"
 
 const TTL = 1000 * 60 * 60 // 1h
 
 export type PackageMeta = {
-    engines?: Record<string, string | undefined>
-    dependencies?: Record<string, string | undefined>
-    peerDependencies?: Record<string, string | undefined>
-    optionalDependencies?: Record<string, string | undefined>
-    version?: string
+    engines: Record<string, string | undefined> | undefined
+    dependencies: Record<string, string | undefined> | undefined
+    peerDependencies: Record<string, string | undefined> | undefined
+    optionalDependencies: Record<string, string | undefined> | undefined
+    version: string | undefined
     _where?: string
 }
 export type NpmPackageMeta = PackageMeta & {
-    deprecated?: string
-    "dist-tags"?: { [key: string]: string | void }
+    deprecated: string | undefined
+    "dist-tags": { [key: string]: string | void } | undefined
 }
 
 type CachedFileContent = {
     meta: NpmPackageMeta[]
     timestamp?: number
     expired?: number
-    minVersion?: string
 }
-
-const NPM_INFO_PROPERTIES: (keyof NpmPackageMeta)[] = [
-    "version",
-    "engines",
-    "deprecated",
-    "dependencies",
-    "peerDependencies",
-    "optionalDependencies",
-    "dist-tags",
-]
 
 const CACHED_META_ROOT = path.join(__dirname, `../../.cached_meta`)
 
@@ -85,7 +73,10 @@ export function getMetaFromNodeModules(
 export function getMetaFromNpm(
     name: string,
     ver: string,
-): { cache: NpmPackageMeta[]; get: () => NpmPackageMeta[] | null } {
+): {
+    cache: NpmPackageMeta[]
+    get: () => NpmPackageMeta[] | null
+} {
     const trimmed = ver.trim()
     if (trimmed.startsWith("npm:")) {
         let parsed: npa.Result | null = null
@@ -100,7 +91,10 @@ export function getMetaFromNpm(
                 parsed.type === "version" ||
                 parsed.type === "tag")
         ) {
-            return getMetaFromNpmView(parsed.name!, parsed.fetchSpec?.trim())
+            return getMetaFromNameAndSpec(
+                parsed.name!,
+                parsed.fetchSpec?.trim(),
+            )
         }
     }
     if (trimmed.includes("/") || trimmed.includes(":")) {
@@ -108,100 +102,95 @@ export function getMetaFromNpm(
         return { cache: [], get: () => [] }
     }
 
-    return getMetaFromNpmView(name, ver.trim())
+    return getMetaFromNameAndSpec(name, ver.trim())
 }
 
 /**
- * Get the meta info from npm view with given module
+ * Get the meta info from npm registry with given package name and spec
  */
-function getMetaFromNpmView(
+function getMetaFromNameAndSpec(
     name: string,
     verOrTag: string | undefined,
 ): {
     cache: NpmPackageMeta[]
     get: () => NpmPackageMeta[] | null
 } {
-    const range = getSemverRange(verOrTag)
+    const cachedFilePath = path.join(CACHED_META_ROOT, `${name}.json`)
+    const { cache, get } = getMetaFromName(name, cachedFilePath)
+
+    let isTargetVersion: (meta: NpmPackageMeta) => boolean
+
+    let hasUnknown = false
+    const range = getSemverRange(verOrTag || "*")
     if (range) {
-        const min = minVersion(range)
-        if (min) {
-            // eslint-disable-next-line func-style -- ignore
-            const isTargetVersion = (meta: NpmPackageMeta) => {
+        isTargetVersion = (meta: NpmPackageMeta) => {
+            if (!meta.version) {
+                return true
+            }
+            return range.test(meta.version)
+        }
+    } else {
+        const parsed = npa.resolve(name, verOrTag!)
+        if (parsed.type === "tag") {
+            isTargetVersion = (meta: NpmPackageMeta) => {
                 if (!meta.version) {
                     return true
                 }
-                return range.test(meta.version)
+                const v = meta["dist-tags"]?.[parsed.fetchSpec]
+                if (v == null) {
+                    hasUnknown = true
+                }
+                return v === meta.version
             }
-            const cachedFilePath = path.join(CACHED_META_ROOT, `${name}.json`)
-            const { cache, get } = getMetaFromNpmViewWithPackageArg(
-                (minVer) => `${name}@>=${minVer}`,
-                cachedFilePath,
-                min,
-            )
-            if (cache) {
-                const metaList = cache.data.meta.filter(isTargetVersion)
-                let alive = cache.alive
-                if (!alive) {
-                    const maxNext = maxNextVersion(range)
-                    if (maxNext) {
-                        alive = cache.data.meta.some(
-                            (m) => m.version && maxNext.compare(m.version) <= 0,
-                        )
-                    }
-                }
-                if (alive) {
-                    return {
-                        cache: metaList,
-                        get: () => metaList,
-                    }
-                }
-                return {
-                    cache: metaList,
-                    get: () => get()?.filter(isTargetVersion) ?? null,
-                }
-            }
+        } else {
             return {
                 cache: [],
-                get: () => get()?.filter(isTargetVersion) ?? null,
+                get: () => null,
             }
         }
     }
-    const packageArg = `${name}@${verOrTag || "*"}`
-    const cachedFilePath = path.join(
-        CACHED_META_ROOT,
-        `${packageArg
-            .replace(/[^\d+\-./<=>@\\^a-z|~]/giu, "_")
-            .toLowerCase()}.json`,
-    )
-    const { cache, get } = getMetaFromNpmViewWithPackageArg(
-        () => packageArg,
-        cachedFilePath,
-    )
+
     if (cache) {
-        if (cache.alive) {
+        let alive = cache.alive
+        if (!alive && range) {
+            const maxNext = maxNextVersion(range)
+            if (maxNext) {
+                alive = cache.data.meta.some(
+                    (m) => m.version && maxNext.compare(m.version) <= 0,
+                )
+            }
+        }
+
+        const metaList = cache.data.meta.filter(isTargetVersion)
+        if (alive) {
             return {
-                cache: cache.data.meta,
-                get: () => cache.data.meta,
+                cache: metaList,
+                get: () => (hasUnknown ? null : metaList),
             }
         }
         return {
-            cache: cache.data.meta,
-            get,
+            cache: metaList,
+            get: () => {
+                const list = get()?.filter(isTargetVersion) ?? null
+                return hasUnknown && !list?.length ? null : list
+            },
         }
     }
     return {
         cache: [],
-        get,
+        get: () => {
+            const list = get()?.filter(isTargetVersion) ?? null
+            return hasUnknown && !list?.length ? null : list
+        },
     }
 }
 
 /**
- * Get the meta info from given package-arg
+ * Get the meta info from given package name
  */
-function getMetaFromNpmViewWithPackageArg(
-    getPackageArg: (min: string | undefined) => string,
+function getMetaFromName(
+    name: string,
     cachedFilePath: string,
-    min?: SemVer,
 ): {
     cache: {
         data: CachedFileContent
@@ -209,19 +198,13 @@ function getMetaFromNpmViewWithPackageArg(
     } | null
     get: () => NpmPackageMeta[] | null
 } {
-    let minVer = min?.version
     const cache = getCache()
-    if (cache?.data.minVersion) {
-        minVer = cache.data.minVersion
-    }
+
     return {
-        cache: getCache(),
-        get: () =>
-            getMetaFromNpmViewWithPackageArgWithoutCache(
-                getPackageArg(minVer),
-                cachedFilePath,
-                minVer,
-            ),
+        cache,
+        get: () => {
+            return getMetaFromNameWithoutCache(name, cachedFilePath)
+        },
     }
 
     /** Get from cache */
@@ -240,14 +223,6 @@ function getMetaFromNpmViewWithPackageArg(
         if (data.meta == null) {
             return null
         }
-        if (min) {
-            if (!data.minVersion) {
-                return null
-            }
-            if (min.compare(data.minVersion) < 0) {
-                return null
-            }
-        }
         const alive = Boolean(
             (typeof data.expired === "number" && data.expired >= Date.now()) ||
                 (typeof data.timestamp === "number" &&
@@ -263,25 +238,32 @@ function getMetaFromNpmViewWithPackageArg(
 }
 
 /**
- * Get the meta info from given package-arg
+ * Get the meta info from given package name
  */
-function getMetaFromNpmViewWithPackageArgWithoutCache(
-    packageArg: string,
+function getMetaFromNameWithoutCache(
+    name: string,
     cachedFilePath: string,
-    minVer?: string,
 ): NpmPackageMeta[] | null {
     let meta: NpmPackageMeta[] = []
     try {
-        const json = exec("npm", [
-            "view",
-            `${packageArg}`,
-            ...NPM_INFO_PROPERTIES,
-            "--json",
-        ])
-        meta = JSON.parse(json)
-        if (!Array.isArray(meta)) {
-            meta = [meta]
-        }
+        // const start = performance.now()
+        const allMeta = syncPackageJson(name, {
+            allVersions: true,
+        })
+        // const end = performance.now()
+        // console.log(name, `${end - start}ms`)
+
+        meta = Object.values(allMeta.versions).map((vm): NpmPackageMeta => {
+            return {
+                version: vm.version,
+                engines: vm.engines,
+                dependencies: vm.dependencies,
+                peerDependencies: vm.peerDependencies,
+                optionalDependencies: vm.optionalDependencies,
+                "dist-tags": allMeta["dist-tags"],
+                deprecated: vm.deprecated,
+            }
+        })
     } catch (e) {
         return null
     }
@@ -290,7 +272,6 @@ function getMetaFromNpmViewWithPackageArgWithoutCache(
         meta,
         timestamp,
         expired: timestamp + Math.floor(Math.random() * 1000 * 60 /* 1m */),
-        minVersion: minVer,
     }
     fs.writeFileSync(cachedFilePath, JSON.stringify(content))
     delete require.cache[cachedFilePath]
@@ -356,24 +337,6 @@ function makeDirs(dir: string) {
     for (const d of dirs) {
         fs.mkdirSync(d)
     }
-}
-
-/** Execute command */
-function exec(command: string, args: string[]) {
-    const result = spawnSync(command, args, {
-        windowsHide: true,
-        maxBuffer: Infinity,
-    })
-
-    if (result.error) {
-        throw result.error
-    }
-    if (result.status !== 0) {
-        throw new Error(
-            `Failed:\n${result.stdout.toString()}\n${result.stderr.toString()}`,
-        )
-    }
-    return result.stdout.toString("utf8")
 }
 
 /** Get CWD */
