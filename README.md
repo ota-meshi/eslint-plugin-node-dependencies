@@ -119,7 +119,7 @@ The rules with the following star :star: are included in the `plugin:node-depend
 | Rule ID | Description |    |
 |:--------|:------------|:---|
 | [node-dependencies/compat-engines](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/compat-engines.html) | enforce the versions of the engines of the dependencies to be compatible. | :star: |
-| [node-dependencies/no-dupe-deps](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/no-dupe-deps.html) | disallow duplicate dependencies. |  |
+| [node-dependencies/no-dupe-deps](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/no-dupe-deps.html) | disallow duplicate dependencies. | :star: |
 | [node-dependencies/valid-semver](https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/valid-semver.html) | enforce versions that is valid as a semantic version. | :star: |
 
 ### Best Practices
