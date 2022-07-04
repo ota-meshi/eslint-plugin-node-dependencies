@@ -98,6 +98,7 @@
     "npm-package-arg": "^9.0.0",
     "package-json": "^8.1.0",
     "semver": "^7.3.5",
-    "synckit": "^0.7.1"
+    "synckit": "^0.7.1",
+    "tunnel-agent": "^0.6.0"
   }
 }
