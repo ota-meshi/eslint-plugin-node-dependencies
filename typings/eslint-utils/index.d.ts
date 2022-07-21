@@ -58,8 +58,8 @@ export namespace TYPES {
         [CONSTRUCT]?: boolean
         [ESM]?: boolean
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- :(
     type TraceMap = {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- :(
         [key: string]: TraceKind & TraceMap
     }
 }
