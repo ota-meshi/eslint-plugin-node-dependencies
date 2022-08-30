@@ -1,19 +1,19 @@
-import { RuleTester } from "eslint"
-import rule from "../../../lib/rules/valid-semver"
+import { RuleTester } from "eslint";
+import rule from "../../../lib/rules/valid-semver";
 
 const tester = new RuleTester({
-    parser: require.resolve("jsonc-eslint-parser"),
-    parserOptions: {
-        ecmaVersion: 2020,
-        sourceType: "module",
-    },
-})
+  parser: require.resolve("jsonc-eslint-parser"),
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: "module",
+  },
+});
 
 tester.run("valid-semver", rule as any, {
-    valid: [
-        {
-            filename: "package.json",
-            code: `
+  valid: [
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": {
                     "foo": "1.0.0 - 2.9999.9999",
@@ -31,10 +31,10 @@ tester.run("valid-semver", rule as any, {
                 }
             }
             `,
-        },
-        {
-            filename: "package.json",
-            code: `
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": {
                     "express": "expressjs/express",
@@ -44,11 +44,11 @@ tester.run("valid-semver", rule as any, {
                 }
             }
             `,
-        },
-        {
-            // https://github.com/fkling/astexplorer/blob/master/website/package.json
-            filename: "package.json",
-            code: `
+    },
+    {
+      // https://github.com/fkling/astexplorer/blob/master/website/package.json
+      filename: "package.json",
+      code: `
             {
                 "name": "astexplorer",
                 "version": "2.0.0",
@@ -226,92 +226,92 @@ tester.run("valid-semver", rule as any, {
                   "fontcustom": "fontcustom compile ./fontcustom/input-svg/ --config=./fontcustom/config.yml"
                 }
               }`,
-        },
-    ],
-    invalid: [
-        {
-            filename: "package.json",
-            code: `
+    },
+  ],
+  invalid: [
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": {
                     "foo": "|"
                 }
             }
             `,
-            errors: [
-                {
-                    message: '"|" is invalid.',
-                    line: 4,
-                },
-            ],
-        },
+      errors: [
         {
-            filename: "package.json",
-            code: `
+          message: '"|" is invalid.',
+          line: 4,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": {
                     "semver": "^7.3.5 |"
                 }
             }
             `,
-            errors: [
-                {
-                    message: '"^7.3.5 |" is invalid.',
-                    line: 4,
-                },
-            ],
-        },
+      errors: [
         {
-            filename: "package.json",
-            code: `
+          message: '"^7.3.5 |" is invalid.',
+          line: 4,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "engines": {
                     "node": "^12 |"
                 }
             }
             `,
-            errors: [
-                {
-                    message: '"^12 |" is invalid.',
-                    line: 4,
-                },
-            ],
-        },
+      errors: [
         {
-            filename: "package.json",
-            code: `
+          message: '"^12 |" is invalid.',
+          line: 4,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": {
                     "semver": 7
                 }
             }
             `,
-            errors: [
-                {
-                    message: "`7` is invalid.",
-                    line: 4,
-                },
-            ],
-        },
+      errors: [
         {
-            filename: "package.json",
-            code: `
+          message: "`7` is invalid.",
+          line: 4,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "engines": {
                     "node": 12
                 }
             }
             `,
-            errors: [
-                {
-                    message: "`12` is invalid.",
-                    line: 4,
-                },
-            ],
-        },
+      errors: [
         {
-            filename: "package.json",
-            code: `
+          message: "`12` is invalid.",
+          line: 4,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "devDependencies": {
                     "semver": "^7.3.5 |"
@@ -324,20 +324,20 @@ tester.run("valid-semver", rule as any, {
                 }
             }
             `,
-            errors: [
-                {
-                    message: '"^7.3.5 |" is invalid.',
-                    line: 4,
-                },
-                {
-                    message: '"^7.3.5 |" is invalid.',
-                    line: 7,
-                },
-                {
-                    message: '"^7.3.5 |" is invalid.',
-                    line: 10,
-                },
-            ],
+      errors: [
+        {
+          message: '"^7.3.5 |" is invalid.',
+          line: 4,
         },
-    ],
-})
+        {
+          message: '"^7.3.5 |" is invalid.',
+          line: 7,
+        },
+        {
+          message: '"^7.3.5 |" is invalid.',
+          line: 10,
+        },
+      ],
+    },
+  ],
+});

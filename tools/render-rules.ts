@@ -1,121 +1,116 @@
-import type { RuleCategory, RuleModule } from "../lib/types"
-import { rules } from "../lib/utils/rules"
+import type { RuleCategory, RuleModule } from "../lib/types";
+import { rules } from "../lib/utils/rules";
 
-export type BuildRulePathFn = (ruleName: string) => string
+export type BuildRulePathFn = (ruleName: string) => string;
 // eslint-disable-next-line func-style -- ignore
 const DEFAULT_BUILD_RULE_PATH: BuildRulePathFn = (ruleName: string) =>
-    `./${ruleName}.md`
+  `./${ruleName}.md`;
 
 //eslint-disable-next-line require-jsdoc -- ignore
 export default function renderRulesTableContent(
-    buildRulePath: BuildRulePathFn = DEFAULT_BUILD_RULE_PATH,
+  buildRulePath: BuildRulePathFn = DEFAULT_BUILD_RULE_PATH
 ): string {
-    const categories = categorizeRules()
+  const categories = categorizeRules();
 
-    let md = ""
-    if (categories["Possible Errors"].length)
-        md += `
+  let md = "";
+  if (categories["Possible Errors"].length)
+    md += `
 ### Possible Errors
 
 ${createTable(categories["Possible Errors"], buildRulePath)}
-`
-    if (categories["Best Practices"].length)
-        md += `
+`;
+  if (categories["Best Practices"].length)
+    md += `
 ### Best Practices
 
 ${createTable(categories["Best Practices"], buildRulePath)}
-`
-    if (categories["Stylistic Issues"].length)
-        md += `
+`;
+  if (categories["Stylistic Issues"].length)
+    md += `
 ### Stylistic Issues
 
 ${createTable(categories["Stylistic Issues"], buildRulePath)}
-`
+`;
 
-    if (categories.deprecated.length >= 1) {
-        md += `
+  if (categories.deprecated.length >= 1) {
+    md += `
 ### Deprecated
 
 - :warning: We're going to remove deprecated rules in the next major release. Please migrate to successor/new rules.
 - :innocent: We don't fix bugs which are in deprecated rules since we don't have enough resources.
 
 ${createDeprecationTable(categories.deprecated, buildRulePath)}
-`
-    }
+`;
+  }
 
-    return md
+  return md;
 }
 
 //eslint-disable-next-line require-jsdoc -- ignore
 function categorizeRules() {
-    const result: Record<RuleCategory | "deprecated", RuleModule[]> = {
-        "Best Practices": [],
-        "Possible Errors": [],
-        "Stylistic Issues": [],
-        deprecated: [],
-    }
+  const result: Record<RuleCategory | "deprecated", RuleModule[]> = {
+    "Best Practices": [],
+    "Possible Errors": [],
+    "Stylistic Issues": [],
+    deprecated: [],
+  };
 
-    for (const rule of rules) {
-        if (rule.meta.deprecated) {
-            result.deprecated.push(rule)
-        } else {
-            result[rule.meta.docs.category].push(rule)
-        }
+  for (const rule of rules) {
+    if (rule.meta.deprecated) {
+      result.deprecated.push(rule);
+    } else {
+      result[rule.meta.docs.category].push(rule);
     }
+  }
 
-    return result
+  return result;
 }
 
 //eslint-disable-next-line require-jsdoc -- ignore
 function createTable(
-    tableRules: RuleModule[],
-    buildRulePath: BuildRulePathFn,
+  tableRules: RuleModule[],
+  buildRulePath: BuildRulePathFn
 ): string {
-    let md =
-        "| Rule ID | Description |    |" +
-        "\n" +
-        "|:--------|:------------|:---|"
+  let md = `| Rule ID | Description |    |
+|:--------|:------------|:---|`;
 
-    for (const { meta } of tableRules) {
-        const recommended = meta.docs.recommended ? ":star:" : ""
-        const fixable = meta.fixable ? ":wrench:" : ""
-        const deprecated = meta.deprecated ? ":warning:" : ""
-        const mark = `${recommended}${fixable}${deprecated}`
+  for (const { meta } of tableRules) {
+    const recommended = meta.docs.recommended ? ":star:" : "";
+    const fixable = meta.fixable ? ":wrench:" : "";
+    const deprecated = meta.deprecated ? ":warning:" : "";
+    const mark = `${recommended}${fixable}${deprecated}`;
 
-        const link = `[${meta.docs.ruleId}](${buildRulePath(
-            meta.docs.ruleName || "",
-        )})`
+    const link = `[${meta.docs.ruleId}](${buildRulePath(
+      meta.docs.ruleName || ""
+    )})`;
 
-        const description = meta.docs.description || "(no description)"
+    const description = meta.docs.description || "(no description)";
 
-        md += `\n| ${link} | ${description} | ${mark} |`
-    }
+    md += `\n| ${link} | ${description} | ${mark} |`;
+  }
 
-    return md
+  return md;
 }
 
 //eslint-disable-next-line require-jsdoc -- ignore
 function createDeprecationTable(
-    tableRules: RuleModule[],
-    buildRulePath: BuildRulePathFn,
+  tableRules: RuleModule[],
+  buildRulePath: BuildRulePathFn
 ): string {
-    let md = "| Rule ID | Replaced by |\n|:--------|:------------|"
+  let md = "| Rule ID | Replaced by |\n|:--------|:------------|";
 
-    for (const { meta } of tableRules) {
-        const link = `[${meta.docs.ruleId}](${buildRulePath(
-            meta.docs.ruleName || "",
-        )})`
+  for (const { meta } of tableRules) {
+    const link = `[${meta.docs.ruleId}](${buildRulePath(
+      meta.docs.ruleName || ""
+    )})`;
 
-        const replacedRules = meta.docs.replacedBy || []
-        const replacedBy = replacedRules
-            .map(
-                (name) =>
-                    `[node-dependencies/${name}](${buildRulePath(name)}.md)`,
-            )
-            .join(", ")
+    const replacedRules = meta.docs.replacedBy || [];
+    const replacedBy = replacedRules
+      .map((name) => `[node-dependencies/${name}](${buildRulePath(name)}.md)`)
+      .join(", ");
 
-        md += `\n| ${link} | ${replacedBy || "(no replacement)"} |`
-    }
+    md += `\n| ${link} | ${replacedBy || "(no replacement)"} |`;
+  }
 
-    return md
+  return md;
 }
