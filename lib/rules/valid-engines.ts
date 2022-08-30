@@ -1,14 +1,14 @@
-import { createRule } from "../utils"
-import compatEngines from "./compat-engines"
+import { createRule } from "../utils";
+import compatEngines from "./compat-engines";
 
 export default createRule("valid-engines", {
-    meta: {
-        ...compatEngines.meta,
-        docs: {
-            ...compatEngines.meta.docs,
-            replacedBy: ["compat-engines"],
-        },
-        deprecated: true,
+  meta: {
+    ...compatEngines.meta,
+    docs: {
+      ...compatEngines.meta.docs,
+      replacedBy: ["compat-engines"],
     },
-    create: compatEngines.create,
-})
+    deprecated: true,
+  },
+  create: compatEngines.create,
+});

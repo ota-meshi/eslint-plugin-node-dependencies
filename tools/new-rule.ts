@@ -1,28 +1,28 @@
-import path from "path"
-import fs from "fs"
-import cp from "child_process"
-const logger = console
+import path from "path";
+import fs from "fs";
+import cp from "child_process";
+const logger = console;
 
 // main
-;((ruleId) => {
-    if (ruleId == null) {
-        logger.error("Usage: npm run new <RuleID>")
-        process.exitCode = 1
-        return
-    }
-    if (!/^[\w-]+$/u.test(ruleId)) {
-        logger.error("Invalid RuleID '%s'.", ruleId)
-        process.exitCode = 1
-        return
-    }
+((ruleId) => {
+  if (ruleId == null) {
+    logger.error("Usage: npm run new <RuleID>");
+    process.exitCode = 1;
+    return;
+  }
+  if (!/^[\w-]+$/u.test(ruleId)) {
+    logger.error("Invalid RuleID '%s'.", ruleId);
+    process.exitCode = 1;
+    return;
+  }
 
-    const ruleFile = path.resolve(__dirname, `../lib/rules/${ruleId}.ts`)
-    const testFile = path.resolve(__dirname, `../tests/lib/rules/${ruleId}.ts`)
-    const docFile = path.resolve(__dirname, `../docs/rules/${ruleId}.md`)
+  const ruleFile = path.resolve(__dirname, `../lib/rules/${ruleId}.ts`);
+  const testFile = path.resolve(__dirname, `../tests/lib/rules/${ruleId}.ts`);
+  const docFile = path.resolve(__dirname, `../docs/rules/${ruleId}.md`);
 
-    fs.writeFileSync(
-        ruleFile,
-        `
+  fs.writeFileSync(
+    ruleFile,
+    `
 import type { Expression } from "estree"
 import { createRule } from "../utils"
 
@@ -45,11 +45,11 @@ export default createRule("${ruleId}", {
         }
     },
 })
-`,
-    )
-    fs.writeFileSync(
-        testFile,
-        `import { RuleTester } from "eslint"
+`
+  );
+  fs.writeFileSync(
+    testFile,
+    `import { RuleTester } from "eslint"
 import rule from "../../../lib/rules/${ruleId}"
 
 const tester = new RuleTester({
@@ -92,11 +92,11 @@ tester.run("${ruleId}", rule as any, {
         },
     ],
 })
-`,
-    )
-    fs.writeFileSync(
-        docFile,
-        `#  (node-dependencies/${ruleId})
+`
+  );
+  fs.writeFileSync(
+    docFile,
+    `#  (node-dependencies/${ruleId})
 
 > description
 
@@ -128,21 +128,21 @@ This rule reports ???.
 
 -
 
-`,
-    )
+`
+  );
 
-    cp.execSync(`code "${ruleFile}"`)
-    cp.execSync(`code "${testFile}"`)
-    cp.execSync(`code "${docFile}"`)
+  cp.execSync(`code "${ruleFile}"`);
+  cp.execSync(`code "${testFile}"`);
+  cp.execSync(`code "${docFile}"`);
 
-    const yellow = "\u001b[33m"
+  const yellow = "\u001b[33m";
 
-    const reset = "\u001b[0m"
+  const reset = "\u001b[0m";
 
-    // eslint-disable-next-line no-console -- ignore
-    console.log(`Test Command:
+  // eslint-disable-next-line no-console -- ignore
+  console.log(`Test Command:
 
 ${yellow}npx mocha --require ts-node/register/transpile-only "tests/**/${ruleId}.ts" --reporter dot --timeout 60000${reset}
 
-`)
-})(process.argv[2])
+`);
+})(process.argv[2]);

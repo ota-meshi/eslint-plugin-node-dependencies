@@ -1,19 +1,19 @@
-import { RuleTester } from "eslint"
-import rule from "../../../lib/rules/absolute-version"
+import { RuleTester } from "eslint";
+import rule from "../../../lib/rules/absolute-version";
 
 const tester = new RuleTester({
-    parser: require.resolve("jsonc-eslint-parser"),
-    parserOptions: {
-        ecmaVersion: 2020,
-        sourceType: "module",
-    },
-})
+  parser: require.resolve("jsonc-eslint-parser"),
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: "module",
+  },
+});
 
 tester.run("absolute-version", rule as any, {
-    valid: [
-        {
-            filename: "package.json",
-            code: `
+  valid: [
+    {
+      filename: "package.json",
+      code: `
             {
                 "devDependencies": {
                     "h": "http://asdf.com/asdf.tar.gz",
@@ -22,11 +22,11 @@ tester.run("absolute-version", rule as any, {
                 }
             }
             `,
-            options: ["never"],
-        },
-        {
-            filename: "package.json",
-            code: `
+      options: ["never"],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": { "a": "^1.0.0", "b": "1.0.0" },
                 "peerDependencies": { "c": "^1.0.0", "d": "1.0.0" },
@@ -34,10 +34,10 @@ tester.run("absolute-version", rule as any, {
                 "devDependencies": { "g": "1.0.0" }
             }
             `,
-        },
-        {
-            filename: "package.json",
-            code: `
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": { "foo": "1.0.0" },
                 "peerDependencies": { "bar": "1.0.0" },
@@ -45,11 +45,11 @@ tester.run("absolute-version", rule as any, {
                 "devDependencies": { "qux": "1.0.0" }
             }
             `,
-            options: ["always"],
-        },
-        {
-            filename: "package.json",
-            code: `
+      options: ["always"],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": { "foo": "^1.0.0" },
                 "peerDependencies": { "bar": "^1.0.0" },
@@ -57,11 +57,11 @@ tester.run("absolute-version", rule as any, {
                 "devDependencies": { "qux": "^1.0.0" }
             }
             `,
-            options: ["never"],
-        },
-        {
-            filename: "package.json",
-            code: `
+      options: ["never"],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "devDependencies": {
                     "a": "1.0.0",
@@ -77,11 +77,11 @@ tester.run("absolute-version", rule as any, {
                 }
             }
             `,
-            options: ["always"],
-        },
-        {
-            filename: "package.json",
-            code: `
+      options: ["always"],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "devDependencies": {
                     "a": "^1.0.0",
@@ -104,13 +104,13 @@ tester.run("absolute-version", rule as any, {
                 }
             }
             `,
-            options: ["never"],
-        },
-    ],
-    invalid: [
-        {
-            filename: "package.json",
-            code: `
+      options: ["never"],
+    },
+  ],
+  invalid: [
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": { "foo": "^1.0.0" },
                 "peerDependencies": { "bar": "^1.0.0" },
@@ -118,17 +118,17 @@ tester.run("absolute-version", rule as any, {
                 "devDependencies": { "qux": "^1.0.0" }
             }
             `,
-            errors: [
-                {
-                    message: "Use the absolute version instead.",
-                    line: 6,
-                    column: 45,
-                },
-            ],
-        },
+      errors: [
         {
-            filename: "package.json",
-            code: `
+          message: "Use the absolute version instead.",
+          line: 6,
+          column: 45,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": { "foo": "^1.0.0" },
                 "peerDependencies": { "bar": "^1.0.0" },
@@ -136,33 +136,33 @@ tester.run("absolute-version", rule as any, {
                 "devDependencies": { "qux": "^1.0.0" }
             }
             `,
-            options: ["always"],
-            errors: [
-                {
-                    message: "Use the absolute version instead.",
-                    line: 3,
-                    column: 42,
-                },
-                {
-                    message: "Use the absolute version instead.",
-                    line: 4,
-                    column: 46,
-                },
-                {
-                    message: "Use the absolute version instead.",
-                    line: 5,
-                    column: 50,
-                },
-                {
-                    message: "Use the absolute version instead.",
-                    line: 6,
-                    column: 45,
-                },
-            ],
+      options: ["always"],
+      errors: [
+        {
+          message: "Use the absolute version instead.",
+          line: 3,
+          column: 42,
         },
         {
-            filename: "package.json",
-            code: `
+          message: "Use the absolute version instead.",
+          line: 4,
+          column: 46,
+        },
+        {
+          message: "Use the absolute version instead.",
+          line: 5,
+          column: 50,
+        },
+        {
+          message: "Use the absolute version instead.",
+          line: 6,
+          column: 45,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": { "foo": "1.0.0" },
                 "peerDependencies": { "bar": "1.0.0" },
@@ -170,33 +170,33 @@ tester.run("absolute-version", rule as any, {
                 "devDependencies": { "qux": "1.0.0" }
             }
             `,
-            options: ["never"],
-            errors: [
-                {
-                    message: "Do not use the absolute version.",
-                    line: 3,
-                    column: 42,
-                },
-                {
-                    message: "Do not use the absolute version.",
-                    line: 4,
-                    column: 46,
-                },
-                {
-                    message: "Do not use the absolute version.",
-                    line: 5,
-                    column: 50,
-                },
-                {
-                    message: "Do not use the absolute version.",
-                    line: 6,
-                    column: 45,
-                },
-            ],
+      options: ["never"],
+      errors: [
+        {
+          message: "Do not use the absolute version.",
+          line: 3,
+          column: 42,
         },
         {
-            filename: "package.json",
-            code: `{ "dependencies": { "line1": "^1.0.0",
+          message: "Do not use the absolute version.",
+          line: 4,
+          column: 46,
+        },
+        {
+          message: "Do not use the absolute version.",
+          line: 5,
+          column: 50,
+        },
+        {
+          message: "Do not use the absolute version.",
+          line: 6,
+          column: 45,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `{ "dependencies": { "line1": "^1.0.0",
                     "line2": "~1.0.0",
                     "line3": ">1.0.0",
                     "line4": ">=1.0.0",
@@ -210,12 +210,12 @@ tester.run("absolute-version", rule as any, {
                 }
             }
             `,
-            options: ["always"],
-            errors: 11,
-        },
-        {
-            filename: "package.json",
-            code: `{ "dependencies": { "line1": "1.0.0",
+      options: ["always"],
+      errors: 11,
+    },
+    {
+      filename: "package.json",
+      code: `{ "dependencies": { "line1": "1.0.0",
                     "line2": "=1.0.0",
                     "line3": "v1.0.0",
                     "line4": "1.0.0 || 2.0.0",
@@ -225,12 +225,12 @@ tester.run("absolute-version", rule as any, {
                 }
             }
             `,
-            options: ["never"],
-            errors: 7,
-        },
-        {
-            filename: "package.json",
-            code: `
+      options: ["never"],
+      errors: 7,
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": {
                     "line4": "^1.0.0",
@@ -250,36 +250,36 @@ tester.run("absolute-version", rule as any, {
                 }
             }
             `,
-            options: [
-                {
-                    dependencies: "always",
-                    peerDependencies: "never",
-                    optionalDependencies: "always",
-                    devDependencies: "never",
-                },
-            ],
-            errors: [
-                {
-                    message: "Use the absolute version instead.",
-                    line: 4,
-                },
-                {
-                    message: "Do not use the absolute version.",
-                    line: 9,
-                },
-                {
-                    message: "Use the absolute version instead.",
-                    line: 12,
-                },
-                {
-                    message: "Do not use the absolute version.",
-                    line: 17,
-                },
-            ],
+      options: [
+        {
+          dependencies: "always",
+          peerDependencies: "never",
+          optionalDependencies: "always",
+          devDependencies: "never",
+        },
+      ],
+      errors: [
+        {
+          message: "Use the absolute version instead.",
+          line: 4,
         },
         {
-            filename: "package.json",
-            code: `
+          message: "Do not use the absolute version.",
+          line: 9,
+        },
+        {
+          message: "Use the absolute version instead.",
+          line: 12,
+        },
+        {
+          message: "Do not use the absolute version.",
+          line: 17,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": {
                     "line4": "^1.0.0",
@@ -299,28 +299,28 @@ tester.run("absolute-version", rule as any, {
                 }
             }
             `,
-            options: [
-                {
-                    dependencies: "never",
-                    peerDependencies: "always",
-                    optionalDependencies: "ignore",
-                    devDependencies: "ignore",
-                },
-            ],
-            errors: [
-                {
-                    message: "Do not use the absolute version.",
-                    line: 5,
-                },
-                {
-                    message: "Use the absolute version instead.",
-                    line: 8,
-                },
-            ],
+      options: [
+        {
+          dependencies: "never",
+          peerDependencies: "always",
+          optionalDependencies: "ignore",
+          devDependencies: "ignore",
+        },
+      ],
+      errors: [
+        {
+          message: "Do not use the absolute version.",
+          line: 5,
         },
         {
-            filename: "package.json",
-            code: `
+          message: "Use the absolute version instead.",
+          line: 8,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": {
                     "line4": "^1.0.0",
@@ -340,35 +340,35 @@ tester.run("absolute-version", rule as any, {
                 }
             }
             `,
-            options: [
-                {
-                    dependencies: "never",
-                    peerDependencies: "always",
-                    optionalDependencies: "ignore",
-                    devDependencies: "ignore",
-                    overridePackages: {
-                        line17: "never",
-                    },
-                },
-            ],
-            errors: [
-                {
-                    message: "Do not use the absolute version.",
-                    line: 5,
-                },
-                {
-                    message: "Use the absolute version instead.",
-                    line: 8,
-                },
-                {
-                    message: "Do not use the absolute version.",
-                    line: 17,
-                },
-            ],
+      options: [
+        {
+          dependencies: "never",
+          peerDependencies: "always",
+          optionalDependencies: "ignore",
+          devDependencies: "ignore",
+          overridePackages: {
+            line17: "never",
+          },
+        },
+      ],
+      errors: [
+        {
+          message: "Do not use the absolute version.",
+          line: 5,
         },
         {
-            filename: "package.json",
-            code: `
+          message: "Use the absolute version instead.",
+          line: 8,
+        },
+        {
+          message: "Do not use the absolute version.",
+          line: 17,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": {
                     "a": "^1.0.0",
@@ -392,44 +392,44 @@ tester.run("absolute-version", rule as any, {
                 }
             }
             `,
-            options: [
-                {
-                    dependencies: "always",
-                    peerDependencies: "always",
-                    optionalDependencies: "always",
-                    devDependencies: "always",
-                    overridePackages: {
-                        b: {
-                            dependencies: "never",
-                            peerDependencies: "never",
-                            optionalDependencies: "never",
-                            devDependencies: "never",
-                        },
-                    },
-                },
-            ],
-            errors: [
-                {
-                    message: "Use the absolute version instead.",
-                    line: 4,
-                },
-                {
-                    message: "Use the absolute version instead.",
-                    line: 9,
-                },
-                {
-                    message: "Use the absolute version instead.",
-                    line: 14,
-                },
-                {
-                    message: "Use the absolute version instead.",
-                    line: 19,
-                },
-            ],
+      options: [
+        {
+          dependencies: "always",
+          peerDependencies: "always",
+          optionalDependencies: "always",
+          devDependencies: "always",
+          overridePackages: {
+            b: {
+              dependencies: "never",
+              peerDependencies: "never",
+              optionalDependencies: "never",
+              devDependencies: "never",
+            },
+          },
+        },
+      ],
+      errors: [
+        {
+          message: "Use the absolute version instead.",
+          line: 4,
         },
         {
-            filename: "package.json",
-            code: `
+          message: "Use the absolute version instead.",
+          line: 9,
+        },
+        {
+          message: "Use the absolute version instead.",
+          line: 14,
+        },
+        {
+          message: "Use the absolute version instead.",
+          line: 19,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": {
                     "A": "^1.0.0",
@@ -453,51 +453,51 @@ tester.run("absolute-version", rule as any, {
                 }
             }
             `,
-            options: [
-                {
-                    dependencies: "ignore",
-                    peerDependencies: "ignore",
-                    optionalDependencies: "ignore",
-                    devDependencies: "ignore",
-                    overridePackages: {
-                        "/^[ab]$/i": "always",
-                    },
-                },
-            ],
-            errors: [
-                {
-                    message: "Use the absolute version instead.",
-                    line: 4,
-                },
-                {
-                    message: "Use the absolute version instead.",
-                    line: 5,
-                },
-                {
-                    message: "Use the absolute version instead.",
-                    line: 9,
-                },
-                {
-                    message: "Use the absolute version instead.",
-                    line: 10,
-                },
-                {
-                    message: "Use the absolute version instead.",
-                    line: 14,
-                },
-                {
-                    message: "Use the absolute version instead.",
-                    line: 15,
-                },
-                {
-                    message: "Use the absolute version instead.",
-                    line: 19,
-                },
-                {
-                    message: "Use the absolute version instead.",
-                    line: 20,
-                },
-            ],
+      options: [
+        {
+          dependencies: "ignore",
+          peerDependencies: "ignore",
+          optionalDependencies: "ignore",
+          devDependencies: "ignore",
+          overridePackages: {
+            "/^[ab]$/i": "always",
+          },
         },
-    ],
-})
+      ],
+      errors: [
+        {
+          message: "Use the absolute version instead.",
+          line: 4,
+        },
+        {
+          message: "Use the absolute version instead.",
+          line: 5,
+        },
+        {
+          message: "Use the absolute version instead.",
+          line: 9,
+        },
+        {
+          message: "Use the absolute version instead.",
+          line: 10,
+        },
+        {
+          message: "Use the absolute version instead.",
+          line: 14,
+        },
+        {
+          message: "Use the absolute version instead.",
+          line: 15,
+        },
+        {
+          message: "Use the absolute version instead.",
+          line: 19,
+        },
+        {
+          message: "Use the absolute version instead.",
+          line: 20,
+        },
+      ],
+    },
+  ],
+});

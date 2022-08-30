@@ -1,19 +1,19 @@
-import { RuleTester } from "eslint"
-import rule from "../../../lib/rules/prefer-tilde-range-version"
+import { RuleTester } from "eslint";
+import rule from "../../../lib/rules/prefer-tilde-range-version";
 
 const tester = new RuleTester({
-    parser: require.resolve("jsonc-eslint-parser"),
-    parserOptions: {
-        ecmaVersion: 2020,
-        sourceType: "module",
-    },
-})
+  parser: require.resolve("jsonc-eslint-parser"),
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: "module",
+  },
+});
 
 tester.run("prefer-tilde-range-version", rule as any, {
-    valid: [
-        {
-            filename: "package.json",
-            code: `
+  valid: [
+    {
+      filename: "package.json",
+      code: `
             {
                 "engines": {
                     "node": ">=6.1"
@@ -24,20 +24,20 @@ tester.run("prefer-tilde-range-version", rule as any, {
                 "devDependencies": { "g": "~1.0.0" }
             }
             `,
-        },
-        {
-            filename: "package.json",
-            code: `
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": {
                     "a": "1.1.0 || >=1.2.3 <2.0.0-beta.4"
                 }
             }
             `,
-        },
-        {
-            filename: "package.json",
-            code: `
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": {
                     "a": "1.2.3 - 1",
@@ -45,10 +45,10 @@ tester.run("prefer-tilde-range-version", rule as any, {
                 }
             }
             `,
-        },
-        {
-            filename: "package.json",
-            code: `
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": {
                     "a": "1.2.x",
@@ -56,12 +56,12 @@ tester.run("prefer-tilde-range-version", rule as any, {
                 }
             }
             `,
-        },
-    ],
-    invalid: [
-        {
-            filename: "package.json",
-            code: `
+    },
+  ],
+  invalid: [
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": {
                     /* ✓ GOOD */
@@ -74,7 +74,7 @@ tester.run("prefer-tilde-range-version", rule as any, {
                 },
             }
             `,
-            output: `
+      output: `
             {
                 "dependencies": {
                     /* ✓ GOOD */
@@ -87,24 +87,24 @@ tester.run("prefer-tilde-range-version", rule as any, {
                 },
             }
             `,
-            errors: [
-                {
-                    message: "Use '~1.0.0' syntax instead.",
-                    line: 8,
-                },
-                {
-                    message: "Use '~0.1.0' syntax instead.",
-                    line: 9,
-                },
-                {
-                    message: "Use '~1.2.3' syntax instead.",
-                    line: 10,
-                },
-            ],
+      errors: [
+        {
+          message: "Use '~1.0.0' syntax instead.",
+          line: 8,
         },
         {
-            filename: "package.json",
-            code: `
+          message: "Use '~0.1.0' syntax instead.",
+          line: 9,
+        },
+        {
+          message: "Use '~1.2.3' syntax instead.",
+          line: 10,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "engines": {
                     "node": "10.10 || ~12.12 || 14 || >=16"
@@ -122,7 +122,7 @@ tester.run("prefer-tilde-range-version", rule as any, {
                 }
             }
             `,
-            output: `
+      output: `
             {
                 "engines": {
                     "node": "10.10 || ~12.12 || 14 || >=16"
@@ -140,24 +140,24 @@ tester.run("prefer-tilde-range-version", rule as any, {
                 }
             }
             `,
-            errors: [
-                {
-                    message: "Use '~1.2.3' syntax instead.",
-                    line: 8,
-                },
-                {
-                    message: "Use '~1.2.3' syntax instead.",
-                    line: 9,
-                },
-                {
-                    message: "Use '~2.2.3' syntax instead.",
-                    line: 10,
-                },
-            ],
+      errors: [
+        {
+          message: "Use '~1.2.3' syntax instead.",
+          line: 8,
         },
         {
-            filename: "package.json",
-            code: `
+          message: "Use '~1.2.3' syntax instead.",
+          line: 9,
+        },
+        {
+          message: "Use '~2.2.3' syntax instead.",
+          line: 10,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
             {
                 "dependencies": {
                     "a": "1.1.x || <1.2.3-1 >=1.2.3"
@@ -173,7 +173,7 @@ tester.run("prefer-tilde-range-version", rule as any, {
                 }
             }
             `,
-            output: `
+      output: `
             {
                 "dependencies": {
                     "a": "1.1.x || <1.2.3-1 >=1.2.3"
@@ -189,20 +189,20 @@ tester.run("prefer-tilde-range-version", rule as any, {
                 }
             }
             `,
-            errors: [
-                {
-                    message: "Use '~0.3.0-beta' syntax instead.",
-                    line: 7,
-                },
-                {
-                    message: "Use '~1.2.3' syntax instead.",
-                    line: 12,
-                },
-                {
-                    message: "Use '~1.2.3' syntax instead.",
-                    line: 13,
-                },
-            ],
+      errors: [
+        {
+          message: "Use '~0.3.0-beta' syntax instead.",
+          line: 7,
         },
-    ],
-})
+        {
+          message: "Use '~1.2.3' syntax instead.",
+          line: 12,
+        },
+        {
+          message: "Use '~1.2.3' syntax instead.",
+          line: 13,
+        },
+      ],
+    },
+  ],
+});
