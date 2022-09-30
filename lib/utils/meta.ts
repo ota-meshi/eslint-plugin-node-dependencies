@@ -261,7 +261,7 @@ function getMetaFromNameWithoutCache(
         deprecated: vm.deprecated,
       };
     });
-  } catch (e) {
+  } catch (_e) {
     return null;
   }
   const timestamp = Date.now();
