@@ -164,6 +164,18 @@ tester.run("compat-engines", rule as any, {
                 }
             }`,
     },
+    {
+      filename: "package.json",
+      code: `
+            {
+                "engines": {
+                    "node": ">=16"
+                },
+                "peerDependencies": {
+                    "vue": "^3"
+                }
+            }`,
+    },
   ],
   invalid: [
     {

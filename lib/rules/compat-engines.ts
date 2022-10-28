@@ -29,13 +29,19 @@ class EnginesContext {
 
   private readonly validEngines = new Set<string>();
 
-  public constructor(engineNames: Iterable<string>) {
+  private readonly validDependencies = new Set<string>();
+
+  public constructor(
+    engineNames: Iterable<string>,
+    validDependencies = new Set<string>()
+  ) {
     this.engines = new Set(engineNames);
     this.unprocessedEngines = new Set(this.engines);
+    this.validDependencies = validDependencies;
   }
 
   public nextContext(): EnginesContext {
-    return new EnginesContext(this.unprocessedEngines);
+    return new EnginesContext(this.unprocessedEngines, this.validDependencies);
   }
 
   public markAsProcessed(module: string) {
@@ -69,6 +75,14 @@ class EnginesContext {
 
   public getInvalid(): ReadonlyMap<string, Map<string, semver.Range>> {
     return this.invalidEngines;
+  }
+
+  public markAsValidDependency(name: string, ver: string) {
+    this.validDependencies.add(`${name}@${ver}`);
+  }
+
+  public isValidDependency(name: string, ver: string) {
+    return this.validDependencies.has(`${name}@${ver}`);
   }
 }
 
@@ -280,10 +294,11 @@ export default createRule("compat-engines", {
       if (ctx.isAllProcessed()) {
         return;
       }
+      ctx.markAsValidDependency(name, ver);
       if (deep) {
         for (const [n, ranges] of extractDependencies(metaList)) {
           const v = normalizeSemverRange(...ranges);
-          if (v)
+          if (v && !ctx.isValidDependency(n, v.raw)) {
             processDependencyModule(
               ctx.nextContext(),
               n,
@@ -291,6 +306,7 @@ export default createRule("compat-engines", {
               currModules,
               node
             );
+          }
         }
       }
     }
