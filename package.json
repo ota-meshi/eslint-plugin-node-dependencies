@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-node-dependencies",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "description": "ESLint plugin to check Node.js dependencies.",
   "engines": {
     "node": ">=14.17.0"
