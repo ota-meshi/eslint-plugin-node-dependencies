@@ -6,9 +6,9 @@ export default createRule("valid-engines", {
     ...compatEngines.meta,
     docs: {
       ...compatEngines.meta.docs,
-      replacedBy: ["compat-engines"],
     },
     deprecated: true,
+    replacedBy: ["compat-engines"],
   },
   create: compatEngines.create,
 });
