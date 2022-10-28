@@ -5,6 +5,7 @@ title: "node-dependencies/no-deprecated"
 description: "disallow having dependencies on deprecate packages."
 since: "v0.2.0"
 ---
+
 # node-dependencies/no-deprecated
 
 > disallow having dependencies on deprecate packages.

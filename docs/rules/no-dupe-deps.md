@@ -5,6 +5,7 @@ title: "node-dependencies/no-dupe-deps"
 description: "disallow duplicate dependencies."
 since: "v0.8.0"
 ---
+
 # node-dependencies/no-dupe-deps
 
 > disallow duplicate dependencies.
