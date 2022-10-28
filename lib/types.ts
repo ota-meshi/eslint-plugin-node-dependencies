@@ -23,13 +23,14 @@ export interface RuleMetaData {
     url: string;
     ruleId: string;
     ruleName: string;
-    replacedBy?: string[];
     default?: "error" | "warn";
   };
   messages: { [messageId: string]: string };
   fixable?: "code" | "whitespace";
+  hasSuggestions?: boolean;
   schema: JSONSchema4 | JSONSchema4[];
   deprecated?: boolean;
+  replacedBy?: string[];
   type: "problem" | "suggestion" | "layout";
 }
 
@@ -43,12 +44,13 @@ export interface PartialRuleMetaData {
     description: string;
     category: RuleCategory;
     recommended: boolean;
-    replacedBy?: string[];
     default?: "error" | "warn";
   };
   messages: { [messageId: string]: string };
   fixable?: "code" | "whitespace";
+  hasSuggestions?: boolean;
   schema: JSONSchema4 | JSONSchema4[];
   deprecated?: boolean;
+  replacedBy?: string[];
   type: "problem" | "suggestion" | "layout";
 }

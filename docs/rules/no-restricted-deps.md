@@ -5,6 +5,7 @@ title: "node-dependencies/no-restricted-deps"
 description: "Disallows dependence on the specified package."
 since: "v0.8.0"
 ---
+
 # node-dependencies/no-restricted-deps
 
 > Disallows dependence on the specified package.

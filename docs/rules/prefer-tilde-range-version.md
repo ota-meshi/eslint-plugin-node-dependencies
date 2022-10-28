@@ -5,6 +5,7 @@ title: "node-dependencies/prefer-tilde-range-version"
 description: "require tilde(`~`) version instead of range version."
 since: "v0.8.0"
 ---
+
 # node-dependencies/prefer-tilde-range-version
 
 > require tilde(`~`) version instead of range version.

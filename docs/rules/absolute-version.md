@@ -5,6 +5,7 @@ title: "node-dependencies/absolute-version"
 description: "require or disallow absolute version of dependency."
 since: "v0.7.0"
 ---
+
 # node-dependencies/absolute-version
 
 > require or disallow absolute version of dependency.

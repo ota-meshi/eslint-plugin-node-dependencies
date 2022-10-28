@@ -5,6 +5,7 @@ title: "node-dependencies/prefer-caret-range-version"
 description: "require caret(`^`) version instead of range version."
 since: "v0.8.0"
 ---
+
 # node-dependencies/prefer-caret-range-version
 
 > require caret(`^`) version instead of range version.
