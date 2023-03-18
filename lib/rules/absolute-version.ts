@@ -13,7 +13,7 @@ const SCHEMA_FOR_DEPS_PROPERTIES = {
   optionalDependencies: { enum: PREFERS },
   devDependencies: { enum: PREFERS },
 };
-type Prefer = typeof PREFERS[number];
+type Prefer = (typeof PREFERS)[number];
 type FullOption = {
   dependencies: Prefer;
   peerDependencies: Prefer;
