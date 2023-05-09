@@ -1,5 +1,11 @@
 # eslint-plugin-node-dependencies
 
+## 0.11.0
+
+### Minor Changes
+
+- [#92](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/92) [`06a3daa`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/06a3daa15dd7f04f22eb79c86cd73c4969a6c8ae) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: export meta object
+
 ## 0.10.0
 
 ### Minor Changes
