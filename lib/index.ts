@@ -1,6 +1,7 @@
 import type { RuleModule } from "./types";
 import { rules as ruleList } from "./utils/rules";
 import recommended from "./configs/recommended";
+import * as meta from "./meta";
 
 const configs = {
   recommended,
@@ -12,6 +13,7 @@ const rules = ruleList.reduce((obj, r) => {
 }, {} as { [key: string]: RuleModule });
 
 export = {
+  meta,
   configs,
   rules,
 };
