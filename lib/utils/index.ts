@@ -10,7 +10,7 @@ import { getKey } from "./ast-utils";
  */
 export function createRule(
   ruleName: string,
-  rule: PartialRuleModule
+  rule: PartialRuleModule,
 ): RuleModule {
   return {
     meta: {
@@ -30,7 +30,7 @@ export function createRule(
  * Define the JSON visitor rule.
  */
 export function defineJsonVisitor(
-  visitor: Record<string, ((node: AST.JSONProperty) => void) | undefined>
+  visitor: Record<string, ((node: AST.JSONProperty) => void) | undefined>,
 ): RuleListener {
   type ObjectStack = {
     node: AST.JSONObjectExpression | AST.JSONArrayExpression;
@@ -65,7 +65,7 @@ export function defineJsonVisitor(
 
   return {
     "JSONObjectExpression, JSONArrayExpression"(
-      node: AST.JSONObjectExpression | AST.JSONArrayExpression
+      node: AST.JSONObjectExpression | AST.JSONArrayExpression,
     ) {
       stack = {
         node,

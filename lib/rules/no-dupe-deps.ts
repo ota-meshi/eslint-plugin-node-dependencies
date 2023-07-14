@@ -23,7 +23,8 @@ class AllowDuplicates {
 
   public isAllowedDuplicate(dep1: string, dep2: string) {
     return this.edges.some(
-      ([d1, d2]) => (d1 === dep1 && d2 === dep2) || (d2 === dep1 && d1 === dep2)
+      ([d1, d2]) =>
+        (d1 === dep1 && d2 === dep2) || (d2 === dep1 && d1 === dep2),
     );
   }
 }

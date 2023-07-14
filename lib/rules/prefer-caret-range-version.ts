@@ -79,8 +79,8 @@ export default createRule("prefer-caret-range-version", {
             JSON.stringify(
               node.value.slice(0, range.range[0]) +
                 fixedRange +
-                node.value.slice(range.range[1])
-            )
+                node.value.slice(range.range[1]),
+            ),
           );
         },
       });
@@ -114,7 +114,7 @@ export default createRule("prefer-caret-range-version", {
 
     return defineJsonVisitor({
       "engines, dependencies, peerDependencies, devDependencies, optionalDependencies"(
-        node
+        node,
       ) {
         if (isJSONStringLiteral(node.value)) {
           verifyVersion(node.value);

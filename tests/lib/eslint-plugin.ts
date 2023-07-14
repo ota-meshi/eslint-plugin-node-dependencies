@@ -25,7 +25,7 @@ describe("Integration with eslint-plugin-node-dependencies", () => {
     assert.strictEqual(results.length, 1);
     assert.deepStrictEqual(
       results[0].messages.map((m) => m.ruleId),
-      ["node-dependencies/compat-engines"]
+      ["node-dependencies/compat-engines"],
     );
   });
 });

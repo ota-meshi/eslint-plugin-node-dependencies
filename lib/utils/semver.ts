@@ -127,7 +127,7 @@ function normalizeComparator(comparator: Comparator): string {
 /** Join */
 function joinComparators(
   a: readonly Comparator[],
-  b: readonly Comparator[]
+  b: readonly Comparator[],
 ): readonly Comparator[] | null {
   const aRangeComparator = toRangeComparator(a);
   const bRangeComparator = toRangeComparator(b);
@@ -137,14 +137,14 @@ function joinComparators(
       comparators.push(
         aRangeComparator.min.semver.compare(bRangeComparator.min.semver) <= 0
           ? aRangeComparator.min
-          : bRangeComparator.min
+          : bRangeComparator.min,
       );
     }
     if (aRangeComparator.max && bRangeComparator.max) {
       comparators.push(
         aRangeComparator.max.semver.compare(bRangeComparator.max.semver) >= 0
           ? aRangeComparator.max
-          : bRangeComparator.max
+          : bRangeComparator.max,
       );
     }
     if (comparators.length === 0) {
@@ -158,7 +158,7 @@ function joinComparators(
 
 /** Convert to RangeComparator */
 function toRangeComparator(
-  comparators: readonly Comparator[]
+  comparators: readonly Comparator[],
 ): RangeComparator | null {
   if (comparators.length === 2) {
     if (comparators[0].operator === ">" || comparators[0].operator === ">=") {

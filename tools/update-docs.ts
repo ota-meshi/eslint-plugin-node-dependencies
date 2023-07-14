@@ -81,12 +81,12 @@ class DocFile {
     if (deprecated) {
       if (replacedBy) {
         const replacedRules = replacedBy.map(
-          (name) => `[node-dependencies/${name}](${name}.md) rule`
+          (name) => `[node-dependencies/${name}](${name}.md) rule`,
         );
         notes.push(
           `- :warning: This rule was **deprecated** and replaced by ${formatItems(
-            replacedRules
-          )}.`
+            replacedRules,
+          )}.`,
         );
       } else {
         notes.push("- :warning: This rule was **deprecated**.");
@@ -94,23 +94,23 @@ class DocFile {
     } else {
       if (recommended) {
         notes.push(
-          '- :gear: This rule is included in `"plugin:node-dependencies/recommended"`.'
+          '- :gear: This rule is included in `"plugin:node-dependencies/recommended"`.',
         );
       }
     }
     if (fixable) {
       notes.push(
-        "- :wrench: The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule."
+        "- :wrench: The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule.",
       );
     }
     if (hasSuggestions) {
       notes.push(
-        "- :bulb: Some problems reported by this rule are manually fixable by editor [suggestions](https://eslint.org/docs/developer-guide/working-with-rules#providing-suggestions)."
+        "- :bulb: Some problems reported by this rule are manually fixable by editor [suggestions](https://eslint.org/docs/developer-guide/working-with-rules#providing-suggestions).",
       );
     }
     if (!this.since) {
       notes.unshift(
-        `- :exclamation: <badge text="This rule has not been released yet." vertical="middle" type="error"> **_This rule has not been released yet._** </badge>`
+        `- :exclamation: <badge text="This rule has not been released yet." vertical="middle" type="error"> **_This rule has not been released yet._** </badge>`,
       );
     }
 
@@ -125,7 +125,7 @@ class DocFile {
     if (headerPattern.test(this.content)) {
       this.content = this.content.replace(
         headerPattern,
-        header.replace(/\$/g, "$$$$")
+        header.replace(/\$/g, "$$$$"),
       );
     } else {
       this.content = `${header}${this.content.trim()}\n`;
@@ -154,7 +154,7 @@ This rule was introduced in eslint-plugin-node-dependencies ${await this.since}
     if (footerPattern.test(this.content)) {
       this.content = this.content.replace(
         footerPattern,
-        footer.replace(/\$/g, "$$$$")
+        footer.replace(/\$/g, "$$$$"),
       );
     } else {
       this.content = `${this.content.trim()}\n\n${footer}`;
@@ -178,7 +178,7 @@ This rule was introduced in eslint-plugin-node-dependencies ${await this.since}
         }
         ps.unshift("<eslint-code-block");
         return `${ps.join(" ")}>`;
-      }
+      },
     );
     return this;
   }
@@ -187,11 +187,11 @@ This rule was introduced in eslint-plugin-node-dependencies ${await this.since}
     // Adjust the necessary blank lines before and after the code block so that GitHub can recognize `.md`.
     this.content = this.content.replace(
       /(<eslint-code-block[\s\S]*?>)\n+```/gu,
-      "$1\n\n```"
+      "$1\n\n```",
     );
     this.content = this.content.replace(
       /```\n+<\/eslint-code-block>/gu,
-      "```\n\n</eslint-code-block>"
+      "```\n\n</eslint-code-block>",
     );
     return this;
   }
@@ -216,7 +216,7 @@ This rule was introduced in eslint-plugin-node-dependencies ${await this.since}
     if (fileIntroPattern.test(this.content)) {
       this.content = this.content.replace(
         fileIntroPattern,
-        computed.replace(/\$/g, "$$$$")
+        computed.replace(/\$/g, "$$$$"),
       );
     } else {
       this.content = `${computed}${this.content.trim()}\n`;

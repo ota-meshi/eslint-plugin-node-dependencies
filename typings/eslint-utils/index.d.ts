@@ -4,38 +4,38 @@ import type eslint from "eslint";
 
 export function findVariable(
   initialScope: eslint.Scope.Scope,
-  nameOrNode: ESTree.Identifier | string
+  nameOrNode: ESTree.Identifier | string,
 ): eslint.Scope.Variable;
 
 export function isParenthesized(
   num: number,
   node: ESTree.Node,
-  sourceCode: eslint.SourceCode
+  sourceCode: eslint.SourceCode,
 ): boolean;
 export function isParenthesized(
   node: ESTree.Node,
-  sourceCode: eslint.SourceCode
+  sourceCode: eslint.SourceCode,
 ): boolean;
 
 export function getStringIfConstant(
   node: ESTree.Node,
-  initialScope: eslint.Scope.Scope
+  initialScope: eslint.Scope.Scope,
 ): string | null;
 
 export function getStaticValue(
   node: ESTree.Node,
-  initialScope: eslint.Scope.Scope
+  initialScope: eslint.Scope.Scope,
 ): { value: unknown } | { value: undefined; optional?: true } | null;
 export function getPropertyName(
   node: ESTree.Property | ESTree.MemberExpression | ESTree.MethodDefinition,
-  initialScope: eslint.Scope.Scope
+  initialScope: eslint.Scope.Scope,
 ): string | null;
 
 export function isCommentToken(
-  token: eslint.AST.Token | ESTree.Comment
+  token: eslint.AST.Token | ESTree.Comment,
 ): token is ESTree.Comment;
 export function isOpeningParenToken(
-  token: eslint.AST.Token | ESTree.Comment
+  token: eslint.AST.Token | ESTree.Comment,
 ): boolean;
 export function hasSideEffect(
   node: ESTree.Node,
@@ -43,7 +43,7 @@ export function hasSideEffect(
   options?: {
     considerGetters?: boolean;
     considerImplicitTypeConversion?: boolean;
-  }
+  },
 ): boolean;
 
 export const READ: unique symbol,
@@ -70,7 +70,7 @@ export class ReferenceTracker {
     options?: {
       mode?: "legacy" | "strict";
       globalObjectNames?: ("global" | "globalThis" | "self" | "window")[];
-    }
+    },
   );
 
   public iterateGlobalReferences(traceMap: TYPES.TraceMap): IterableIterator<{

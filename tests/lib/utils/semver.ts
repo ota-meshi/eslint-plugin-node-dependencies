@@ -80,7 +80,7 @@ describe("normalizeSemverRange", () => {
       for (const inRange of inRanges) {
         assert.ok(
           subset(inRange, outRange),
-          `"${inRange}" is a subset of "${outRange}".`
+          `"${inRange}" is a subset of "${outRange}".`,
         );
       }
     });

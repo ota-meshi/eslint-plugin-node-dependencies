@@ -22,6 +22,6 @@ function parseRegExp(str: string) {
   }
   return new RegExp(
     str.slice(1, lastSlashIndex),
-    str.slice(lastSlashIndex + 1)
+    str.slice(lastSlashIndex + 1),
   );
 }

@@ -112,7 +112,7 @@ class DeepValidateContext {
   private deepDepsValidate(
     packageName: string,
     version: string,
-    deepOption: "local" | "server"
+    deepOption: "local" | "server",
   ): ValidateResult | null {
     const { validator: validate, context } = this;
     const depsQueue = new Deps();
@@ -130,7 +130,7 @@ class DeepValidateContext {
         const result = validateWithoutCache(
           dep.name,
           dep.ver,
-          dep.ownerPackageJsonPath
+          dep.ownerPackageJsonPath,
         );
         this.deepValidatedCache.set(key, result);
         if (result) {
@@ -147,7 +147,7 @@ class DeepValidateContext {
     function validateWithoutCache(
       name: string,
       ver: string,
-      ownerPackageJsonPath?: string
+      ownerPackageJsonPath?: string,
     ): ValidateResult | null {
       const result = validate(name, ver);
       if (result) {
@@ -156,7 +156,7 @@ class DeepValidateContext {
       for (const { name: n, ver: v, packageJsonPath } of iterateDeps(
         name,
         ver,
-        ownerPackageJsonPath
+        ownerPackageJsonPath,
       )) {
         const r = validate(n, v);
         if (r) {
@@ -171,13 +171,13 @@ class DeepValidateContext {
     function* iterateDeps(
       name: string,
       ver: string,
-      ownerPackageJsonPath?: string
+      ownerPackageJsonPath?: string,
     ) {
       yield* iterateDepsForMeta(
         getMetaFromNodeModules(name, ver, {
           context,
           ownerPackageJsonPath,
-        })
+        }),
       );
       if (deepOption === "server") {
         const metaData = getMetaFromNpm(name, ver);
