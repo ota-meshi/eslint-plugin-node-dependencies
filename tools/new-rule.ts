@@ -45,7 +45,7 @@ export default createRule("${ruleId}", {
         }
     },
 })
-`
+`,
   );
   fs.writeFileSync(
     testFile,
@@ -92,7 +92,7 @@ tester.run("${ruleId}", rule as any, {
         },
     ],
 })
-`
+`,
   );
   fs.writeFileSync(
     docFile,
@@ -128,7 +128,7 @@ This rule reports ???.
 
 -
 
-`
+`,
   );
 
   cp.execSync(`code "${ruleFile}"`);

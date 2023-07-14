@@ -33,7 +33,7 @@ class EnginesContext {
 
   public constructor(
     engineNames: Iterable<string>,
-    validDependencies = new Set<string>()
+    validDependencies = new Set<string>(),
   ) {
     this.engines = new Set(engineNames);
     this.unprocessedEngines = new Set(this.engines);
@@ -91,7 +91,7 @@ class EnginesContext {
  */
 function buildAdjustRangeForSelf(
   comparisonType: ComparisonType,
-  original: semver.Range
+  original: semver.Range,
 ): semver.Range {
   // Adjust "node@>=16" and "node@^16" to be considered compatible.
   const adjustVers: string[] = [];
@@ -99,7 +99,7 @@ function buildAdjustRangeForSelf(
     if (cc.length === 1) {
       if (cc[0].operator === ">" || cc[0].operator === ">=") {
         adjustVers.push(
-          `${cc[0].value} <${semver.inc(cc[0].semver.version, "premajor")}`
+          `${cc[0].value} <${semver.inc(cc[0].semver.version, "premajor")}`,
         );
         continue;
       }
@@ -122,7 +122,7 @@ function buildAdjustRangeForSelf(
  */
 function buildAdjustRangeForDeps(
   comparisonType: ComparisonType,
-  original: semver.Range
+  original: semver.Range,
 ): semver.Range {
   if (comparisonType === "normal") {
     return original;
@@ -138,7 +138,7 @@ function buildAdjustRangeForDeps(
             }
             return c.value;
           })
-          .join(" ")
+          .join(" "),
       );
     }
     return new semver.Range(majorVers.join("||"));
@@ -221,7 +221,7 @@ export default createRule("compat-engines", {
             if (
               semver.subset(
                 selfVer.adjust,
-                buildAdjustRangeForDeps(comparisonType, depVer)
+                buildAdjustRangeForDeps(comparisonType, depVer),
               )
             ) {
               ctx.markAsValid(module);
@@ -243,7 +243,7 @@ export default createRule("compat-engines", {
       name: string,
       ver: string,
       modules: string[],
-      node: AST.JSONProperty
+      node: AST.JSONProperty,
     ) {
       const currModules = [...modules, `${name}@${ver}`];
 
@@ -277,7 +277,7 @@ export default createRule("compat-engines", {
         if (
           semver.subset(
             selfVer.adjust,
-            buildAdjustRangeForDeps(comparisonType, depVer)
+            buildAdjustRangeForDeps(comparisonType, depVer),
           )
         ) {
           continue;
@@ -287,7 +287,7 @@ export default createRule("compat-engines", {
           message: `${currModules
             .map((m) => `"${m}"`)
             .join(" >> ")} is not compatible with "${module}@${normalizeVer(
-            selfVer.original
+            selfVer.original,
           )}". Allowed is: "${module}@${normalizeVer(depVer)}"`,
         });
       }
@@ -304,7 +304,7 @@ export default createRule("compat-engines", {
               n,
               v.raw,
               currModules,
-              node
+              node,
             );
           }
         }
@@ -319,7 +319,7 @@ export default createRule("compat-engines", {
             return;
           }
           const enginesNode = expr.properties.find(
-            (p) => getKeyFromJSONProperty(p) === "engines"
+            (p) => getKeyFromJSONProperty(p) === "engines",
           );
           if (!enginesNode) {
             return;
@@ -352,7 +352,7 @@ export default createRule("compat-engines", {
           const ctx = new EnginesContext(selfEngines.keys());
           processDependencyModule(ctx, name, ver, [], node);
         },
-      })
+      }),
     );
   },
 });

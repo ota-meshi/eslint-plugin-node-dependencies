@@ -36,7 +36,7 @@ const CACHED_META_ROOT = path.join(__dirname, `../../.cached_meta`);
 export function getMetaFromNodeModules(
   name: string,
   ver: string,
-  options: { context: Rule.RuleContext; ownerPackageJsonPath?: string }
+  options: { context: Rule.RuleContext; ownerPackageJsonPath?: string },
 ): PackageMeta | null {
   try {
     const ownerJsonPath =
@@ -45,7 +45,7 @@ export function getMetaFromNodeModules(
       ownerJsonPath && path.isAbsolute(ownerJsonPath)
         ? dirname(ownerJsonPath)
         : getCwd(options.context),
-      "__placeholder__.js"
+      "__placeholder__.js",
     );
     const req = Module.createRequire(relativeTo);
     const where = req.resolve(`${name}/package.json`);
@@ -72,7 +72,7 @@ export function getMetaFromNodeModules(
  */
 export function getMetaFromNpm(
   name: string,
-  ver: string
+  ver: string,
 ): {
   cache: NpmPackageMeta[];
   get: () => NpmPackageMeta[] | null;
@@ -107,7 +107,7 @@ export function getMetaFromNpm(
  */
 function getMetaFromNameAndSpec(
   name: string,
-  verOrTag: string | undefined
+  verOrTag: string | undefined,
 ): {
   cache: NpmPackageMeta[];
   get: () => NpmPackageMeta[] | null;
@@ -153,7 +153,7 @@ function getMetaFromNameAndSpec(
       const maxNext = maxNextVersion(range);
       if (maxNext) {
         alive = cache.data.meta.some(
-          (m) => m.version && maxNext.compare(m.version) <= 0
+          (m) => m.version && maxNext.compare(m.version) <= 0,
         );
       }
     }
@@ -187,7 +187,7 @@ function getMetaFromNameAndSpec(
  */
 function getMetaFromName(
   name: string,
-  cachedFilePath: string
+  cachedFilePath: string,
 ): {
   cache: {
     data: CachedFileContent;
@@ -224,7 +224,7 @@ function getMetaFromName(
       (typeof data.expired === "number" && data.expired >= Date.now()) ||
         (typeof data.timestamp === "number" &&
           data.timestamp + TTL >= Date.now()) ||
-        (data.meta.length === 1 && data.meta[0].deprecated)
+        (data.meta.length === 1 && data.meta[0].deprecated),
     );
 
     return {
@@ -239,7 +239,7 @@ function getMetaFromName(
  */
 function getMetaFromNameWithoutCache(
   name: string,
-  cachedFilePath: string
+  cachedFilePath: string,
 ): NpmPackageMeta[] | null {
   let meta: NpmPackageMeta[] = [];
   try {
@@ -286,7 +286,7 @@ export function getEngines(meta: unknown): Map<string, string> {
 /** Get the dependencies from given package.json value */
 export function getDependencies(
   meta: unknown,
-  kind: "dependencies" | "peerDependencies" | "optionalDependencies"
+  kind: "dependencies" | "peerDependencies" | "optionalDependencies",
 ): Map<string, string> {
   if (!maybeMeta(meta)) {
     return new Map<string, string>();

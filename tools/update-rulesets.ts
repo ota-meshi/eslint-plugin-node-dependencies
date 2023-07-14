@@ -15,7 +15,7 @@ export = {
                 ${rules
                   .filter(
                     (rule) =>
-                      rule.meta.docs.recommended && !rule.meta.deprecated
+                      rule.meta.docs.recommended && !rule.meta.deprecated,
                   )
                   .map((rule) => {
                     const conf = rule.meta.docs.default || "error";

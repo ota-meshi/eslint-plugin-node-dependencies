@@ -10,7 +10,7 @@ export type RangeResult = {
  * Iterate version ranges
  */
 export function* iterateSemverRanges(
-  versionRanges: string
+  versionRanges: string,
 ): Iterable<RangeResult> {
   let startOffset = 0;
   for (const strRange of versionRanges.split("||")) {
@@ -27,7 +27,7 @@ export function* iterateSemverRanges(
  */
 function toRangeResult(
   strRange: string,
-  startOffset: number
+  startOffset: number,
 ): RangeResult | null {
   let start = 0;
   while (strRange.length > start && !strRange[start].trim()) {

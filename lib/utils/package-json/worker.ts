@@ -42,11 +42,11 @@ function withAutoProxy(options: Options): Options {
     };
     const httpAgent =
       tunnel[`httpOverHttp${proxyUrl.protocol === "https:" ? "s" : ""}`](
-        tunnelOption
+        tunnelOption,
       );
     const httpsAgent =
       tunnel[`httpsOverHttp${proxyUrl.protocol === "https:" ? "s" : ""}`](
-        tunnelOption
+        tunnelOption,
       );
     return {
       agent: { http: httpAgent, https: httpsAgent },

@@ -45,7 +45,7 @@ function stringToOption(option: Prefer): FullOption {
  */
 function objectToOption(
   option: Partial<FullOption>,
-  defaults: FullOption
+  defaults: FullOption,
 ): FullOption {
   return {
     dependencies: option.dependencies || defaults.dependencies,
@@ -65,7 +65,7 @@ function parseOption(
     | Prefer
     | (Partial<FullOption> & {
         overridePackages?: Record<string, Prefer | Partial<FullOption>>;
-      })
+      }),
 ): (packageName: string) => FullOption {
   if (!option) {
     return () => DEFAULT;
@@ -87,7 +87,7 @@ function parseOption(
           ? stringToOption(opt)
           : objectToOption(opt, baseOption)),
       };
-    }
+    },
   );
 
   return (name) => {
@@ -154,7 +154,7 @@ export default createRule("absolute-version", {
         | "dependencies"
         | "peerDependencies"
         | "optionalDependencies"
-        | "devDependencies"
+        | "devDependencies",
     ) {
       return (node: JSONProperty) => {
         const ver = getStaticJSONValue(node.value);

@@ -37,7 +37,7 @@ export default createRule("valid-semver", {
         }
       },
       "dependencies, peerDependencies, devDependencies, optionalDependencies"(
-        node
+        node,
       ) {
         const name = getKeyFromJSONProperty(node);
         if (typeof name !== "string") {

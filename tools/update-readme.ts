@@ -4,7 +4,7 @@ import renderRulesTableContent from "./render-rules";
 
 const insertText = `\n${renderRulesTableContent(
   (name) =>
-    `https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/${name}.html`
+    `https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/${name}.html`,
 )}\n`;
 
 const readmeFilePath = path.resolve(__dirname, "../README.md");
@@ -14,8 +14,8 @@ const newReadme = fs
     /<!--RULES_TABLE_START-->[\s\S]*<!--RULES_TABLE_END-->/u,
     `<!--RULES_TABLE_START-->${insertText.replace(
       /\$/g,
-      "$$$$"
-    )}<!--RULES_TABLE_END-->`
+      "$$$$",
+    )}<!--RULES_TABLE_END-->`,
   );
 fs.writeFileSync(readmeFilePath, newReadme);
 
@@ -27,11 +27,11 @@ fs.writeFileSync(
     .replace("# eslint-plugin-node-dependencies\n", "# Introduction\n")
     .replace(
       /<!--RULES_SECTION_START-->[\s\S]*<!--RULES_SECTION_END-->/u,
-      "See [Available Rules](./rules/README.md)."
+      "See [Available Rules](./rules/README.md).",
     )
     .replace(
       /<!--USAGE_SECTION_START-->[\s\S]*<!--USAGE_SECTION_END-->/u,
-      "See [User Guide](./user-guide/README.md)."
+      "See [User Guide](./user-guide/README.md).",
     )
     .replace(/<!--DOCS_IGNORE_START-->[\s\S]*?<!--DOCS_IGNORE_END-->/gu, "")
     .replace(
@@ -47,27 +47,27 @@ fs.writeFileSync(
         }
         result += ")";
         return result;
-      }
+      },
     )
-    .replace(/\n{3,}/gu, "\n\n")
+    .replace(/\n{3,}/gu, "\n\n"),
 );
 
 const userGuideReadmeFilePath = path.resolve(
   __dirname,
-  "../docs/user-guide/README.md"
+  "../docs/user-guide/README.md",
 );
 const newUserGuideReadme = fs
   .readFileSync(userGuideReadmeFilePath, "utf8")
   .replace(
     /<!--USAGE_SECTION_START-->[\s\S]*<!--USAGE_SECTION_END-->/u,
     /<!--USAGE_SECTION_START-->[\s\S]*<!--USAGE_SECTION_END-->/u.exec(
-      newReadme
-    )![0]
+      newReadme,
+    )![0],
   );
 
 fs.writeFileSync(
   userGuideReadmeFilePath,
   newUserGuideReadme
     .replace(/\(#white_check_mark-rules\)/g, "(../rules/README.md)")
-    .replace(/\n{3,}/gu, "\n\n")
+    .replace(/\n{3,}/gu, "\n\n"),
 );
