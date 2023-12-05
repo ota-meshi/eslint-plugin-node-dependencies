@@ -23,7 +23,8 @@ export default createRule("no-deprecated", {
     type: "suggestion",
   },
   create(context) {
-    if (!context.parserServices.isJSON) {
+    const sourceCode = context.getSourceCode();
+    if (!sourceCode.parserServices.isJSON) {
       return {};
     }
     const devDependencies = Boolean(context.options[0]?.devDependencies);

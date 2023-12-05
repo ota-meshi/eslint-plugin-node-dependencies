@@ -143,7 +143,8 @@ export default createRule("absolute-version", {
     type: "suggestion",
   },
   create(context) {
-    if (!context.parserServices.isJSON) {
+    const sourceCode = context.getSourceCode();
+    if (!sourceCode.parserServices.isJSON) {
       return {};
     }
     const getOption = parseOption(context.options[0]);

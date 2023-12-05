@@ -43,7 +43,8 @@ export default createRule("no-dupe-deps", {
     type: "problem",
   },
   create(context) {
-    if (!context.parserServices.isJSON) {
+    const sourceCode = context.getSourceCode();
+    if (!sourceCode.parserServices.isJSON) {
       return {};
     }
     const allowDuplicates = new AllowDuplicates();

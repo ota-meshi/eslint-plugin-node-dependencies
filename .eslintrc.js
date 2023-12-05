@@ -35,6 +35,14 @@ module.exports = {
       "error",
       //    {devDependencies:true}
     ],
+    "no-restricted-properties": [
+      "error",
+      {
+        object: "context",
+        property: "parserServices",
+        message: "Please use `context.getSourceCode().parserServices` instead.",
+      },
+    ],
   },
   overrides: [
     {

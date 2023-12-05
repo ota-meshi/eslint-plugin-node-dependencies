@@ -21,11 +21,10 @@ export default createRule("prefer-caret-range-version", {
     type: "suggestion",
   },
   create(context) {
-    if (!context.parserServices.isJSON) {
+    const sourceCode = context.getSourceCode();
+    if (!sourceCode.parserServices.isJSON) {
       return {};
     }
-
-    const sourceCode = context.getSourceCode();
 
     /**
      * Convert to use caret range syntax.
