@@ -80,6 +80,10 @@ module.exports = {
               match: true,
             },
           },
+          {
+            selector: "import",
+            format: null,
+          },
         ],
       },
     },
