@@ -1,5 +1,11 @@
 # eslint-plugin-node-dependencies
 
+## 0.11.1
+
+### Patch Changes
+
+- [#116](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/116) [`931dd31`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/931dd31d3623f8d90886a9f9442a09295f24acd7) Thanks [@ota-meshi](https://github.com/ota-meshi)! - Improve compatibility with ESLint v9
+
 ## 0.11.0
 
 ### Minor Changes
