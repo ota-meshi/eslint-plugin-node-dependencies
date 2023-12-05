@@ -249,7 +249,8 @@ export default createRule("no-restricted-deps", {
     type: "suggestion",
   },
   create(context) {
-    if (!context.parserServices.isJSON) {
+    const sourceCode = context.getSourceCode();
+    if (!sourceCode.parserServices.isJSON) {
       return {};
     }
 

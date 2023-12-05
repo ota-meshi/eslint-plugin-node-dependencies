@@ -15,7 +15,8 @@ export default createRule("valid-semver", {
     type: "problem",
   },
   create(context) {
-    if (!context.parserServices.isJSON) {
+    const sourceCode = context.getSourceCode();
+    if (!sourceCode.parserServices.isJSON) {
       return {};
     }
 
