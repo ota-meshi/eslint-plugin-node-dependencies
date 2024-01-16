@@ -8,7 +8,7 @@ const tester = new RuleTester({
     ecmaVersion: 2020,
     sourceType: "module",
   },
-})
+});
 
 tester.run("valid-engines", rule as any, {
   valid: [

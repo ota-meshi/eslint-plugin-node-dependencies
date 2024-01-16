@@ -8,7 +8,7 @@ const tester = new RuleTester({
     ecmaVersion: 2020,
     sourceType: "module",
   },
-})
+});
 
 tester.run("absolute-version", rule as any, {
   valid: [

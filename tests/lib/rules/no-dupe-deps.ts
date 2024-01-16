@@ -8,7 +8,7 @@ const tester = new RuleTester({
     ecmaVersion: 2020,
     sourceType: "module",
   },
-})
+});
 
 tester.run("no-dupe-deps", rule as any, {
   valid: [

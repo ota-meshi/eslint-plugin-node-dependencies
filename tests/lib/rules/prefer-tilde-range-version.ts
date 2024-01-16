@@ -8,7 +8,7 @@ const tester = new RuleTester({
     ecmaVersion: 2020,
     sourceType: "module",
   },
-})
+});
 
 tester.run("prefer-tilde-range-version", rule as any, {
   valid: [
