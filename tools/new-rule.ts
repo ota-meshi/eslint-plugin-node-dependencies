@@ -49,16 +49,17 @@ export default createRule("${ruleId}", {
   );
   fs.writeFileSync(
     testFile,
-    `import { RuleTester } from "eslint"
+    `import { RuleTester } from "../utils/compat-eslint"
 import rule from "../../../lib/rules/${ruleId}"
+import * as jsoncParser from "jsonc-eslint-parser";
 
 const tester = new RuleTester({
-    parser: require.resolve("jsonc-eslint-parser"),
-    parserOptions: {
-        ecmaVersion: 2020,
-        sourceType: "module",
-    },
-})
+  languageOptions: {
+    parser: jsoncParser,
+    ecmaVersion: 2020,
+    sourceType: "module",
+  },
+});
 
 tester.run("${ruleId}", rule as any, {
     valid: [

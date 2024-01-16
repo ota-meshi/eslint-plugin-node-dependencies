@@ -15,6 +15,8 @@ const rules = ruleList.reduce(
   {} as { [key: string]: RuleModule },
 );
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment -- ignore
+// @ts-ignore -- Backwards compatibility
 export = {
   meta,
   configs,

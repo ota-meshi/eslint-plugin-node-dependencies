@@ -4,6 +4,8 @@ import fs from "fs";
 import { rules } from "./lib/load-rules";
 
 const content = `
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment -- ignore
+// @ts-ignore -- Backwards compatibility
 export = {
     plugins: ["node-dependencies"],
     overrides: [
