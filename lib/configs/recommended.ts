@@ -1,4 +1,5 @@
-// @ts-expect-error -- Backwards compatibility
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment -- ignore
+// @ts-ignore -- Backwards compatibility
 export = {
   plugins: ["node-dependencies"],
   overrides: [

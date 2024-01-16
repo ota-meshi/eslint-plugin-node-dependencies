@@ -2,8 +2,8 @@
   "extends": "./tsconfig.json",
   "exclude": ["tests/**/*", "tools/**/*", "typings/**/*"],
   "compilerOptions": {
-    "module": "node16",
-    "moduleResolution": "node16",
+    "module": "commonjs",
+    "moduleResolution": "node",
     "removeComments": true /* Do not emit comments to output. */
   }
 }
