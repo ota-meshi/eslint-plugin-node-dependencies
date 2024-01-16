@@ -4,6 +4,7 @@ import fs from "fs";
 import { rules } from "./lib/load-rules";
 
 const content = `
+// @ts-expect-error -- Backwards compatibility
 export = {
     plugins: ["node-dependencies"],
     overrides: [

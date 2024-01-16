@@ -1,13 +1,14 @@
-import { RuleTester } from "eslint";
+import { RuleTester } from "../utils/compat-eslint";
 import rule from "../../../lib/rules/compat-engines";
 
+import * as jsoncParser from "jsonc-eslint-parser";
 const tester = new RuleTester({
-  parser: require.resolve("jsonc-eslint-parser"),
-  parserOptions: {
+  languageOptions: {
+    parser: jsoncParser,
     ecmaVersion: 2020,
     sourceType: "module",
   },
-});
+})
 
 tester.run("compat-engines", rule as any, {
   valid: [

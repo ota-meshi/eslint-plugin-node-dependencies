@@ -1,13 +1,14 @@
-import { RuleTester } from "eslint";
+import { RuleTester } from "../utils/compat-eslint";
 import rule from "../../../lib/rules/prefer-caret-range-version";
 
+import * as jsoncParser from "jsonc-eslint-parser";
 const tester = new RuleTester({
-  parser: require.resolve("jsonc-eslint-parser"),
-  parserOptions: {
+  languageOptions: {
+    parser: jsoncParser,
     ecmaVersion: 2020,
     sourceType: "module",
   },
-});
+})
 
 tester.run("prefer-caret-range-version", rule as any, {
   valid: [

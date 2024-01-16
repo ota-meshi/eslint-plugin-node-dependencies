@@ -1,3 +1,4 @@
+// @ts-expect-error -- Backwards compatibility
 export = {
   plugins: ["node-dependencies"],
   overrides: [

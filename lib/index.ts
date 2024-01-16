@@ -15,6 +15,7 @@ const rules = ruleList.reduce(
   {} as { [key: string]: RuleModule },
 );
 
+// @ts-expect-error -- Backwards compatibility
 export = {
   meta,
   configs,
