@@ -1,5 +1,11 @@
 # eslint-plugin-node-dependencies
 
+## 0.11.2
+
+### Patch Changes
+
+- [#126](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/126) [`d85a7c6`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/d85a7c647ab8437374d6adba222817abba94832d) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): update dependency eslint-compat-utils to ^0.4.0
+
 ## 0.11.1
 
 ### Patch Changes
