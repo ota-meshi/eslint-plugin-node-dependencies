@@ -15,12 +15,12 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "*": ["typings/*"],
+      "*": ["typings/*"]
     },
     "esModuleInterop": true,
     "resolveJsonModule": true,
 
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
-  "include": ["lib/**/*", "tests/**/*", "tools/**/*", "typings/**/*"],
+  "include": ["lib/**/*", "tests/**/*", "tools/**/*", "typings/**/*"]
 }
