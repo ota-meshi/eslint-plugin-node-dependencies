@@ -14,16 +14,15 @@ since: "v0.2.0"
 
 This rule disallows having dependencies on deprecate packages.
 
-```json5
+```jsonc
+/* eslint "node-dependencies/no-deprecated": "error" */
 {
-  "devDependencies": {
+  "dependencies": {
     "@babel/eslint-parser": "^7.0.0", /* ✓ GOOD */
     "babel-eslint": "^10.0.0" /* ✗ BAD: babel-eslint is now @babel/eslint-parser. This package will no longer receive updates. */
   }
 }
 ```
-
-</eslint-code-block>
 
 ## :wrench: Options
 

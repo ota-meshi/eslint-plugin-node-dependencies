@@ -19,7 +19,7 @@ const newReadme = fs
   );
 fs.writeFileSync(readmeFilePath, newReadme);
 
-const docsReadmeFilePath = path.resolve(__dirname, "../docs/README.md");
+const docsReadmeFilePath = path.resolve(__dirname, "../docs/index.md");
 
 fs.writeFileSync(
   docsReadmeFilePath,
@@ -27,11 +27,11 @@ fs.writeFileSync(
     .replace("# eslint-plugin-node-dependencies\n", "# Introduction\n")
     .replace(
       /<!--RULES_SECTION_START-->[\s\S]*<!--RULES_SECTION_END-->/u,
-      "See [Available Rules](./rules/README.md).",
+      "See [Available Rules](./rules/index.md).",
     )
     .replace(
       /<!--USAGE_SECTION_START-->[\s\S]*<!--USAGE_SECTION_END-->/u,
-      "See [User Guide](./user-guide/README.md).",
+      "See [User Guide](./user-guide/index.md).",
     )
     .replace(/<!--DOCS_IGNORE_START-->[\s\S]*?<!--DOCS_IGNORE_END-->/gu, "")
     .replace(
@@ -41,20 +41,24 @@ fs.writeFileSync(
         let result = `(.${c1}`;
         if (c2) {
           result +=
-            c2 === "index.html" ? "README.md" : c2.replace(/\.html$/, ".md");
+            c2 === "index.html" ? "index.md" : c2.replace(/\.html$/, ".md");
         } else {
-          result += "README.md";
+          result += "index.md";
         }
         result += ")";
         return result;
       },
+    )
+    .replace(
+      "[LICENSE](LICENSE)",
+      "[LICENSE](https://github.com/ota-meshi/eslint-plugin-node-dependencies/blob/main/LICENSE)",
     )
     .replace(/\n{3,}/gu, "\n\n"),
 );
 
 const userGuideReadmeFilePath = path.resolve(
   __dirname,
-  "../docs/user-guide/README.md",
+  "../docs/user-guide/index.md",
 );
 const newUserGuideReadme = fs
   .readFileSync(userGuideReadmeFilePath, "utf8")
@@ -68,6 +72,6 @@ const newUserGuideReadme = fs
 fs.writeFileSync(
   userGuideReadmeFilePath,
   newUserGuideReadme
-    .replace(/\(#white_check_mark-rules\)/g, "(../rules/README.md)")
+    .replace(/\(#white_check_mark-rules\)/g, "(../rules/index.md)")
     .replace(/\n{3,}/gu, "\n\n"),
 );

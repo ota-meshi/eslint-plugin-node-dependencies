@@ -16,9 +16,8 @@ since: "v0.8.0"
 
 This rule reports that there are duplicate dependencies on the various dependencies as error.
 
-<eslint-code-block file-name="package.json" :rules="{'node-dependencies/no-dupe-deps': 'error'}">
-
-```json5
+```jsonc
+/* eslint "node-dependencies/no-dupe-deps": "error" */
 {
   "dependencies": {
     /* ✗ BAD */
@@ -33,8 +32,6 @@ This rule reports that there are duplicate dependencies on the various dependenc
   }
 }
 ```
-
-</eslint-code-block>
 
 ## :wrench: Options
 

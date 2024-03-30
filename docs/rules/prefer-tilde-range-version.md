@@ -16,9 +16,8 @@ since: "v0.8.0"
 
 This rule enforces the use of the tilde(`~`) ranges syntax.
 
-<eslint-code-block fix file-name="package.json" :rules="{'node-dependencies/prefer-tilde-range-version': 'error'}">
-
-```json5
+```jsonc
+/* eslint "node-dependencies/prefer-tilde-range-version": "error" */
 {
   "dependencies": {
     /* ✓ GOOD */
@@ -31,8 +30,6 @@ This rule enforces the use of the tilde(`~`) ranges syntax.
   },
 }
 ```
-
-</eslint-code-block>
 
 ## :wrench: Options
 

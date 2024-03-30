@@ -111,7 +111,7 @@ module.exports = {
     },
     {
       files: ["*.vue"],
-      extends: ["plugin:@ota-meshi/+vue2", "plugin:@ota-meshi/+prettier"],
+      extends: ["plugin:@ota-meshi/+vue3", "plugin:@ota-meshi/+prettier"],
       parserOptions: {
         sourceType: "module",
       },
@@ -120,10 +120,12 @@ module.exports = {
       },
     },
     {
-      files: ["docs/.vuepress/**"],
+      files: ["docs/.vitepress/**"],
+      extends: ["plugin:@typescript-eslint/disable-type-checked"],
       parserOptions: {
         sourceType: "module",
         ecmaVersion: 2020,
+        project: null,
       },
       globals: {
         window: true,

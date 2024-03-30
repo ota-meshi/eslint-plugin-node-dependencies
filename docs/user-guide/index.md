@@ -22,7 +22,7 @@ and either use one of the two configurations available (`recommended`) or config
 
 ### The recommended configuration
 
-The `plugin:node-dependencies/recommended` config enables a subset of [the rules](../rules/README.md) that should be most useful to most users.
+The `plugin:node-dependencies/recommended` config enables a subset of [the rules](../rules/index.md) that should be most useful to most users.
 *See [lib/configs/recommended.ts](https://github.com/ota-meshi/eslint-plugin-node-dependencies/blob/main/lib/configs/recommended.ts) for more details.*
 
 ```js
@@ -81,6 +81,6 @@ module.exports = {
 
 <!--USAGE_SECTION_END-->
 
-See [the rule list](../rules/README.md) to get the `rules` that this plugin provides.
+See [the rule list](../rules/index.md) to get the `rules` that this plugin provides.
 
 <!-- Some rules also support [shared settings](../settings/README.md). -->
