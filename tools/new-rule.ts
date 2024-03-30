@@ -105,7 +105,8 @@ tester.run("${ruleId}", rule as any, {
 
 This rule reports ???.
 
-\`\`\`json5
+\`\`\`jsonc
+/* eslint "node-dependencies/${ruleId}": "error" */
 /* ✓ GOOD */
 
 

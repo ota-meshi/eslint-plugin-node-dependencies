@@ -16,7 +16,8 @@ since: "v0.5.0"
 
 This rule checks the `engines` of the dependencies and reports if they are compatible with the `engines` defined in package.json.
 
-```json5
+```jsonc
+/* eslint "node-dependencies/compat-engines": "error" */
 {
   "engines": {
     "node": ">=8"

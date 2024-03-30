@@ -62,7 +62,8 @@ Object options can also be set to `deep` option. Specify `"local"` or `"server"`
 }
 ```
 
-```json5
+```jsonc
+/* eslint "node-dependencies/no-restricted-deps": ["error", "foo", "bar"] */
 {
   "devDependencies": {
     /* ✗ BAD */
@@ -93,7 +94,17 @@ Object options can also be set to `deep` option. Specify `"local"` or `"server"`
 }
 ```
 
-```json5
+```jsonc
+/* eslint "node-dependencies/no-restricted-deps": ["error",
+    {
+      "package": "foo",
+      "message": "Use 'foo-x' instead."
+    },
+    {
+      "package": "bar",
+      "version": "<2.0.0"
+    }
+  ] */
 {
   "devDependencies": {
     /* ✗ BAD */

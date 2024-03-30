@@ -14,9 +14,8 @@ since: "v0.7.0"
 
 This rule enforces the use of absolute version of dependency.
 
-<eslint-code-block file-name="package.json" :rules="{'node-dependencies/absolute-version': 'error'}">
-
-```json5
+```jsonc
+/* eslint "node-dependencies/absolute-version": "error" */
 {
   "devDependencies": {
     "semver": "^7.3.5", /* ✗ BAD */
@@ -25,13 +24,11 @@ This rule enforces the use of absolute version of dependency.
 }
 ```
 
-</eslint-code-block>
-
 ## :wrench: Options
 
 ### String Option
 
-```json5
+```jsonc
 {
   "node-dependencies/absolute-version": ["error",
     "always" // or "never"
@@ -44,7 +41,7 @@ This rule enforces the use of absolute version of dependency.
 
 ### Object Option
 
-```json5
+```jsonc
 {
   "node-dependencies/absolute-version": ["error", {
     "dependencies": "ignore", // , "always" or "never"
@@ -68,7 +65,7 @@ By default, `always` applies only to `devDependencies`.
 
 ### Override Option for Each Package
 
-```json5
+```jsonc
 {
   "node-dependencies/absolute-version": ["error", {
     // "dependencies": "ignore",

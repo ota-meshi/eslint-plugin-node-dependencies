@@ -20,11 +20,11 @@ This ESLint plugin checks `package.json` and provides linting rules related to d
 
 ## :book: Usage
 
-See [User Guide](./user-guide/README.md).
+See [User Guide](./user-guide/index.md).
 
 ## :white_check_mark: Rules
 
-See [Available Rules](./rules/README.md).
+See [Available Rules](./rules/index.md).
 
 ## :rocket: To Do More Verification
 
@@ -38,7 +38,7 @@ You can verify using JSON Schema by checking and installing [eslint-plugin-json-
 
 <!-- ## :gear: Settings
 
-See [Settings](./settings/README.md). -->
+See [Settings](./settings/index.md). -->
 
 ## :couple: Related Packages
 
@@ -48,7 +48,7 @@ See [Settings](./settings/README.md). -->
 
 ## :lock: License
 
-See the [LICENSE](LICENSE) file for license rights and limitations (MIT).
+See the [LICENSE](https://github.com/ota-meshi/eslint-plugin-node-dependencies/blob/main/LICENSE) file for license rights and limitations (MIT).
 
 [eslint-plugin-jsonc]: https://github.com/ota-meshi/eslint-plugin-jsonc
 [eslint-plugin-json-schema-validator]: https://github.com/ota-meshi/eslint-plugin-json-schema-validator
