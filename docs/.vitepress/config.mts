@@ -37,6 +37,7 @@ export default async (): Promise<UserConfig<DefaultTheme.Config>> => {
     markdown: {
       codeTransformers: [
         transformerTwoslash({
+          explicitTrigger: false, // Required for v-menu to work.
           langs: ["json", "jsonc", "json5"],
           filter(lang, code) {
             if (lang.startsWith("json")) {
