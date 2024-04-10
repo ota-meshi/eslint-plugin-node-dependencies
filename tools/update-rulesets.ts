@@ -3,7 +3,8 @@ import fs from "fs";
 // import eslint from "eslint"
 import { rules } from "./lib/load-rules";
 
-const content = `
+const content = `import type { Linter } from "eslint";
+
 export default {
     rules: {
         // eslint-plugin-node-dependencies rules
@@ -14,7 +15,7 @@ export default {
             return `"${rule.meta.docs.ruleId}": "${conf}"`;
           })
           .join(",\n")}
-    }
+    } as Linter.RulesRecord
 }
 `;
 
