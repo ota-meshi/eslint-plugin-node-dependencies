@@ -1,5 +1,11 @@
 # eslint-plugin-node-dependencies
 
+## 0.12.0
+
+### Minor Changes
+
+- [#139](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/139) [`1ef872c`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/1ef872cc32666bd1572f3f13c573392381105c71) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add support for flat config
+
 ## 0.11.2
 
 ### Patch Changes
