@@ -1,3 +1,4 @@
+import recommendedRules from "./rules/recommended";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- ignore
 // @ts-ignore -- Backwards compatibility
 export = {
@@ -6,12 +7,7 @@ export = {
     {
       files: ["package.json"],
       parser: require.resolve("jsonc-eslint-parser"),
-      rules: {
-        // eslint-plugin-node-dependencies rules
-        "node-dependencies/compat-engines": "error",
-        "node-dependencies/no-dupe-deps": "error",
-        "node-dependencies/valid-semver": "error",
-      },
+      rules: recommendedRules.rules,
     },
   ],
 };

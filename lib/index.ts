@@ -1,10 +1,12 @@
 import type { RuleModule } from "./types";
 import { rules as ruleList } from "./utils/rules";
 import recommended from "./configs/recommended";
+import { recommendedConfig as flatRecommended } from "./configs/flat/recommended";
 import * as meta from "./meta";
 
 const configs = {
   recommended,
+  "flat/recommended": flatRecommended,
 };
 
 const rules = ruleList.reduce(

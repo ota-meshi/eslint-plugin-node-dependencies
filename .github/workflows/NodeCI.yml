@@ -30,7 +30,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install Packages
-        run: npm i --legacy-peer-deps
+        run: npm i -f
+      - name: Build
+        run: npm run build
       - name: Test
         run: npm test
   test-with-eslint9:
@@ -43,6 +45,8 @@ jobs:
           npm i -D eslint@^9.0.0-0 -f
           npx rimraf node_modules
           npm install -f
+      - name: Build
+        run: npm run build
       - name: Test
         run: npm test
   test-with-eslint6:
@@ -57,6 +61,8 @@ jobs:
           npm i -D eslint@6
           npx rimraf node_modules
           npm install
+      - name: Build
+        run: npm run build
       - name: Test
         run: npm test
   test-and-coverage:
@@ -65,7 +71,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
       - name: Install Packages
-        run: npm i --legacy-peer-deps
+        run: npm i -f
+      - name: Build
+        run: npm run build
       - name: Test
         run: npm run test:nyc
       - name: Coveralls GitHub Action
@@ -78,7 +86,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
       - name: Install Packages
-        run: npm i --legacy-peer-deps
+        run: npm i -f
       - name: Build
         run: npm run build
       - name: Update

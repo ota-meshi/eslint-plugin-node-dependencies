@@ -6,6 +6,7 @@
 !/.vscode
 !/.github
 /tests/fixtures/integrations/eslint-plugin
+/tests/fixtures/integrations/eslint-plugin-legacy-config
 !/docs/.vitepress
 /docs/.vitepress/dist
 /docs/.vitepress/cache
