@@ -61,7 +61,7 @@
     "@ota-meshi/eslint-plugin": "^0.15.0",
     "@shikijs/vitepress-twoslash": "^1.2.1",
     "@types/chai": "^4.2.18",
-    "@types/eslint": "^8.0.0",
+    "@types/eslint": "^9.0.0",
     "@types/eslint-scope": "^3.7.0",
     "@types/eslint-visitor-keys": "^3.0.0",
     "@types/estree": "^1.0.0",
