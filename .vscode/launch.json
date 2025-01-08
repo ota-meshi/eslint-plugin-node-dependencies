@@ -12,7 +12,7 @@
       "cwd": "${workspaceFolder}/tests",
       "args": [
         "-r",
-        "ts-node/register",
+        "tsx/cjs",
         "--timeout",
         "999999",
         "--colors",
