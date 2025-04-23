@@ -20,18 +20,14 @@ const TEST_CWD_FOR_LEGACY_CONFIG = path.join(
 describe("Integration with eslint-plugin-node-dependencies", async () => {
   // eslint-disable-next-line @typescript-eslint/naming-convention -- ignore
   const FlatESLint: typeof eslintModule.ESLint =
-    // @ts-expect-error -- new API
     typeof eslintModule.loadESLint === "function"
-      ? // @ts-expect-error -- new API
-        await eslintModule.loadESLint({ useFlatConfig: true })
-      : null;
+      ? await eslintModule.loadESLint({ useFlatConfig: true })
+      : (null as any);
   // eslint-disable-next-line @typescript-eslint/naming-convention -- ignore
   const ESLint: typeof eslintModule.ESLint =
-    // @ts-expect-error -- new API
     typeof eslintModule.loadESLint === "function"
-      ? // @ts-expect-error -- new API
-        await eslintModule.loadESLint({ useFlatConfig: false })
-      : getLegacyESLint();
+      ? await eslintModule.loadESLint({ useFlatConfig: false })
+      : (getLegacyESLint() as any);
   if (FlatESLint) {
     it("should lint without errors (with flat config)", async () => {
       const eslint = new FlatESLint({
