@@ -321,6 +321,12 @@ tester.run("compat-engines", rule as any, {
         },
         {
           message:
+            '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "eslint@>=6.0.0" is not compatible with "node@>=8.0.0". Allowed is: "node@^8.10.0||^10.12.0||>=11.10.1"',
+          line: 8,
+          column: 21,
+        },
+        {
+          message:
             '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "eslint-utils@^3.0.0" is not compatible with "node@>=8.0.0". Allowed is: "node@^10.0.0||^12.0.0||>=14.0.0"',
           line: 8,
           column: 21,
@@ -328,12 +334,6 @@ tester.run("compat-engines", rule as any, {
         {
           message:
             '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "jsdoctypeparser@^9.0.0" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
-          line: 8,
-          column: 21,
-        },
-        {
-          message:
-            '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "eslint@>=6.0.0" is not compatible with "node@>=8.0.0". Allowed is: "node@^8.10.0||^10.12.0||>=11.10.1"',
           line: 8,
           column: 21,
         },
