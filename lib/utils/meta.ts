@@ -60,7 +60,7 @@ export function getMetaFromNodeModules(
         return pkg;
       }
     }
-  } catch (_e) {
+  } catch {
     // console.log(_e)
     // ignore
   }
@@ -261,7 +261,7 @@ function getMetaFromNameWithoutCache(
         deprecated: vm.deprecated,
       };
     });
-  } catch (_e) {
+  } catch {
     return null;
   }
   const timestamp = Date.now();
