@@ -6,6 +6,7 @@
     "node": ">=14.17.0"
   },
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -27,7 +28,7 @@
     "docs:build": "npm run build && vitepress build docs",
     "docs:build-and-preview": "npm run docs:build && npx http-server docs/.vitepress/dist",
     "prerelease": "npm run test && npm run build",
-    "release": "changeset publish",
+    "release": "clean-pkg-json && changeset publish",
     "preversion": "npm test && git add .",
     "version": "env-cmd -e version npm run update && git add .",
     "version:ci": "env-cmd -e version-ci npm run  update && changeset version"
@@ -72,6 +73,7 @@
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "chai": "^5.0.0",
+    "clean-pkg-json": "^1.2.1",
     "env-cmd": "^10.1.0",
     "eslint": "^8.0.0",
     "eslint-compat-utils": "^0.6.0",
