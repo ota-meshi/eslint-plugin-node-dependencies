@@ -84,7 +84,7 @@
     "eslint-plugin-node-dependencies": "^0.12.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-regexp": "^2.0.0",
-    "eslint-plugin-vue": "^9.0.0",
+    "eslint-plugin-vue": "^10.0.0",
     "eslint-plugin-yml": "^1.0.0",
     "mocha": "^10.0.0",
     "mocha-chai-jest-snapshot": "^1.1.2",
@@ -99,8 +99,7 @@
     "twoslash-eslint": "^0.2.5",
     "typescript": "^5.0.0",
     "typescript-eslint": "^8.31.0",
-    "vitepress": "^1.0.1",
-    "vue-eslint-parser": "^9.0.0"
+    "vitepress": "^1.0.1"
   },
   "dependencies": {
     "jsonc-eslint-parser": "^2.0.2",
