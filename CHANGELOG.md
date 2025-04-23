@@ -1,5 +1,11 @@
 # eslint-plugin-node-dependencies
 
+## 0.13.0
+
+### Minor Changes
+
+- [#162](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/162) [`c9cd58a`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/c9cd58af432aae6b44b76f301108dda852f97579) Thanks [@JounQin](https://github.com/JounQin)! - feat: ship typings into npm package
+
 ## 0.12.0
 
 ### Minor Changes
