@@ -1,25 +1,21 @@
-// @ts-expect-error -- I don't know how to set the tsconfig...
 import { createSyncFn } from "synckit";
-// @ts-expect-error -- I don't know how to set the tsconfig...
-import type { AbbreviatedMetadata, Options } from "package-json";
 import { createRequire } from "module";
-type SyncPackageJson = (
-  packageName: string,
-  options: Options,
-) => AbbreviatedMetadata;
 
-export const syncPackageJson: SyncPackageJson = createSyncFn(getWorkerPath());
+export const syncPackageJson =
+  // @ts-expect-error -- cjs/esm
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports -- cjs/esm
+  createSyncFn<typeof import("package-json").default>(getWorkerPath());
 
 /**
  * Get the worker module path
  */
 function getWorkerPath(): string {
   try {
-    return require.resolve("./worker");
+    return require.resolve("./worker.mjs");
   } catch {
     // ignore
   }
   // Running on vitepress config
   const r = createRequire(__filename);
-  return r.resolve(`./worker.ts`);
+  return r.resolve(`./worker.mts`);
 }
