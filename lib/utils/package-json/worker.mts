@@ -1,18 +1,12 @@
-// @ts-expect-error -- I don't know how to set the tsconfig...
-import type packageJson from "package-json";
-// @ts-expect-error -- I don't know how to set the tsconfig...
+import packageJson from "package-json";
 import type { Options } from "package-json";
 import { runAsWorker } from "synckit";
 // @ts-expect-error -- no types
 import tunnel from "tunnel-agent";
-type PackageJson = typeof packageJson;
 
-const dynamicImport = new Function("m", "return import(m)");
-runAsWorker(async (packageName: string, options: Options) => {
-  const m = await dynamicImport("package-json");
-  const packageJson: PackageJson = m?.default || m;
-  return packageJson(packageName, withAutoProxy(options));
-});
+runAsWorker(async (packageName: string, options: Options) =>
+  packageJson(packageName, withAutoProxy(options)),
+);
 
 /**
  * If users are using a proxy for their npm preferences, set the option to use that proxy.
