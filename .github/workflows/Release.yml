@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+  id-token: write
+  pull-requests: write
+
 env:
   SYNCKIT_TS_RUNNER: oxc
 
@@ -40,4 +45,5 @@ jobs:
           title: "chore: release eslint-plugin-node-dependencies"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
