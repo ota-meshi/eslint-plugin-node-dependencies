@@ -1,9 +1,9 @@
 import { createSyncFn } from "synckit";
 import { createRequire } from "module";
 
-export const syncPackageJson = createSyncFn(getWorkerPath()) as (
-  name: string,
-) => // @ts-expect-error -- cjs/esm
+export const syncPackageJson = createSyncFn(getWorkerPath(), {
+  timeout: 10_000,
+}) as (name: string) => // @ts-expect-error -- cjs/esm
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports -- cjs/esm
 import("package-json").AbbreviatedMetadata;
 
