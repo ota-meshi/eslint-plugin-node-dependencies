@@ -12,7 +12,7 @@
       "cwd": "${workspaceFolder}/tests",
       "args": [
         "-r",
-        "ts-node/register",
+        "@swc-node/register",
         "--timeout",
         "999999",
         "--colors",

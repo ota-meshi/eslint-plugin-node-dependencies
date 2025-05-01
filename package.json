@@ -111,5 +111,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "overrides": {
+    "@shikijs/types": "^3.0.0"
   }
 }
