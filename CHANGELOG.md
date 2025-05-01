@@ -1,5 +1,15 @@
 # eslint-plugin-node-dependencies
 
+## 1.0.0
+
+### Major Changes
+
+- [#174](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/174) [`49f0a5f`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/49f0a5f54d3c27daaadf06f668b89bf2f11f3a0b) Thanks [@JounQin](https://github.com/JounQin)! - chore: bump node requirement `^18.17.0 || >=20.5.0`
+
+### Minor Changes
+
+- [#63](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/63) [`61a8063`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/61a80638f5911d421c81e18ce8775de0fed9fafb) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency synckit to ^0.11.0
+
 ## 0.13.1
 
 ### Patch Changes
