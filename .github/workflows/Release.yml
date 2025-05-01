@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  SYNCKIT_TS_RUNNER: oxc
+
 jobs:
   release:
     name: Release
