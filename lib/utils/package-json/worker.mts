@@ -44,7 +44,16 @@ export function setupProxy(): void {
   for (const prop of PROXY_PROPS) {
     const upperProp = prop.toUpperCase() as keyof typeof GLOBAL_AGENT;
     // eslint-disable-next-line no-process-env -- ignore
-    const value = process.env[prop] || process.env[upperProp];
+    let value = process.env[prop] || process.env[upperProp];
+    if (!value) {
+      if (prop === "https_proxy") {
+        // eslint-disable-next-line no-process-env -- ignore
+        value = process.env.npm_config_https_proxy;
+      } else if (prop === "http_proxy") {
+        // eslint-disable-next-line no-process-env -- ignore
+        value = process.env.npm_config_http_proxy;
+      }
+    }
     if (value) {
       GLOBAL_AGENT[upperProp] = value;
     }
