@@ -2,7 +2,6 @@
 import type packageJson from "package-json";
 // @ts-expect-error -- I don't know how to set the tsconfig...
 import type { Options } from "package-json";
-// @ts-expect-error -- I don't know how to set the tsconfig...
 import { runAsWorker } from "synckit";
 // @ts-expect-error -- no types
 import tunnel from "tunnel-agent";
