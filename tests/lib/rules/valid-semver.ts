@@ -227,6 +227,19 @@ tester.run("valid-semver", rule as any, {
                 }
               }`,
     },
+    {
+      // Local paths
+      filename: "package.json",
+      code: `
+            {
+                "dependencies": {
+                    "a": "../foo/bar",
+                    "b": "~/foo/bar",
+                    "c": "./foo/bar",
+                    "d": "/foo/bar"
+                }
+            }`,
+    },
   ],
   invalid: [
     {

@@ -52,7 +52,7 @@ export default createRule("valid-semver", {
           });
           return;
         }
-        if (maybeDepId(ver)) {
+        if (maybeNotRange(ver)) {
           return;
         }
         if (getSemverRange(ver) == null) {
@@ -66,7 +66,19 @@ export default createRule("valid-semver", {
   },
 });
 
-/** Checks whether the given ver is dependencies identify */
-function maybeDepId(ver: string): boolean {
-  return ver.includes("/") || ver.includes(":") || /^[-a-z]+$/.test(ver);
+/** Checks whether the given version string is not version range */
+function maybeNotRange(ver: string): boolean {
+  if (ver.startsWith(".") || ver.startsWith("~") || ver.includes("/")) {
+    // Maybe local path https://docs.npmjs.com/cli/v11/configuring-npm/package-json#local-paths
+    return true;
+  }
+  if (ver.includes(":")) {
+    // Maybe protocols e.g. `file:`, `http:`, `git:`, and `npm:`
+    return true;
+  }
+  if (/^[-a-z]+$/.test(ver)) {
+    // Maybe identify e.g. `latest`, `next`, and `beta`
+    return true;
+  }
+  return false;
 }
