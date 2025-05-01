@@ -49,7 +49,7 @@ jobs:
           node-version: 16.x
       - name: Install Target Packages
         run: |+
-          npm i -D eslint@^8 tsx -f
+          npm i -D eslint@8 mocha@10 tsx -f
           npx rimraf node_modules
           npm install -f
       - name: Build
@@ -67,7 +67,7 @@ jobs:
           node-version: 14.x
       - name: Install Target Packages
         run: |+
-          npm i -D eslint@^8 tsx -f
+          npm i -D eslint@8 mocha@10 tsx -f
           npx rimraf node_modules
           npm install -f
       - name: Build
