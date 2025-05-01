@@ -1,5 +1,11 @@
 # eslint-plugin-node-dependencies
 
+## 0.13.1
+
+### Patch Changes
+
+- [#170](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/170) [`02c2e56`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/02c2e5631b35102e9db7b93899a99837b13d6c72) Thanks [@ota-meshi](https://github.com/ota-meshi)! - fix(valid-semver): false positive for local paths
+
 ## 0.13.0
 
 ### Minor Changes
