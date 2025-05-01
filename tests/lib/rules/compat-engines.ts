@@ -289,7 +289,11 @@ tester.run("compat-engines", rule as any, {
             }
             `,
       errors: [
-        '"mocha@mochajs/mocha#4727d357ea" is not compatible with "node@>=8.0.0". Allowed is: "node@>=14.0.0"',
+        `"mocha@mochajs/mocha#4727d357ea" is not compatible with "node@>=8.0.0". Allowed is: "node@${
+          Number.parseInt(process.versions.node.split(".")[0], 10) < 18
+            ? ">=14.0.0"
+            : "^18.18.0||^20.9.0||>=21.1.0"
+        }"`,
       ],
     },
     {
