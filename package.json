@@ -2,49 +2,8 @@
   "name": "eslint-plugin-node-dependencies",
   "version": "1.0.0",
   "description": "ESLint plugin to check Node.js dependencies.",
-  "engines": {
-    "node": "^18.17.0 || >=20.5.0"
-  },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "prebuild": "npm run -s clean",
-    "build": "tsc --project ./tsconfig.build.json",
-    "clean": "rimraf .nyc_output dist coverage",
-    "lint": "eslint . --ext .js,.vue,.ts,.json,.yaml,.yml",
-    "eslint-fix": "eslint . --ext .js,.vue,.ts,.json,.yaml,.yml --fix",
-    "pretest": "npm run build",
-    "test:base": "mocha --require @swc-node/register \"tests/**/*.ts\" --reporter dot --timeout 60000",
-    "test": "npm run test:nyc",
-    "test:nyc": "nyc --reporter=lcov npm run test:base",
-    "test:debug": "mocha --require @swc-node/register \"tests/**/*.ts\" --reporter dot --timeout 60000",
-    "test:watch": "npm run test:base -- --watch",
-    "update": "node -r @swc-node/register ./tools/update.ts && npm run eslint-fix",
-    "new": "node -r @swc-node/register ./tools/new-rule.ts",
-    "docs:watch": "npm run build && vitepress dev docs",
-    "docs:build": "npm run build && vitepress build docs",
-    "docs:build-and-preview": "npm run docs:build && npx http-server docs/.vitepress/dist",
-    "prerelease": "npm run test && npm run build",
-    "release": "clean-pkg-json && changeset publish",
-    "preversion": "npm test && git add .",
-    "version": "env-cmd -e version npm run update && git add .",
-    "version:ci": "env-cmd -e version-ci npm run  update && changeset version"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ota-meshi/eslint-plugin-node-dependencies.git"
-  },
-  "keywords": [
-    "eslint",
-    "eslintplugin",
-    "eslint-plugin",
-    "nodejs",
-    "dependencies",
-    "json"
-  ],
+  "repository": "git+https://github.com/ota-meshi/eslint-plugin-node-dependencies.git",
+  "homepage": "https://github.com/ota-meshi/eslint-plugin-node-dependencies#readme",
   "author": "Yosuke Ota (https://github.com/ota-meshi)",
   "maintainers": [
     "JounQin <admin@1stg.me> (https://www.1stG.me)"
@@ -54,12 +13,55 @@
     "https://github.com/sponsors/JounQin"
   ],
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ota-meshi/eslint-plugin-node-dependencies/issues"
+  "engines": {
+    "node": "^18.17.0 || >=20.5.0"
   },
-  "homepage": "https://github.com/ota-meshi/eslint-plugin-node-dependencies#readme",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "nodejs",
+    "dependencies",
+    "json"
+  ],
+  "scripts": {
+    "build": "tsc --project ./tsconfig.build.json",
+    "clean": "rimraf .nyc_output dist coverage",
+    "docs:build": "npm run build && vitepress build docs",
+    "docs:build-and-preview": "npm run docs:build && npx http-server docs/.vitepress/dist",
+    "docs:watch": "npm run build && vitepress dev docs",
+    "eslint-fix": "eslint . --ext .js,.vue,.ts,.json,.yaml,.yml --fix",
+    "lint": "eslint . --ext .js,.vue,.ts,.json,.yaml,.yml",
+    "new": "node -r @swc-node/register ./tools/new-rule.ts",
+    "prebuild": "npm run -s clean",
+    "prerelease": "npm run test && npm run build",
+    "pretest": "npm run build",
+    "preversion": "npm test && git add .",
+    "release": "clean-pkg-json && changeset publish",
+    "test": "npm run test:nyc",
+    "test:base": "mocha --require @swc-node/register \"tests/**/*.ts\" --reporter dot --timeout 60000",
+    "test:debug": "mocha --require @swc-node/register \"tests/**/*.ts\" --reporter dot --timeout 60000",
+    "test:nyc": "nyc --reporter=lcov npm run test:base",
+    "test:watch": "npm run test:base -- --watch",
+    "update": "node -r @swc-node/register ./tools/update.ts && npm run eslint-fix",
+    "version": "env-cmd -e version npm run update && git add .",
+    "version:ci": "env-cmd -e version-ci npm run update && changeset version"
+  },
   "peerDependencies": {
     "eslint": ">=6.0.0"
+  },
+  "dependencies": {
+    "jsonc-eslint-parser": "^2.0.2",
+    "npm-package-arg": "^12.0.2",
+    "package-json": "^10.0.1",
+    "semver": "^7.3.5",
+    "synckit": "^0.11.0",
+    "undici": "^6.21.2 || ^7.8.0"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.0",
@@ -78,7 +80,7 @@
     "@types/npm-package-arg": "^6.1.1",
     "@types/semver": "^7.3.8",
     "chai": "^5.0.0",
-    "clean-pkg-json": "^1.2.1",
+    "clean-pkg-json": "^1.3.0",
     "env-cmd": "^10.1.0",
     "eslint": "^9.25.1",
     "eslint-compat-utils": "^0.6.0",
@@ -98,6 +100,7 @@
     "mocha-chai-jest-snapshot": "^1.1.2",
     "nyc": "^17.0.0",
     "prettier": "^3.0.0",
+    "prettier-plugin-pkg": "^0.19.0",
     "stylelint": "^16.0.0",
     "stylelint-config-recommended-vue": "^1.0.0",
     "stylelint-config-standard": "^38.0.0",
@@ -108,18 +111,10 @@
     "typescript-eslint": "^8.31.0",
     "vitepress": "^1.0.1"
   },
-  "dependencies": {
-    "jsonc-eslint-parser": "^2.0.2",
-    "npm-package-arg": "^12.0.2",
-    "package-json": "^10.0.1",
-    "semver": "^7.3.5",
-    "synckit": "^0.11.0",
-    "undici": "^6.21.2 || ^7.8.0"
+  "overrides": {
+    "@shikijs/types": "^3.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "overrides": {
-    "@shikijs/types": "^3.0.0"
   }
 }
