@@ -236,7 +236,8 @@ tester.run("valid-semver", rule as any, {
                     "a": "../foo/bar",
                     "b": "~/foo/bar",
                     "c": "./foo/bar",
-                    "d": "/foo/bar"
+                    "d": "/foo/bar",
+                    "e": "."
                 }
             }`,
     },
