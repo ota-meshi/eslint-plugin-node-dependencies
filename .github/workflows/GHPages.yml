@@ -29,9 +29,10 @@ jobs:
       - name: Install Packages
         run: npm install -f
       - name: Build docs
-        run: |+
-          export NODE_OPTIONS=--openssl-legacy-provider
-          npm run docs:build
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
+          SYNCKIT_TS_RUNNER: oxc
+        run: npm run docs:build
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
