@@ -46,7 +46,13 @@
     "json"
   ],
   "author": "Yosuke Ota (https://github.com/ota-meshi)",
-  "funding": "https://github.com/sponsors/ota-meshi",
+  "maintainers": [
+    "JounQin <admin@1stg.me> (https://www.1stG.me)"
+  ],
+  "funding": [
+    "https://github.com/sponsors/ota-meshi",
+    "https://github.com/sponsors/JounQin"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ota-meshi/eslint-plugin-node-dependencies/issues"
