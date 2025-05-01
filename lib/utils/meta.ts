@@ -244,9 +244,7 @@ function getMetaFromNameWithoutCache(
   let meta: NpmPackageMeta[] = [];
   try {
     // const start = performance.now()
-    const allMeta = syncPackageJson(name, {
-      allVersions: true,
-    });
+    const allMeta = syncPackageJson(name);
     // const end = performance.now()
     // console.log(name, `${end - start}ms`)
 

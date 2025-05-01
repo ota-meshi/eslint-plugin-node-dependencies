@@ -1,10 +1,11 @@
 import { createSyncFn } from "synckit";
 import { createRequire } from "module";
 
-export const syncPackageJson =
-  // @ts-expect-error -- cjs/esm
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports -- cjs/esm
-  createSyncFn<typeof import("package-json").default>(getWorkerPath());
+export const syncPackageJson = createSyncFn(getWorkerPath(), {
+  timeout: 10_000,
+}) as (name: string) => // @ts-expect-error -- cjs/esm
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports -- cjs/esm
+import("package-json").AbbreviatedMetadata;
 
 /**
  * Get the worker module path
@@ -17,5 +18,5 @@ function getWorkerPath(): string {
   }
   // Running on vitepress config
   const r = createRequire(__filename);
-  return r.resolve(`./worker.mts`);
+  return r.resolve("./worker.mts");
 }
