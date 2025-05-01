@@ -1,19 +1,8 @@
 import packageJson from "package-json";
 import { runAsWorker } from "synckit";
-
-import { bootstrap } from "global-agent";
 import { ProxyAgent, setGlobalDispatcher } from "undici";
 
 let proxySet = false;
-
-// https://github.com/DefinitelyTyped/DefinitelyTyped/pull/53669#issuecomment-875285179
-declare global {
-  const GLOBAL_AGENT: {
-    HTTP_PROXY: string | null;
-    HTTPS_PROXY: string | null;
-    NO_PROXY: string | null;
-  };
-}
 
 const PROXY_ENV = [
   "https_proxy",
@@ -24,8 +13,6 @@ const PROXY_ENV = [
   "npm_config_http_proxy",
 ] as const;
 
-const PROXY_PROPS = ["http_proxy", "https_proxy", "no_proxy"] as const;
-
 /**
  * If users are using a proxy for their npm preferences, set the option to use that proxy.
  */
@@ -34,29 +21,11 @@ export function setupProxy(): void {
     return;
   }
   proxySet = true;
-  const proxyStr: string | undefined =
+  const proxy =
     // eslint-disable-next-line no-process-env -- ignore
     PROXY_ENV.map((k) => process.env[k]).find((v) => v);
-  if (proxyStr) {
-    setGlobalDispatcher(new ProxyAgent(proxyStr));
-  }
-  bootstrap();
-  for (const prop of PROXY_PROPS) {
-    const upperProp = prop.toUpperCase() as keyof typeof GLOBAL_AGENT;
-    // eslint-disable-next-line no-process-env -- ignore
-    let value = process.env[prop] || process.env[upperProp];
-    if (!value) {
-      if (prop === "https_proxy") {
-        // eslint-disable-next-line no-process-env -- ignore
-        value = process.env.npm_config_https_proxy;
-      } else if (prop === "http_proxy") {
-        // eslint-disable-next-line no-process-env -- ignore
-        value = process.env.npm_config_http_proxy;
-      }
-    }
-    if (value) {
-      GLOBAL_AGENT[upperProp] = value;
-    }
+  if (proxy) {
+    setGlobalDispatcher(new ProxyAgent(proxy));
   }
 }
 
