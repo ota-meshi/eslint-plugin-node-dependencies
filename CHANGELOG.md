@@ -1,5 +1,11 @@
 # eslint-plugin-node-dependencies
 
+## 1.0.1
+
+### Patch Changes
+
+- [#180](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/180) [`c0f274f`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/c0f274fa89d552f051f8236e52ece1bade97f5bf) Thanks [@JounQin](https://github.com/JounQin)! - ci: enable `NPM_CONFIG_PROVENANCE` env
+
 ## 1.0.0
 
 ### Major Changes
