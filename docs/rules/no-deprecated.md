@@ -19,7 +19,7 @@ This rule disallows having dependencies on deprecate packages.
 {
   "dependencies": {
     "@babel/eslint-parser": "^7.0.0", /* ✓ GOOD */
-    "babel-eslint": "^10.0.0", /* ✗ BAD: babel-eslint is now @babel/eslint-parser. This package will no longer receive updates. */
+    "babel-eslint": "^10.0.0" /* ✗ BAD: babel-eslint is now @babel/eslint-parser. This package will no longer receive updates. */
   }
 }
 ```
