@@ -32,6 +32,18 @@ tester.run("no-deprecated", rule as any, {
             }
             `,
     },
+    // Test for allows option: should not report if the module is allowed
+    {
+      filename: "package.json",
+      code: `
+            {
+                "dependencies": {
+                    "babel-eslint": "^10"
+                }
+            }
+            `,
+      options: [{ allows: ["babel-eslint"] }],
+    },
   ],
   invalid: [
     {
@@ -62,6 +74,26 @@ tester.run("no-deprecated", rule as any, {
             }
             `,
       options: [{ devDependencies: true }],
+      errors: [
+        {
+          message:
+            "babel-eslint is now @babel/eslint-parser. This package will no longer receive updates.",
+          line: 4,
+          column: 21,
+        },
+      ],
+    },
+    // Test for allows option: should report if the module is not allowed
+    {
+      filename: "package.json",
+      code: `
+            {
+                "dependencies": {
+                    "babel-eslint": "^10"
+                }
+            }
+            `,
+      options: [{ allows: ["some-other-package"] }],
       errors: [
         {
           message:

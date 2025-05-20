@@ -15,6 +15,11 @@ export default createRule("no-deprecated", {
         type: "object",
         properties: {
           devDependencies: { type: "boolean" },
+          allows: {
+            type: "array",
+            items: { type: "string" },
+            uniqueItems: true,
+          },
         },
         additionalProperties: false,
       },
@@ -28,6 +33,9 @@ export default createRule("no-deprecated", {
       return {};
     }
     const devDependencies = Boolean(context.options[0]?.devDependencies);
+    const allows = Array.isArray(context.options[0]?.allows)
+      ? context.options[0].allows
+      : [];
 
     return defineJsonVisitor({
       [devDependencies
@@ -36,6 +44,9 @@ export default createRule("no-deprecated", {
         const name = getKeyFromJSONProperty(node);
         const ver = getStaticJSONValue(node.value);
         if (typeof name !== "string" || typeof ver !== "string" || !ver) {
+          return;
+        }
+        if (allows.includes(name)) {
           return;
         }
         const meta = getMetaFromNpm(name, ver).get();
