@@ -32,9 +32,9 @@
   "scripts": {
     "build": "tsc --project ./tsconfig.build.json",
     "clean": "rimraf .nyc_output dist coverage",
-    "docs:build": "npm run build && vitepress build docs",
+    "docs:build": "npm run build && env-cmd -e dev vitepress build docs",
     "docs:build-and-preview": "npm run docs:build && npx http-server docs/.vitepress/dist",
-    "docs:watch": "npm run build && vitepress dev docs",
+    "docs:watch": "npm run build && env-cmd -e dev vitepress dev docs",
     "eslint-fix": "eslint . --ext .js,.vue,.ts,.json,.yaml,.yml --fix",
     "lint": "eslint . --ext .js,.vue,.ts,.json,.yaml,.yml",
     "new": "node -r @swc-node/register ./tools/new-rule.ts",
