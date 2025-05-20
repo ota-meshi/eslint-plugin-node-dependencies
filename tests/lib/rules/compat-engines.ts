@@ -283,7 +283,7 @@ tester.run("compat-engines", rule as any, {
                     "node": ">=8.0"
                 },
                 "dependencies": {
-                    "express": "expressjs/express",
+                    "express": "expressjs/express#4.x",
                     "mocha": "mochajs/mocha#4727d357ea"
                 }
             }
