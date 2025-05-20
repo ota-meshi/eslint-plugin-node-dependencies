@@ -49,7 +49,7 @@ export default async (): Promise<UserConfig<DefaultTheme.Config>> => {
           twoslasher: createTwoslasherESLint({
             eslintConfig: [
               {
-                files: ["*", "**/*"],
+                files: ["*", "**/*", "**/*.*"],
                 plugins: {
                   "node-dependencies": plugin,
                 },
