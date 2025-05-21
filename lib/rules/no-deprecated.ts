@@ -33,9 +33,6 @@ export default createRule("no-deprecated", {
       return {};
     }
     const devDependencies = Boolean(context.options[0]?.devDependencies);
-    const allows = Array.isArray(context.options[0]?.allows)
-      ? context.options[0].allows
-      : [];
 
     return defineJsonVisitor({
       [devDependencies
@@ -46,7 +43,7 @@ export default createRule("no-deprecated", {
         if (typeof name !== "string" || typeof ver !== "string" || !ver) {
           return;
         }
-        if (allows.includes(name)) {
+        if (context.options[0]?.allows?.includes(name)) {
           return;
         }
         const meta = getMetaFromNpm(name, ver).get();
