@@ -15,6 +15,11 @@ export default createRule("no-deprecated", {
         type: "object",
         properties: {
           devDependencies: { type: "boolean" },
+          allows: {
+            type: "array",
+            items: { type: "string" },
+            uniqueItems: true,
+          },
         },
         additionalProperties: false,
       },
@@ -36,6 +41,9 @@ export default createRule("no-deprecated", {
         const name = getKeyFromJSONProperty(node);
         const ver = getStaticJSONValue(node.value);
         if (typeof name !== "string" || typeof ver !== "string" || !ver) {
+          return;
+        }
+        if (context.options[0]?.allows?.includes(name)) {
           return;
         }
         const meta = getMetaFromNpm(name, ver).get();

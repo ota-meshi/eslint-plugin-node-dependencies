@@ -29,12 +29,26 @@ This rule disallows having dependencies on deprecate packages.
 ```json
 {
   "node-dependencies/no-deprecated": ["error", {
-    "devDependencies": false
+    "devDependencies": false,
+    "allows": []
   }]
 }
 ```
 
 - `devDependencies` ... If `true`, the rule also checks `devDependencies`.
+- `allows` ... An array of module names to exclude from deprecation warnings.
+
+### :bulb: Example
+
+```jsonc
+/* eslint "node-dependencies/no-deprecated": ["error", {"allows": ["babel-eslint"]}] */
+{
+  "dependencies": {
+    "babel-eslint": "^10.0.0", /* ✓ GOOD: Not reported because it is excluded by allows */
+    "left-pad": "^1.3.0" /* ✗ BAD: Reported if deprecated and not included in allows */
+  }
+}
+```
 
 ## :rocket: Version
 
