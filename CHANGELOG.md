@@ -1,5 +1,11 @@
 # eslint-plugin-node-dependencies
 
+## 1.1.0
+
+### Minor Changes
+
+- [#188](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/188) [`bb21bbc`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/bb21bbc20f060c5ee01a8a0d8e86a135479e8279) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat(no-deprecated): add allows option
+
 ## 1.0.1
 
 ### Patch Changes
