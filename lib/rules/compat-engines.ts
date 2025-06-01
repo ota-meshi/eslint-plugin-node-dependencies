@@ -216,20 +216,20 @@ export default createRule("compat-engines", {
         const engineValue = depEngines.get(module);
         if (engineValue) {
           ctx.markAsProcessed(module);
-          const depVer = getSemverRange(engineValue);
-
-          if (depVer) {
-            if (
-              semver.subset(
-                selfVer.adjust,
-                buildAdjustRangeForDeps(comparisonType, depVer),
-              )
-            ) {
-              ctx.markAsValid(module);
-            } else {
-              ctx.addInvalid(module, depVer);
-            }
-          }
+        }
+        const depVer = getSemverRange(engineValue || "*");
+        if (!depVer) {
+          continue;
+        }
+        if (
+          semver.subset(
+            selfVer.adjust,
+            buildAdjustRangeForDeps(comparisonType, depVer),
+          )
+        ) {
+          ctx.markAsValid(module);
+        } else {
+          ctx.addInvalid(module, depVer);
         }
       }
     }
@@ -248,11 +248,14 @@ export default createRule("compat-engines", {
     ) {
       const currModules = [...modules, `${name}@${ver}`];
 
-      processMeta(ctx, getMetaFromNodeModules(name, ver, { context }));
-
-      if (!ctx.hasInvalid() && ctx.isAllProcessed()) {
-        return;
+      const nodeModulesMeta = getMetaFromNodeModules(name, ver, { context });
+      if (nodeModulesMeta) {
+        processMeta(ctx, nodeModulesMeta);
+        if (!ctx.hasInvalid() && ctx.isAllProcessed()) {
+          return;
+        }
       }
+
       const metaData = getMetaFromNpm(name, ver);
       for (const meta of metaData.cache) {
         processMeta(ctx, meta);
