@@ -11,7 +11,7 @@
 [![NPM downloads](https://img.shields.io/npm/dm/eslint-plugin-node-dependencies.svg)](http://www.npmtrends.com/eslint-plugin-node-dependencies)
 [![NPM downloads](https://img.shields.io/npm/dy/eslint-plugin-node-dependencies.svg)](http://www.npmtrends.com/eslint-plugin-node-dependencies)
 [![NPM downloads](https://img.shields.io/npm/dt/eslint-plugin-node-dependencies.svg)](http://www.npmtrends.com/eslint-plugin-node-dependencies)
-[![Build Status](https://github.com/ota-meshi/eslint-plugin-node-dependencies/workflows/CI/badge.svg?branch=main)](https://github.com/ota-meshi/eslint-plugin-node-dependencies/actions?query=workflow%3ACI)
+[![Build Status](https://github.com/ota-meshi/eslint-plugin-node-dependencies/actions/workflows/NodeCI.yml/badge.svg?branch=main)](https://github.com/ota-meshi/eslint-plugin-node-dependencies/actions/workflows/NodeCI.yml?query=branch%3Amain)
 [![Coverage Status](https://coveralls.io/repos/github/ota-meshi/eslint-plugin-node-dependencies/badge.svg?branch=main)](https://coveralls.io/github/ota-meshi/eslint-plugin-node-dependencies?branch=main)
 
 ## :name_badge: Features
