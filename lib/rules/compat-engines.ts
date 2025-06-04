@@ -214,7 +214,7 @@ export default createRule("compat-engines", {
       for (const module of ctx.engines) {
         const selfVer = selfEngines.get(module)!;
         const engineValue = depEngines.get(module);
-        if (engineValue) {
+        if (engineValue && engineValue !== "*") {
           ctx.markAsProcessed(module);
         }
         const depVer = getSemverRange(engineValue || "*");
