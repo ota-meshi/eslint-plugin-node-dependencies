@@ -177,6 +177,18 @@ tester.run("compat-engines", rule as any, {
                 }
             }`,
     },
+    {
+      filename: "package.json",
+      code: `
+            {
+                "engines": {
+                    "node": "^18.20.0 || ^20.19.0 || >=22.12.0"
+                },
+                "peerDependencies": {
+                    "nx": ">=17.0.0 <22.0.0-0"
+                }
+            }`,
+    },
   ],
   invalid: [
     {
