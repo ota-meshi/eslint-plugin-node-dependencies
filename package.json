@@ -102,7 +102,7 @@
     "nyc": "^17.0.0",
     "only-allow": "^1.2.1",
     "prettier": "^3.0.0",
-    "prettier-plugin-pkg": "^0.19.0",
+    "prettier-plugin-pkg": "^0.20.0",
     "stylelint": "^16.0.0",
     "stylelint-config-recommended-vue": "^1.0.0",
     "stylelint-config-standard": "^38.0.0",
