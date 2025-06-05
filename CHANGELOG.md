@@ -1,5 +1,11 @@
 # eslint-plugin-node-dependencies
 
+## 1.1.1
+
+### Patch Changes
+
+- [#193](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/193) [`33b1294`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/33b12942ae64cd68969d9a8bc66f68b0227db944) Thanks [@JounQin](https://github.com/JounQin)! - fix: no `engines` field should be considered as accepting any versions
+
 ## 1.1.0
 
 ### Minor Changes
