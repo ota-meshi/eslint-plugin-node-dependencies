@@ -43,7 +43,7 @@
     "prerelease": "npm run test && npm run build",
     "pretest": "npm run build",
     "preversion": "npm test && git add .",
-    "release": "clean-pkg-json -r preinstall && changeset publish",
+    "release": "clean-pkg-json -r scripts.preinstall && changeset publish",
     "test": "npm run test:nyc",
     "test:base": "mocha --require @swc-node/register \"tests/**/*.ts\" --reporter dot --timeout 60000",
     "test:debug": "mocha --require @swc-node/register \"tests/**/*.ts\" --reporter dot --timeout 60000",
