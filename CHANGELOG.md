@@ -1,5 +1,11 @@
 # eslint-plugin-node-dependencies
 
+## 1.1.2
+
+### Patch Changes
+
+- [#197](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/197) [`a2c8054`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/a2c8054db93cc317a7b5fb5cee6d3de901696f39) Thanks [@JounQin](https://github.com/JounQin)! - fix: should remove `scripts.preinstall` instead
+
 ## 1.1.1
 
 ### Patch Changes
