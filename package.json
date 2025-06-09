@@ -69,7 +69,7 @@
     "@changesets/cli": "^2.24.2",
     "@eslint-community/eslint-utils": "^4.6.1",
     "@ota-meshi/eslint-plugin": "^0.17.6",
-    "@oxc-node/core": "^0.0.27",
+    "@oxc-node/core": "^0.0.28",
     "@shikijs/vitepress-twoslash": "^3.0.0",
     "@swc-node/register": "^1.10.10",
     "@types/chai": "^5.0.0",
