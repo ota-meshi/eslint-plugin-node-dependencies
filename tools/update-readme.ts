@@ -2,10 +2,10 @@ import path from "path";
 import fs from "fs";
 import renderRulesTableContent from "./render-rules";
 
-const insertText = `\n${renderRulesTableContent(
-  (name) =>
+const insertText = `\n${renderRulesTableContent({
+  buildRulePath: (name) =>
     `https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/${name}.html`,
-)}\n`;
+})}\n`;
 
 const readmeFilePath = path.resolve(__dirname, "../README.md");
 const newReadme = fs
