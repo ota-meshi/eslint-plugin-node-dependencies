@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-node-dependencies",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "ESLint plugin to check Node.js dependencies.",
   "repository": "git+https://github.com/ota-meshi/eslint-plugin-node-dependencies.git",
   "homepage": "https://github.com/ota-meshi/eslint-plugin-node-dependencies#readme",
