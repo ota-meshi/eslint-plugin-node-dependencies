@@ -26,6 +26,8 @@ jobs:
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
+        with:
+          node-version: 24
 
       - name: Install Dependencies
         run: npm install -f
@@ -46,4 +48,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
