@@ -2,7 +2,6 @@ import path from "path";
 import fs from "fs";
 import { rules } from "../lib/utils/rules";
 import type { RuleModule } from "../lib/types";
-import { getNewVersion } from "./lib/changesets-util";
 
 //eslint-disable-next-line jsdoc/require-jsdoc -- tools
 function formatItems(items: string[]) {
@@ -37,10 +36,6 @@ function pickSince(content: string): string | null | Promise<string> {
   if (process.env.IN_VERSION_SCRIPT) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports -- ignore
     return `v${require("../package.json").version}`;
-  }
-  // eslint-disable-next-line no-process-env -- ignore
-  if (process.env.IN_VERSION_CI_SCRIPT) {
-    return getNewVersion().then((v) => `v${v}`);
   }
   return null;
 }

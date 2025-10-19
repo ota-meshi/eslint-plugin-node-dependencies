@@ -51,7 +51,7 @@
     "test:watch": "npm run test:base -- --watch",
     "update": "node -r @swc-node/register ./tools/update.ts && npm run eslint-fix",
     "version": "env-cmd -e version -- npm run update && git add .",
-    "version:ci": "env-cmd -e version-ci -- npm run update && changeset version"
+    "version:ci": "changeset version && env-cmd -e version-ci -- npm run update && git add --all"
   },
   "peerDependencies": {
     "eslint": ">=6.0.0"
