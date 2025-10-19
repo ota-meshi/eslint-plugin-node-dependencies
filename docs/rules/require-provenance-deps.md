@@ -3,13 +3,12 @@ pageClass: "rule-details"
 sidebarDepth: 0
 title: "node-dependencies/require-provenance-deps"
 description: "Require provenance information for dependencies"
+since: "v1.2.0"
 ---
 
 # node-dependencies/require-provenance-deps
 
 > Require provenance information for dependencies
-
-- :exclamation: <badge text="This rule has not been released yet." vertical="middle" type="error"> **_This rule has not been released yet._** </badge>
 
 ## :book: Rule Details
 
@@ -74,6 +73,10 @@ The rule fetches npm metadata to determine which published versions expose prove
 
 - [npm Docs – Generating provenance statements](https://docs.npmjs.com/generating-provenance-statements)
 - [GitHub Blog - Introducing npm Package Provenance](https://github.blog/2023-04-26-introducing-npm-package-provenance/)
+
+## :rocket: Version
+
+This rule was introduced in eslint-plugin-node-dependencies v1.2.0
 
 ## :mag: Implementation
 

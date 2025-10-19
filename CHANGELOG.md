@@ -1,5 +1,15 @@
 # eslint-plugin-node-dependencies
 
+## 1.2.0
+
+### Minor Changes
+
+- [#226](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/226) [`583134a`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/583134a65e3817b2339de95a2fb96368c1655d0e) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `node-dependencies/require-provenance-deps` rule
+
+### Patch Changes
+
+- [#227](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/227) [`727cef1`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/727cef120b1b71c8fd4846cf5c1731e2c51e5312) Thanks [@ota-meshi](https://github.com/ota-meshi)! - fix: use Trusted Publisher
+
 ## 1.1.2
 
 ### Patch Changes
