@@ -20,9 +20,17 @@ export type PackageMeta = {
 export type NpmPackageMeta = PackageMeta & {
   deprecated: string | undefined;
   "dist-tags": { [key: string]: string | void } | undefined;
+  dist?: {
+    attestations?: {
+      provenance?: Record<string, unknown>;
+    };
+  };
 };
 
+const CACHE_VERSION = 2;
+
 type CachedFileContent = {
+  v: typeof CACHE_VERSION;
   meta: NpmPackageMeta[];
   timestamp?: number;
   expired?: number;
@@ -217,7 +225,11 @@ function getMetaFromName(
     const data =
       // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires -- ignore
       require(cachedFilePath) as CachedFileContent;
-    if (data.meta == null) {
+    if (!data || data.meta == null) {
+      return null;
+    }
+    if (data.v !== CACHE_VERSION) {
+      // Version mismatch
       return null;
     }
     const alive = Boolean(
@@ -257,6 +269,8 @@ function getMetaFromNameWithoutCache(
         optionalDependencies: vm.optionalDependencies,
         "dist-tags": allMeta["dist-tags"],
         deprecated: vm.deprecated,
+        // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- Empty object
+        dist: vm.dist as {},
       };
     });
   } catch {
@@ -264,6 +278,7 @@ function getMetaFromNameWithoutCache(
   }
   const timestamp = Date.now();
   const content: CachedFileContent = {
+    v: CACHE_VERSION,
     meta,
     timestamp,
     expired: timestamp + Math.floor(Math.random() * 1000 * 60 /* 1m */),

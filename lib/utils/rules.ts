@@ -6,6 +6,7 @@ import noDupeDeps from "../rules/no-dupe-deps";
 import noRestrictedDeps from "../rules/no-restricted-deps";
 import preferCaretRangeVersion from "../rules/prefer-caret-range-version";
 import preferTildeRangeVersion from "../rules/prefer-tilde-range-version";
+import requireProvenanceDeps from "../rules/require-provenance-deps";
 import validEngines from "../rules/valid-engines";
 import validSemver from "../rules/valid-semver";
 
@@ -17,6 +18,7 @@ export const rules = [
   noRestrictedDeps,
   preferCaretRangeVersion,
   preferTildeRangeVersion,
+  requireProvenanceDeps,
   validEngines,
   validSemver,
 ] as RuleModule[];
