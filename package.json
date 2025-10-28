@@ -77,7 +77,7 @@
     "@types/estree": "^1.0.0",
     "@types/global-agent": "^3.0.0",
     "@types/mocha": "^10.0.0",
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.0.0",
     "@types/npm-package-arg": "^6.1.1",
     "@types/semver": "^7.3.8",
     "chai": "^6.0.0",
