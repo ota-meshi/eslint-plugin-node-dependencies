@@ -21,7 +21,7 @@ tester.run("require-provenance-deps", rule as any, {
       filename: "package.json",
       code: `{
         "dependencies": {
-          "eslint": "^9.39.0"
+          "@eslint-community/eslint-utils": "^4.4.1"
         }
       }`,
     },
@@ -61,7 +61,9 @@ tester.run("require-provenance-deps", rule as any, {
       filename: "package.json",
       code: `{
         "dependencies": {
-          "eslint": "9.0.0 - 9.38"
+          "eslint": "9.0.0 - 9.38",
+          "@eslint-community/eslint-utils": "^4.0.0",
+          "eslint-plugin-node-dependencies": "^1.0.0"
         }
       }`,
       errors: [
@@ -75,6 +77,28 @@ tester.run("require-provenance-deps", rule as any, {
           column: 11,
           endLine: 3,
           endColumn: 35,
+        },
+        {
+          messageId: "missingProvenance",
+          data: {
+            name: "@eslint-community/eslint-utils",
+            versions: "4.0.0 - 4.4.0",
+          },
+          line: 4,
+          column: 11,
+          endLine: 4,
+          endColumn: 53,
+        },
+        {
+          messageId: "missingProvenance",
+          data: {
+            name: "eslint-plugin-node-dependencies",
+            versions: "1.0.0",
+          },
+          line: 5,
+          column: 11,
+          endLine: 5,
+          endColumn: 54,
         },
       ],
     },
