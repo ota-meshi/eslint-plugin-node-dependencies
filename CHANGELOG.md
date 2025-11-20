@@ -1,5 +1,11 @@
 # eslint-plugin-node-dependencies
 
+## 1.3.0
+
+### Minor Changes
+
+- [#232](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/232) [`2bf67f4`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/2bf67f4ef06e85a9de64732ab87ba894ed82bc4d) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add support for eslint v10
+
 ## 1.2.0
 
 ### Minor Changes
