@@ -7,6 +7,7 @@ import { createRule, defineJsonVisitor } from "../utils";
 import { getSemverRange } from "../utils/semver";
 import type { RangeResult } from "../utils/semver-range";
 import { iterateSemverRanges } from "../utils/semver-range";
+import { getSourceCode } from "eslint-compat-utils";
 
 export default createRule("prefer-caret-range-version", {
   meta: {
@@ -21,7 +22,7 @@ export default createRule("prefer-caret-range-version", {
     type: "suggestion",
   },
   create(context) {
-    const sourceCode = context.getSourceCode();
+    const sourceCode = getSourceCode(context);
     if (!sourceCode.parserServices.isJSON) {
       return {};
     }

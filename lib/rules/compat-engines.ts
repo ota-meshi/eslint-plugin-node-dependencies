@@ -15,6 +15,7 @@ import {
   getMetaFromNodeModules,
   getMetaFromNpm,
 } from "../utils/meta";
+import { getSourceCode } from "eslint-compat-utils";
 
 type ComparisonType = "normal" | "major";
 class EnginesContext {
@@ -193,7 +194,7 @@ export default createRule("compat-engines", {
     type: "problem",
   },
   create(context) {
-    const sourceCode = context.getSourceCode();
+    const sourceCode = getSourceCode(context);
     if (!sourceCode.parserServices.isJSON) {
       return {};
     }

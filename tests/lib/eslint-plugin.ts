@@ -42,7 +42,7 @@ describe("Integration with eslint-plugin-node-dependencies", async () => {
       );
     });
   }
-  if (ESLint) {
+  if (ESLint && FlatESLint !== ESLint) {
     it("should lint without errors (with legacy config)", async () => {
       const engine = new ESLint({
         cwd: TEST_CWD_FOR_LEGACY_CONFIG,
