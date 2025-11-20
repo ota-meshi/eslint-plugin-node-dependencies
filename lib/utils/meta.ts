@@ -6,7 +6,7 @@ import { getSemverRange, maxNextVersion } from "./semver";
 import { satisfies } from "semver";
 import npa from "npm-package-arg";
 import { syncPackageJson } from "./package-json";
-import { getCwd } from "eslint-compat-utils";
+import { getCwd, getFilename } from "eslint-compat-utils";
 
 const TTL = 1000 * 60 * 60; // 1h
 
@@ -49,7 +49,7 @@ export function getMetaFromNodeModules(
 ): PackageMeta | null {
   try {
     const ownerJsonPath =
-      options.ownerPackageJsonPath || options.context.getFilename();
+      options.ownerPackageJsonPath || getFilename(options.context);
     const relativeTo = path.join(
       ownerJsonPath && path.isAbsolute(ownerJsonPath)
         ? dirname(ownerJsonPath)
