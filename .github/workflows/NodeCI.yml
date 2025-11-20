@@ -43,6 +43,22 @@ jobs:
         run: npm run build
       - name: Test
         run: npm test
+  test-with-eslint10:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+      - name: Install Target Packages
+        run: |+
+          npm i -D eslint@^10.0.0-0
+          npx rimraf node_modules
+          npm install
+      - name: Build
+        run: npm run build
+      - name: Test
+        run: npm test
   test-with-eslint6:
     runs-on: ubuntu-latest
     steps:

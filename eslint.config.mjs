@@ -59,6 +59,30 @@ export default defineConfig([
           message:
             "Please use `context.getSourceCode().parserServices` instead.",
         },
+        {
+          object: "context",
+          property: "getSourceCode",
+          message:
+            "Please use `eslint-compat-utils` module's `getSourceCode(context)` instead.",
+        },
+        {
+          object: "context",
+          property: "getFilename",
+          message:
+            "Please use `eslint-compat-utils` module's `getFilename(context)` instead.",
+        },
+        {
+          object: "context",
+          property: "getCwd",
+          message:
+            "Please use `eslint-compat-utils` module's `getCwd(context)` instead.",
+        },
+        {
+          object: "context",
+          property: "getScope",
+          message:
+            "Please use `eslint-compat-utils` module's `getSourceCode(context).getScope()` instead.",
+        },
       ],
     },
   },

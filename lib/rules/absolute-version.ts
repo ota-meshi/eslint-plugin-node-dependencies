@@ -5,6 +5,7 @@ import { createRule, defineJsonVisitor } from "../utils";
 import { getKeyFromJSONProperty } from "../utils/ast-utils";
 import { toRegExp } from "../utils/regexp";
 import { getSemverRange, isAnyComparator } from "../utils/semver";
+import { getSourceCode } from "eslint-compat-utils";
 
 const PREFERS = ["always" as const, "never" as const, "ignore" as const];
 const SCHEMA_FOR_DEPS_PROPERTIES = {
@@ -143,7 +144,7 @@ export default createRule("absolute-version", {
     type: "suggestion",
   },
   create(context) {
-    const sourceCode = context.getSourceCode();
+    const sourceCode = getSourceCode(context);
     if (!sourceCode.parserServices.isJSON) {
       return {};
     }

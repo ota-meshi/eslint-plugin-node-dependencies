@@ -1,6 +1,7 @@
 import type { JSONProperty } from "jsonc-eslint-parser/lib/parser/ast";
 import { createRule, defineJsonVisitor } from "../utils";
 import { getKeyFromJSONProperty } from "../utils/ast-utils";
+import { getSourceCode } from "eslint-compat-utils";
 
 type DepsName =
   | "dependencies"
@@ -43,7 +44,7 @@ export default createRule("no-dupe-deps", {
     type: "problem",
   },
   create(context) {
-    const sourceCode = context.getSourceCode();
+    const sourceCode = getSourceCode(context);
     if (!sourceCode.parserServices.isJSON) {
       return {};
     }

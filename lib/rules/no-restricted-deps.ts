@@ -13,6 +13,7 @@ import { getStaticJSONValue } from "jsonc-eslint-parser";
 import type { PackageMeta } from "../utils/meta";
 import { getMetaFromNodeModules, getMetaFromNpm } from "../utils/meta";
 import type { Rule } from "eslint";
+import { getSourceCode } from "eslint-compat-utils";
 
 const DEPS = [
   "dependencies",
@@ -249,7 +250,7 @@ export default createRule("no-restricted-deps", {
     type: "suggestion",
   },
   create(context) {
-    const sourceCode = context.getSourceCode();
+    const sourceCode = getSourceCode(context);
     if (!sourceCode.parserServices.isJSON) {
       return {};
     }

@@ -2,6 +2,7 @@ import { getStaticJSONValue } from "jsonc-eslint-parser";
 import { createRule, defineJsonVisitor } from "../utils";
 import { getKeyFromJSONProperty } from "../utils/ast-utils";
 import { getSemverRange } from "../utils/semver";
+import { getSourceCode } from "eslint-compat-utils";
 
 export default createRule("valid-semver", {
   meta: {
@@ -15,7 +16,7 @@ export default createRule("valid-semver", {
     type: "problem",
   },
   create(context) {
-    const sourceCode = context.getSourceCode();
+    const sourceCode = getSourceCode(context);
     if (!sourceCode.parserServices.isJSON) {
       return {};
     }

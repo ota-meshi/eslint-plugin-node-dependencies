@@ -6,6 +6,7 @@ import { getSemverRange, maxNextVersion } from "./semver";
 import { satisfies } from "semver";
 import npa from "npm-package-arg";
 import { syncPackageJson } from "./package-json";
+import { getCwd } from "eslint-compat-utils";
 
 const TTL = 1000 * 60 * 60; // 1h
 
@@ -347,12 +348,4 @@ function makeDirs(dir: string) {
   for (const d of dirs) {
     fs.mkdirSync(d);
   }
-}
-
-/** Get CWD */
-function getCwd(context: Rule.RuleContext) {
-  if (context.getCwd) {
-    return context.getCwd();
-  }
-  return path.resolve("");
 }

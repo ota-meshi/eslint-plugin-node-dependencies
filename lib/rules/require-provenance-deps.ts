@@ -3,6 +3,7 @@ import { getStaticJSONValue } from "jsonc-eslint-parser";
 import { getKeyFromJSONProperty } from "../utils/ast-utils";
 import type { NpmPackageMeta } from "../utils/meta";
 import { getMetaFromNpm } from "../utils/meta";
+import { getSourceCode } from "eslint-compat-utils";
 
 export default createRule("require-provenance-deps", {
   meta: {
@@ -32,7 +33,7 @@ export default createRule("require-provenance-deps", {
     type: "suggestion", // "problem",
   },
   create(context) {
-    const sourceCode = context.getSourceCode();
+    const sourceCode = getSourceCode(context);
     if (!sourceCode.parserServices.isJSON) {
       return {};
     }
