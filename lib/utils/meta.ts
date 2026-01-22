@@ -235,9 +235,9 @@ function getMetaFromName(
     }
     const alive = Boolean(
       (typeof data.expired === "number" && data.expired >= Date.now()) ||
-        (typeof data.timestamp === "number" &&
-          data.timestamp + TTL >= Date.now()) ||
-        (data.meta.length === 1 && data.meta[0].deprecated),
+      (typeof data.timestamp === "number" &&
+        data.timestamp + TTL >= Date.now()) ||
+      (data.meta.length === 1 && data.meta[0].deprecated),
     );
 
     return {
