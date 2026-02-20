@@ -33,7 +33,7 @@ npm install --save-dev eslint eslint-plugin-node-dependencies
 > **Requirements**
 >
 > - ESLint v6.0.0 and above
-> - Node.js v14.16.0 and above
+> - Node.js `^20.19.0 || ^22.13.0 || >=24`
 
 <!--DOCS_IGNORE_END-->
 
