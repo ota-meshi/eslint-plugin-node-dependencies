@@ -1,11 +1,10 @@
-import path from "path";
-import fs from "fs";
-import cp from "child_process";
+import path from "node:path";
+import fs from "node:fs";
+import cp from "node:child_process";
+import { fileURLToPath } from "node:url";
 const logger = console;
 
-const dirname =
-  // @ts-expect-error -- ignore
-  globalThis.__dirname || path.dirname(new URL(import.meta.url).pathname);
+const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // main
 ((ruleId) => {

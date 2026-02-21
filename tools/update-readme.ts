@@ -1,13 +1,16 @@
-import path from "path";
-import fs from "fs";
-import renderRulesTableContent from "./render-rules";
+import path from "node:path";
+import fs from "node:fs";
+import renderRulesTableContent from "./render-rules.ts";
+import { fileURLToPath } from "node:url";
+
+const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const insertText = `\n${renderRulesTableContent({
   buildRulePath: (name) =>
     `https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/${name}.html`,
 })}\n`;
 
-const readmeFilePath = path.resolve(__dirname, "../README.md");
+const readmeFilePath = path.resolve(dirname, "../README.md");
 const newReadme = fs
   .readFileSync(readmeFilePath, "utf8")
   .replace(
@@ -19,7 +22,7 @@ const newReadme = fs
   );
 fs.writeFileSync(readmeFilePath, newReadme);
 
-const docsReadmeFilePath = path.resolve(__dirname, "../docs/index.md");
+const docsReadmeFilePath = path.resolve(dirname, "../docs/index.md");
 
 fs.writeFileSync(
   docsReadmeFilePath,
@@ -57,7 +60,7 @@ fs.writeFileSync(
 );
 
 const userGuideReadmeFilePath = path.resolve(
-  __dirname,
+  dirname,
   "../docs/user-guide/index.md",
 );
 const newUserGuideReadme = fs

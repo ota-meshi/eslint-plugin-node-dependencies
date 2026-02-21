@@ -1,11 +1,10 @@
 import { getStaticJSONValue } from "jsonc-eslint-parser";
 import type { JSONProperty } from "jsonc-eslint-parser/lib/parser/ast";
 import type { Range } from "semver";
-import { createRule, defineJsonVisitor } from "../utils";
-import { getKeyFromJSONProperty } from "../utils/ast-utils";
-import { toRegExp } from "../utils/regexp";
-import { getSemverRange, isAnyComparator } from "../utils/semver";
-import { getSourceCode } from "eslint-compat-utils";
+import { createRule, defineJsonVisitor } from "../utils/index.ts";
+import { getKeyFromJSONProperty } from "../utils/ast-utils.ts";
+import { toRegExp } from "../utils/regexp.ts";
+import { getSemverRange, isAnyComparator } from "../utils/semver.ts";
 
 const PREFERS = ["always" as const, "never" as const, "ignore" as const];
 const SCHEMA_FOR_DEPS_PROPERTIES = {
@@ -144,7 +143,7 @@ export default createRule("absolute-version", {
     type: "suggestion",
   },
   create(context) {
-    const sourceCode = getSourceCode(context);
+    const sourceCode = context.sourceCode;
     if (!sourceCode.parserServices.isJSON) {
       return {};
     }

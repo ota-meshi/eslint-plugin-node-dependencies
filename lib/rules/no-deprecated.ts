@@ -1,8 +1,7 @@
 import { getStaticJSONValue } from "jsonc-eslint-parser";
-import { createRule, defineJsonVisitor } from "../utils";
-import { getKeyFromJSONProperty } from "../utils/ast-utils";
-import { getMetaFromNpm } from "../utils/meta";
-import { getSourceCode } from "eslint-compat-utils";
+import { createRule, defineJsonVisitor } from "../utils/index.ts";
+import { getKeyFromJSONProperty } from "../utils/ast-utils.ts";
+import { getMetaFromNpm } from "../utils/meta.ts";
 
 export default createRule("no-deprecated", {
   meta: {
@@ -29,7 +28,7 @@ export default createRule("no-deprecated", {
     type: "suggestion",
   },
   create(context) {
-    const sourceCode = getSourceCode(context);
+    const sourceCode = context.sourceCode;
     if (!sourceCode.parserServices.isJSON) {
       return {};
     }

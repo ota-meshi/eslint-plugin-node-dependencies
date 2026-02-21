@@ -1,5 +1,5 @@
-import { createRule } from "../utils";
-import compatEngines from "./compat-engines";
+import { createRule } from "../utils/index.ts";
+import compatEngines from "./compat-engines.ts";
 
 export default createRule("valid-engines", {
   meta: {

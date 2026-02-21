@@ -1,7 +1,10 @@
-import path from "path";
-import fs from "fs";
-import { rules } from "../lib/utils/rules";
-import type { RuleModule } from "../lib/types";
+import path from "node:path";
+import fs from "node:fs";
+import { rules } from "../lib/utils/rules.ts";
+import type { RuleModule } from "../lib/types.ts";
+import { fileURLToPath } from "node:url";
+
+const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 //eslint-disable-next-line jsdoc/require-jsdoc -- tools
 function formatItems(items: string[]) {
@@ -21,10 +24,10 @@ function yamlValue(val: unknown) {
   return val;
 }
 
-const ROOT = path.resolve(__dirname, "../docs/rules");
+const ROOT = path.resolve(dirname, "../docs/rules");
 
 //eslint-disable-next-line jsdoc/require-jsdoc -- tools
-function pickSince(content: string): string | null | Promise<string> {
+async function pickSince(content: string): Promise<string | null> {
   const fileIntro = /^---\n((?:.*\n)+)---\n*/.exec(content);
   if (fileIntro) {
     const since = /since: "?(v\d+\.\d+\.\d+)"?/.exec(fileIntro[1]);
@@ -34,8 +37,7 @@ function pickSince(content: string): string | null | Promise<string> {
   }
   // eslint-disable-next-line no-process-env -- ignore
   if (process.env.IN_VERSION_SCRIPT) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports -- ignore
-    return `v${require("../package.json").version}`;
+    return `v${(await import("../package.json", { with: { type: "json" } })).version}`;
   }
   return null;
 }
@@ -47,7 +49,7 @@ class DocFile {
 
   private content: string;
 
-  private readonly since: string | null | Promise<string>;
+  private readonly since: string | null | Promise<string | null>;
 
   public constructor(rule: RuleModule) {
     this.rule = rule;

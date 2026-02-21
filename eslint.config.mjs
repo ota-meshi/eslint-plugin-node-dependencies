@@ -13,7 +13,6 @@ export default defineConfig([
     "!.vscode",
     "!.github",
     "tests/fixtures/integrations/eslint-plugin",
-    "tests/fixtures/integrations/eslint-plugin-legacy-config",
     "!docs/.vitepress",
     "docs/.vitepress/dist/**/*",
     "docs/.vitepress/cache",
@@ -56,32 +55,7 @@ export default defineConfig([
         {
           object: "context",
           property: "parserServices",
-          message:
-            "Please use `context.getSourceCode().parserServices` instead.",
-        },
-        {
-          object: "context",
-          property: "getSourceCode",
-          message:
-            "Please use `eslint-compat-utils` module's `getSourceCode(context)` instead.",
-        },
-        {
-          object: "context",
-          property: "getFilename",
-          message:
-            "Please use `eslint-compat-utils` module's `getFilename(context)` instead.",
-        },
-        {
-          object: "context",
-          property: "getCwd",
-          message:
-            "Please use `eslint-compat-utils` module's `getCwd(context)` instead.",
-        },
-        {
-          object: "context",
-          property: "getScope",
-          message:
-            "Please use `eslint-compat-utils` module's `getSourceCode(context).getScope()` instead.",
+          message: "Please use `context.sourceCode.parserServices` instead.",
         },
       ],
     },
@@ -90,6 +64,19 @@ export default defineConfig([
     files: ["**/*.js"],
     languageOptions: {
       sourceType: "script",
+    },
+  },
+  {
+    files: ["**/*.{js,ts,mjc,mts,cjs,cts,vue}"],
+    rules: {
+      "n/prefer-node-protocol": "error",
+      "n/file-extension-in-import": ["error", "always"],
+      "@typescript-eslint/naming-convention": "off",
+    },
+    settings: {
+      n: {
+        typescriptExtensionMap: [],
+      },
     },
   },
   {
@@ -108,47 +95,6 @@ export default defineConfig([
       "no-implicit-globals": "off",
 
       "@typescript-eslint/no-shadow": "error",
-      "@typescript-eslint/naming-convention": [
-        "error",
-        {
-          selector: "default",
-          format: ["camelCase"],
-          leadingUnderscore: "allow",
-          trailingUnderscore: "allow",
-        },
-        {
-          selector: "variable",
-          format: ["camelCase", "UPPER_CASE"],
-          leadingUnderscore: "allow",
-          trailingUnderscore: "allow",
-        },
-        {
-          selector: "typeLike",
-          format: ["PascalCase"],
-        },
-        {
-          selector: "property",
-          format: null,
-
-          custom: {
-            regex: "[\\w _,]",
-            match: true,
-          },
-        },
-        {
-          selector: "method",
-          format: null,
-
-          custom: {
-            regex: "[\\w _,]",
-            match: true,
-          },
-        },
-        {
-          selector: "import",
-          format: null,
-        },
-      ],
     },
   },
   {

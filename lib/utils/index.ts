@@ -1,7 +1,7 @@
-import type { RuleModule, PartialRuleModule, RuleListener } from "../types";
+import type { RuleModule, PartialRuleModule, RuleListener } from "../types.ts";
 
 import type { AST } from "jsonc-eslint-parser";
-import { getKey } from "./ast-utils";
+import { getKey } from "./ast-utils.ts";
 
 /**
  * Define the rule.

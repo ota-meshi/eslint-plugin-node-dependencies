@@ -1,13 +1,12 @@
 import type { ESLint, Linter } from "eslint";
-import recommendedRules from "../rules/recommended";
+import recommendedRules from "../rules/recommended.ts";
 import * as jsonParser from "jsonc-eslint-parser";
+import plugin from "../../index.ts";
 export const recommendedConfig = [
   {
     plugins: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention -- ignore
       get "node-dependencies"(): ESLint.Plugin {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports -- ignore
-        return require("../../index");
+        return plugin;
       },
     },
   },
@@ -18,4 +17,4 @@ export const recommendedConfig = [
     },
     rules: recommendedRules.rules,
   },
-] satisfies Linter.FlatConfig[];
+] satisfies Linter.Config[];

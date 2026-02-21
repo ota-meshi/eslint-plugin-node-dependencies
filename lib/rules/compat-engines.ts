@@ -1,21 +1,24 @@
 import type { AST } from "jsonc-eslint-parser";
 import { getStaticJSONValue } from "jsonc-eslint-parser";
-import { compositingVisitors, defineJsonVisitor, createRule } from "../utils";
+import {
+  compositingVisitors,
+  defineJsonVisitor,
+  createRule,
+} from "../utils/index.ts";
 import semver from "semver";
-import { getKeyFromJSONProperty } from "../utils/ast-utils";
+import { getKeyFromJSONProperty } from "../utils/ast-utils.ts";
 import {
   getSemverRange,
   normalizeSemverRange,
   normalizeVer,
-} from "../utils/semver";
-import type { PackageMeta } from "../utils/meta";
+} from "../utils/semver.ts";
+import type { PackageMeta } from "../utils/meta.ts";
 import {
   getDependencies,
   getEngines,
   getMetaFromNodeModules,
   getMetaFromNpm,
-} from "../utils/meta";
-import { getSourceCode } from "eslint-compat-utils";
+} from "../utils/meta.ts";
 
 type ComparisonType = "normal" | "major";
 class EnginesContext {
@@ -194,7 +197,7 @@ export default createRule("compat-engines", {
     type: "problem",
   },
   create(context) {
-    const sourceCode = getSourceCode(context);
+    const sourceCode = context.sourceCode;
     if (!sourceCode.parserServices.isJSON) {
       return {};
     }

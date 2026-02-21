@@ -1,5 +1,5 @@
 import type { Comparator } from "semver";
-import { getSemverRange } from "./semver";
+import { getSemverRange } from "./semver.ts";
 
 export type RangeResult = {
   value: string;

@@ -1,15 +1,16 @@
-import path from "path";
-import assert from "assert";
+import path from "node:path";
+import assert from "node:assert";
 import * as eslintModule from "eslint";
+import { fileURLToPath } from "node:url";
 
 // -----------------------------------------------------------------------------
 // Tests
 // -----------------------------------------------------------------------------
 
-const TEST_CWD = path.join(__dirname, "../fixtures/integrations/eslint-plugin");
+const dirname = path.dirname(fileURLToPath(import.meta.url));
+const TEST_CWD = path.join(dirname, "../fixtures/integrations/eslint-plugin");
 
 describe("Integration with eslint-plugin-node-dependencies", async () => {
-  // eslint-disable-next-line @typescript-eslint/naming-convention -- ignore
   const FlatESLint: typeof eslintModule.ESLint =
     await eslintModule.loadESLint();
   if (FlatESLint) {

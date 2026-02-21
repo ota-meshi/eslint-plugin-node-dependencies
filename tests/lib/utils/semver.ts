@@ -1,9 +1,9 @@
-import assert from "assert";
+import assert from "node:assert";
 
 import {
   normalizeSemverRange,
   maxNextVersion,
-} from "../../../lib/utils/semver";
+} from "../../../lib/utils/semver.ts";
 import { Range, subset } from "semver";
 
 describe("normalizeSemverRange", () => {

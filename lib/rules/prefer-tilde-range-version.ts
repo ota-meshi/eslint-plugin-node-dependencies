@@ -3,11 +3,10 @@ import type {
   JSONStringLiteral,
 } from "jsonc-eslint-parser/lib/parser/ast";
 import { SemVer } from "semver";
-import { createRule, defineJsonVisitor } from "../utils";
-import { getSemverRange } from "../utils/semver";
-import type { RangeResult } from "../utils/semver-range";
-import { iterateSemverRanges } from "../utils/semver-range";
-import { getSourceCode } from "eslint-compat-utils";
+import { createRule, defineJsonVisitor } from "../utils/index.ts";
+import { getSemverRange } from "../utils/semver.ts";
+import type { RangeResult } from "../utils/semver-range.ts";
+import { iterateSemverRanges } from "../utils/semver-range.ts";
 
 export default createRule("prefer-tilde-range-version", {
   meta: {
@@ -22,7 +21,7 @@ export default createRule("prefer-tilde-range-version", {
     type: "suggestion",
   },
   create(context) {
-    const sourceCode = getSourceCode(context);
+    const sourceCode = context.sourceCode;
     if (!sourceCode.parserServices.isJSON) {
       return {};
     }
