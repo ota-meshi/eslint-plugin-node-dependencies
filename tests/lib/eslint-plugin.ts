@@ -6,17 +6,12 @@ import * as eslintModule from "eslint";
 // Tests
 // -----------------------------------------------------------------------------
 
-const TEST_CWD = path.join(
-  __dirname,
-  "../fixtures/integrations/eslint-plugin",
-);
+const TEST_CWD = path.join(__dirname, "../fixtures/integrations/eslint-plugin");
 
 describe("Integration with eslint-plugin-node-dependencies", async () => {
   // eslint-disable-next-line @typescript-eslint/naming-convention -- ignore
   const FlatESLint: typeof eslintModule.ESLint =
-    typeof eslintModule.loadESLint === "function"
-      ? await eslintModule.loadESLint({ useFlatConfig: true })
-      : (null as any);
+    await eslintModule.loadESLint();
   if (FlatESLint) {
     it("should lint without errors (with flat config)", async () => {
       const eslint = new FlatESLint({
