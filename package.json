@@ -54,7 +54,7 @@
     "version:ci": "changeset version && env-cmd -e version-ci -- npm run update && git add --all"
   },
   "peerDependencies": {
-    "eslint": ">=6.0.0"
+    "eslint": ">=9.38.0"
   },
   "dependencies": {
     "eslint-compat-utils": "^0.6.5",
