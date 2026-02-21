@@ -1,7 +1,4 @@
-import type {
-  JSONExpression,
-  JSONStringLiteral,
-} from "jsonc-eslint-parser/lib/parser/ast";
+import type { AST } from "jsonc-eslint-parser";
 import { SemVer } from "semver";
 import { createRule, defineJsonVisitor } from "../utils/index.ts";
 import { getSemverRange } from "../utils/semver.ts";
@@ -61,7 +58,7 @@ export default createRule("prefer-tilde-range-version", {
     /**
      * Verify for range
      */
-    function verifyRange(range: RangeResult, node: JSONStringLiteral) {
+    function verifyRange(range: RangeResult, node: AST.JSONStringLiteral) {
       const fixedRange = convertToUseTilde(range);
       if (!fixedRange) {
         return;
@@ -88,7 +85,7 @@ export default createRule("prefer-tilde-range-version", {
     /**
      * Verify for version
      */
-    function verifyVersion(node: JSONStringLiteral) {
+    function verifyVersion(node: AST.JSONStringLiteral) {
       if (maybeDepId(node.value)) {
         return;
       }
@@ -128,7 +125,9 @@ export default createRule("prefer-tilde-range-version", {
 /**
  * Checks whether the given expression is string literal or not
  */
-function isJSONStringLiteral(node: JSONExpression): node is JSONStringLiteral {
+function isJSONStringLiteral(
+  node: AST.JSONExpression,
+): node is AST.JSONStringLiteral {
   return node.type === "JSONLiteral" && typeof node.value === "string";
 }
 

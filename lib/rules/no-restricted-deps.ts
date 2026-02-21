@@ -7,7 +7,7 @@ import {
   normalizeSemverRange,
   normalizeVer,
 } from "../utils/semver.ts";
-import type { JSONProperty } from "jsonc-eslint-parser/lib/parser/ast";
+import type { AST } from "jsonc-eslint-parser";
 import { getKeyFromJSONProperty } from "../utils/ast-utils.ts";
 import { getStaticJSONValue } from "jsonc-eslint-parser";
 import type { PackageMeta } from "../utils/meta.ts";
@@ -258,7 +258,7 @@ export default createRule("no-restricted-deps", {
 
     /** Define dependency visitor */
     function defineVisitor(_depsName: string) {
-      return (node: JSONProperty) => {
+      return (node: AST.JSONProperty) => {
         const name = String(getKeyFromJSONProperty(node));
         const ver = String(getStaticJSONValue(node.value));
 
