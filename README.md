@@ -41,12 +41,11 @@ npm install --save-dev eslint eslint-plugin-node-dependencies
 
 <!--USAGE_SECTION_START-->
 
-Add `node-dependencies` to the plugins section of your `eslint.config.js` or `.eslintrc` configuration file (you can omit the `eslint-plugin-` prefix)  
-and either use one of the two configurations available (`recommended`) or configure the rules you want:
+Add `node-dependencies` to the plugins section of your `eslint.config.js` configuration file and either use one of the configurations available (`recommended`) or configure the rules you want:
 
-### The recommended configuration (New Config)
+### The recommended configuration
 
-The `plugin.configs["flat/recommended"]` config enables a subset of [the rules](#white_check_mark-rules) that should be most useful to most users.
+The `plugin.configs.recommended` config enables a subset of [the rules](#white_check_mark-rules) that should be most useful to most users.
 *See [lib/configs/rules/recommended.ts](https://github.com/ota-meshi/eslint-plugin-node-dependencies/blob/main/lib/configs/rules/recommended.ts) for more details.*
 
 ```js
@@ -54,27 +53,8 @@ The `plugin.configs["flat/recommended"]` config enables a subset of [the rules](
 import * as nodeDependenciesPlugin from "eslint-plugin-node-dependencies"
 
 export default [
-    ...nodeDependenciesPlugin.configs["flat/recommended"],
+    ...nodeDependenciesPlugin.configs.recommended,
 ];
-```
-
-### The recommended configuration (Legacy Config)
-
-The `plugin:node-dependencies/recommended` config enables a subset of [the rules](#white_check_mark-rules) that should be most useful to most users.
-*See [lib/configs/rules/recommended.ts](https://github.com/ota-meshi/eslint-plugin-node-dependencies/blob/main/lib/configs/rules/recommended.ts) for more details.*
-
-```js
-// .eslintrc.js
-module.exports = {
-    "plugins": [
-        "node-dependencies"
-    ],
-    "extends": [
-         // add more generic rulesets here, such as:
-         // 'eslint:recommended',
-        "plugin:node-dependencies/recommended"
-    ]
-}
 ```
 
 ### Advanced Configuration
@@ -87,49 +67,13 @@ import * as nodeDependenciesPlugin from "eslint-plugin-node-dependencies"
 
 export default [
     {
-        plugins: { "node-dependencies": nodeDependenciesPlugin }
+        plugins: { "node-dependencies": nodeDependenciesPlugin },
         rules: {
             // Override/add rules settings here, such as:
             "node-dependencies/rule-name": "error"
         }
     }
 ];
-```
-
-```js
-// .eslintrc.js
-module.exports = {
-    "plugins": [
-        "node-dependencies"
-    ],
-    "rules": {
-        // Override/add rules settings here, such as:
-        "node-dependencies/rule-name": "error"
-    }
-}
-```
-
-#### Parser Configuration
-
-If you have specified a parser, you need to configure a parser for `.json`.
-
-For example, if you are using the `"@babel/eslint-parser"`, configure it as follows:
-
-```js
-module.exports = {
-  // ...
-  extends: [ "plugin:node-dependencies/recommended"],
-  // ...
-  parser: "@babel/eslint-parser",
-  // Add an `overrides` section to add a parser configuration for json.
-  overrides: [
-    {
-      files: ["*.json", "*.json5"],
-      parser: "jsonc-eslint-parser",
-    },
-  ],
-  // ...
-};
 ```
 
 <!--USAGE_SECTION_END-->
@@ -139,7 +83,7 @@ module.exports = {
 <!--RULES_SECTION_START-->
 
 The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) automatically fixes problems reported by rules which have a wrench :wrench: below.
-The rules with the following star :star: are included in the `plugin:node-dependencies/recommended` config.
+The rules with the following star :star: are included in the `plugin.configs.recommended` config.
 
 <!--RULES_TABLE_START-->
 

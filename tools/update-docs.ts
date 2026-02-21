@@ -88,9 +88,7 @@ class DocFile {
       }
     } else {
       if (recommended) {
-        notes.push(
-          '- :gear: This rule is included in `"plugin:node-dependencies/recommended"`.',
-        );
+        notes.push("- :gear: This rule is included in `configs.recommended`.");
       }
     }
     if (fixable) {

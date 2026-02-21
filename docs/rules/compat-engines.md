@@ -10,7 +10,7 @@ since: "v0.5.0"
 
 > enforce the versions of the engines of the dependencies to be compatible.
 
-- :gear: This rule is included in `"plugin:node-dependencies/recommended"`.
+- :gear: This rule is included in `configs.recommended`.
 
 ## :book: Rule Details
 
