@@ -1,5 +1,5 @@
 import { getStaticJSONValue } from "jsonc-eslint-parser";
-import type { JSONProperty } from "jsonc-eslint-parser/lib/parser/ast";
+import type { AST } from "jsonc-eslint-parser";
 import type { Range } from "semver";
 import { createRule, defineJsonVisitor } from "../utils/index.ts";
 import { getKeyFromJSONProperty } from "../utils/ast-utils.ts";
@@ -157,7 +157,7 @@ export default createRule("absolute-version", {
         | "optionalDependencies"
         | "devDependencies",
     ) {
-      return (node: JSONProperty) => {
+      return (node: AST.JSONProperty) => {
         const ver = getStaticJSONValue(node.value);
         if (typeof ver !== "string" || ver == null) {
           return;

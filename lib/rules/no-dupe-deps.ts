@@ -1,4 +1,4 @@
-import type { JSONProperty } from "jsonc-eslint-parser/lib/parser/ast";
+import type { AST } from "jsonc-eslint-parser";
 import { createRule, defineJsonVisitor } from "../utils/index.ts";
 import { getKeyFromJSONProperty } from "../utils/ast-utils.ts";
 
@@ -51,16 +51,16 @@ export default createRule("no-dupe-deps", {
     allowDuplicates.add("devDependencies", "peerDependencies");
     allowDuplicates.add("devDependencies", "optionalDependencies");
     const maps = {
-      dependencies: new Map<string, JSONProperty>(),
-      peerDependencies: new Map<string, JSONProperty>(),
-      optionalDependencies: new Map<string, JSONProperty>(),
-      devDependencies: new Map<string, JSONProperty>(),
+      dependencies: new Map<string, AST.JSONProperty>(),
+      peerDependencies: new Map<string, AST.JSONProperty>(),
+      optionalDependencies: new Map<string, AST.JSONProperty>(),
+      devDependencies: new Map<string, AST.JSONProperty>(),
     };
 
-    const reported = new Set<JSONProperty>();
+    const reported = new Set<AST.JSONProperty>();
 
     /** Report */
-    function report(name: string, node: JSONProperty) {
+    function report(name: string, node: AST.JSONProperty) {
       if (reported.has(node)) {
         return;
       }
@@ -76,7 +76,7 @@ export default createRule("no-dupe-deps", {
     }
 
     /** Verify */
-    function verify(depsName: DepsName, name: string, node: JSONProperty) {
+    function verify(depsName: DepsName, name: string, node: AST.JSONProperty) {
       for (const dep of DEPS) {
         if (allowDuplicates.isAllowedDuplicate(dep, depsName)) {
           continue;
@@ -91,7 +91,7 @@ export default createRule("no-dupe-deps", {
 
     /** Define dependency visitor */
     function defineVisitor(depsName: DepsName) {
-      return (node: JSONProperty) => {
+      return (node: AST.JSONProperty) => {
         const name = String(getKeyFromJSONProperty(node));
         verify(depsName, name, node);
         maps[depsName].set(name, node);
