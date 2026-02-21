@@ -69,7 +69,7 @@
     "eslint": ">=9.38.0"
   },
   "dependencies": {
-    "jsonc-eslint-parser": "^2.0.2",
+    "jsonc-eslint-parser": "^3.0.0",
     "npm-package-arg": "^12.0.2",
     "package-json": "^10.0.1",
     "semver": "^7.3.5",
