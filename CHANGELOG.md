@@ -1,5 +1,19 @@
 # eslint-plugin-node-dependencies
 
+## 2.0.0
+
+### Major Changes
+
+- [#257](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/257) [`7950c01`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/7950c01b6c63f677a8b4edb2de36272b575d54f2) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Drop support for legacy config. The plugin now exports flat configs as the main configuration format. The previous `flat/*` namespace is kept for backward compatibility.
+
+- [#256](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/256) [`e3d3aa5`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/e3d3aa58ed8468a6211efe8d1849d2ef9a0792f6) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Drop support for older ESLint versions. The new minimum supported version is ESLint 9.38.0 or later.
+
+- [#251](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/251) [`626bc32`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/626bc329c1011f1d476721e8a96cb149618debe2) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Drop support for older Node.js versions. The new supported version is `^20.19.0 || ^22.13.0 || >=24`.
+
+- [#258](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/258) [`5e2a753`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/5e2a753bad3613726e9e4c1442530a563213a0ff) Thanks [@ota-meshi](https://github.com/ota-meshi)! - Convert to ESM-only package. The plugin now uses tsdown for bundling and is distributed as pure ESM. The package no longer supports CommonJS `require()` syntax. Users need to use `import` statements or dynamic `import()` to load the plugin.
+
+- [#247](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/247) [`560ba7f`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/560ba7fd60089192dbdce9c8dd4372d879533c4b) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency jsonc-eslint-parser to v3
+
 ## 1.3.0
 
 ### Minor Changes
