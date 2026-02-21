@@ -74,7 +74,7 @@
     "package-json": "^10.0.1",
     "semver": "^7.3.5",
     "synckit": "^0.11.0",
-    "undici": "^6.21.2 || ^7.8.0"
+    "undici": "^7.22.0"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.0",
