@@ -38,7 +38,7 @@ type CachedFileContent = {
 };
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
-const CACHED_META_ROOT = path.join(dirname, `../../.cached_meta`);
+const CACHED_META_ROOT = path.join(dirname, `../.cached_meta`);
 
 /**
  * Get the meta info from given module name
