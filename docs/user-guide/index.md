@@ -21,7 +21,7 @@ Add `node-dependencies` to the plugins section of your `eslint.config.js` config
 
 ### The recommended configuration
 
-The `plugin.configs["recommended"]` config enables a subset of [the rules](../rules/index.md) that should be most useful to most users.
+The `plugin.configs.recommended` config enables a subset of [the rules](../rules/index.md) that should be most useful to most users.
 *See [lib/configs/rules/recommended.ts](https://github.com/ota-meshi/eslint-plugin-node-dependencies/blob/main/lib/configs/rules/recommended.ts) for more details.*
 
 ```js
@@ -29,7 +29,7 @@ The `plugin.configs["recommended"]` config enables a subset of [the rules](../ru
 import * as nodeDependenciesPlugin from "eslint-plugin-node-dependencies"
 
 export default [
-    ...nodeDependenciesPlugin.configs["recommended"],
+    ...nodeDependenciesPlugin.configs.recommended,
 ];
 ```
 

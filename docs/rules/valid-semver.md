@@ -10,7 +10,7 @@ since: "v0.1.0"
 
 > enforce versions that is valid as a semantic version.
 
-- :gear: This rule is included in `"plugin:node-dependencies/recommended"`.
+- :gear: This rule is included in `configs.recommended`.
 
 ## :book: Rule Details
 

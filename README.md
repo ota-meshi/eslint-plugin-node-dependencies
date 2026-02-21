@@ -45,7 +45,7 @@ Add `node-dependencies` to the plugins section of your `eslint.config.js` config
 
 ### The recommended configuration
 
-The `plugin.configs["recommended"]` config enables a subset of [the rules](#white_check_mark-rules) that should be most useful to most users.
+The `plugin.configs.recommended` config enables a subset of [the rules](#white_check_mark-rules) that should be most useful to most users.
 *See [lib/configs/rules/recommended.ts](https://github.com/ota-meshi/eslint-plugin-node-dependencies/blob/main/lib/configs/rules/recommended.ts) for more details.*
 
 ```js
@@ -53,7 +53,7 @@ The `plugin.configs["recommended"]` config enables a subset of [the rules](#whit
 import * as nodeDependenciesPlugin from "eslint-plugin-node-dependencies"
 
 export default [
-    ...nodeDependenciesPlugin.configs["recommended"],
+    ...nodeDependenciesPlugin.configs.recommended,
 ];
 ```
 
@@ -83,7 +83,7 @@ export default [
 <!--RULES_SECTION_START-->
 
 The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) automatically fixes problems reported by rules which have a wrench :wrench: below.
-The rules with the following star :star: are included in the `plugin:node-dependencies/recommended` config.
+The rules with the following star :star: are included in the `plugin.configs.recommended` config.
 
 <!--RULES_TABLE_START-->
 

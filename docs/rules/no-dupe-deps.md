@@ -10,7 +10,7 @@ since: "v0.8.0"
 
 > disallow duplicate dependencies.
 
-- :gear: This rule is included in `"plugin:node-dependencies/recommended"`.
+- :gear: This rule is included in `configs.recommended`.
 
 ## :book: Rule Details
 
