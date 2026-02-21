@@ -1,9 +1,8 @@
-import { createRule, defineJsonVisitor } from "../utils";
+import { createRule, defineJsonVisitor } from "../utils/index.ts";
 import { getStaticJSONValue } from "jsonc-eslint-parser";
-import { getKeyFromJSONProperty } from "../utils/ast-utils";
-import type { NpmPackageMeta } from "../utils/meta";
-import { getMetaFromNpm } from "../utils/meta";
-import { getSourceCode } from "eslint-compat-utils";
+import { getKeyFromJSONProperty } from "../utils/ast-utils.ts";
+import type { NpmPackageMeta } from "../utils/meta.ts";
+import { getMetaFromNpm } from "../utils/meta.ts";
 
 export default createRule("require-provenance-deps", {
   meta: {
@@ -33,7 +32,7 @@ export default createRule("require-provenance-deps", {
     type: "suggestion", // "problem",
   },
   create(context) {
-    const sourceCode = getSourceCode(context);
+    const sourceCode = context.sourceCode;
     if (!sourceCode.parserServices.isJSON) {
       return {};
     }

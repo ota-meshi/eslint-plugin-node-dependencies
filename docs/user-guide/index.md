@@ -26,7 +26,7 @@ The `plugin.configs.recommended` config enables a subset of [the rules](../rules
 
 ```js
 // eslint.config.js
-import * as nodeDependenciesPlugin from "eslint-plugin-node-dependencies"
+import nodeDependenciesPlugin from "eslint-plugin-node-dependencies"
 
 export default [
     ...nodeDependenciesPlugin.configs.recommended,
@@ -39,7 +39,7 @@ Override/add specific rules configurations. *See also: [http://eslint.org/docs/u
 
 ```js
 // eslint.config.js
-import * as nodeDependenciesPlugin from "eslint-plugin-node-dependencies"
+import nodeDependenciesPlugin from "eslint-plugin-node-dependencies"
 
 export default [
     {

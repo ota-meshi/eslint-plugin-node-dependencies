@@ -1,7 +1,9 @@
-import path from "path";
-import fs from "fs";
-// import eslint from "eslint"
-import { rules } from "./lib/load-rules";
+import path from "node:path";
+import fs from "node:fs";
+import { rules } from "./lib/load-rules.ts";
+import { fileURLToPath } from "node:url";
+
+const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Convert text to camelCase
@@ -26,10 +28,29 @@ export const rules = [
 ] as RuleModule[]
 `;
 
-const filePath = path.resolve(__dirname, "../lib/utils/rules.ts");
+// Update file.
+fs.writeFileSync(path.resolve(dirname, "../lib/utils/rules.ts"), content);
+
+const namesContent = `
+export const activeRuleNames = [
+    ${rules
+      .filter((rule) => !rule.meta.deprecated)
+      .map((rule) => JSON.stringify(rule.meta.docs.ruleName))
+      .join(",")}
+]
+export const deprecatedRuleNames = [
+    ${rules
+      .filter((rule) => rule.meta.deprecated)
+      .map((rule) => JSON.stringify(rule.meta.docs.ruleName))
+      .join(",")}
+]
+`;
 
 // Update file.
-fs.writeFileSync(filePath, content);
+fs.writeFileSync(
+  path.resolve(dirname, "../lib/utils/rule-names.ts"),
+  namesContent,
+);
 
 // Format files.
 // const linter = new eslint.CLIEngine({ fix: true })

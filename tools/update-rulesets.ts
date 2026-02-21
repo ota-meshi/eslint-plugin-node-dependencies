@@ -1,7 +1,9 @@
-import path from "path";
-import fs from "fs";
-// import eslint from "eslint"
-import { rules } from "./lib/load-rules";
+import path from "node:path";
+import fs from "node:fs";
+import { rules } from "./lib/load-rules.ts";
+import { fileURLToPath } from "node:url";
+
+const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const content = `import type { Linter } from "eslint";
 
@@ -19,7 +21,7 @@ export default {
 }
 `;
 
-const filePath = path.resolve(__dirname, "../lib/configs/rules/recommended.ts");
+const filePath = path.resolve(dirname, "../lib/configs/rules/recommended.ts");
 
 // Update file.
 fs.writeFileSync(filePath, content);

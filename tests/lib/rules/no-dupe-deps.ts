@@ -1,5 +1,5 @@
-import { RuleTester } from "../utils/compat-eslint";
-import rule from "../../../lib/rules/no-dupe-deps";
+import { RuleTester } from "eslint";
+import rule from "../../../lib/rules/no-dupe-deps.ts";
 
 import * as jsoncParser from "jsonc-eslint-parser";
 const tester = new RuleTester({

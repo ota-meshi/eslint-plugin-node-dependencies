@@ -1,31 +1,25 @@
 import type { DefaultTheme, UserConfig } from "vitepress";
 import { defineConfig } from "vitepress";
-import path from "path";
-import { fileURLToPath } from "url";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { transformerTwoslash } from "@shikijs/vitepress-twoslash";
 import { createTwoslasher as createTwoslasherESLint } from "twoslash-eslint";
 import jsoncParser from "jsonc-eslint-parser";
-import { rules } from "../../lib/utils/rules.js";
-
-type RuleModule = {
-  meta: { docs: { ruleId: string; ruleName: string }; deprecated?: boolean };
-};
-
+import {
+  activeRuleNames,
+  deprecatedRuleNames,
+} from "../../lib/utils/rule-names.ts";
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
-function ruleToSidebarItem({
-  meta: {
-    docs: { ruleId, ruleName },
-  },
-}: RuleModule): DefaultTheme.SidebarItem {
+function ruleToSidebarItem(ruleName: string): DefaultTheme.SidebarItem {
   return {
-    text: ruleId,
+    text: `node-dependencies/${ruleName}`,
     link: `/rules/${ruleName}`,
   };
 }
 
 export default async (): Promise<UserConfig<DefaultTheme.Config>> => {
-  const pluginPath = path.join(dirname, "../../dist/index.js");
+  const pluginPath = path.join(dirname, "../../dist/index.mjs");
   const plugin = await import(pluginPath).then((m) => m.default || m);
   return defineConfig({
     base: "/eslint-plugin-node-dependencies/",
@@ -94,20 +88,16 @@ export default async (): Promise<UserConfig<DefaultTheme.Config>> => {
           {
             text: "Node.js Dependency Rules",
             collapsed: false,
-            items: rules
-              .filter((rule) => !rule.meta.deprecated)
-              .map(ruleToSidebarItem),
+            items: activeRuleNames.map(ruleToSidebarItem),
           },
 
           // Rules in no category.
-          ...(rules.some((rule) => rule.meta.deprecated)
+          ...(deprecatedRuleNames.length > 0
             ? [
                 {
                   text: "Deprecated",
                   collapsed: false,
-                  items: rules
-                    .filter((rule) => rule.meta.deprecated)
-                    .map(ruleToSidebarItem),
+                  items: deprecatedRuleNames.map(ruleToSidebarItem),
                 },
               ]
             : []),

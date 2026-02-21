@@ -1,29 +1,31 @@
-import assert from "assert";
-import path from "path";
-import fs from "fs";
+import assert from "node:assert";
+import path from "node:path";
+import fs from "node:fs";
 
-import type { RuleModule } from "../../../lib/types";
-import { rules as allRules } from "../../../lib/utils/rules";
+import type { RuleModule } from "../../../lib/types.ts";
+import { rules as allRules } from "../../../lib/utils/rules.ts";
+import { fileURLToPath } from "node:url";
+
+const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * @returns {Array} Get the list of rules placed in the directory.
  */
-function getDirRules() {
-  const rulesRoot = path.resolve(__dirname, "../../../lib/rules");
+async function getDirRules() {
+  const rulesRoot = path.resolve(dirname, "../../../lib/rules");
   const result = fs.readdirSync(rulesRoot);
   const rules: { [key: string]: RuleModule } = {};
   for (const name of result) {
     const ruleName = name.replace(/\.ts$/u, "");
     const ruleId = `node-dependencies/${ruleName}`;
 
-    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports -- test
-    const rule = require(path.join(rulesRoot, name)).default;
+    const rule = (await import(path.join(rulesRoot, name))).default;
     rules[ruleId] = rule;
   }
   return rules;
 }
 
-const dirRules = getDirRules();
+const dirRules = await getDirRules();
 
 describe("Check that all the rules have the correct names.", () => {
   for (const ruleId of Object.keys(dirRules)) {

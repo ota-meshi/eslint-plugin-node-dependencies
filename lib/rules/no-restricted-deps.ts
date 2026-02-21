@@ -1,19 +1,18 @@
-import { createRule, defineJsonVisitor } from "../utils";
-import { toRegExp } from "../utils/regexp";
+import { createRule, defineJsonVisitor } from "../utils/index.ts";
+import { toRegExp } from "../utils/regexp.ts";
 import type { Range } from "semver";
 import { intersects } from "semver";
 import {
   getSemverRange,
   normalizeSemverRange,
   normalizeVer,
-} from "../utils/semver";
+} from "../utils/semver.ts";
 import type { JSONProperty } from "jsonc-eslint-parser/lib/parser/ast";
-import { getKeyFromJSONProperty } from "../utils/ast-utils";
+import { getKeyFromJSONProperty } from "../utils/ast-utils.ts";
 import { getStaticJSONValue } from "jsonc-eslint-parser";
-import type { PackageMeta } from "../utils/meta";
-import { getMetaFromNodeModules, getMetaFromNpm } from "../utils/meta";
+import type { PackageMeta } from "../utils/meta.ts";
+import { getMetaFromNodeModules, getMetaFromNpm } from "../utils/meta.ts";
 import type { Rule } from "eslint";
-import { getSourceCode } from "eslint-compat-utils";
 
 const DEPS = [
   "dependencies",
@@ -250,7 +249,7 @@ export default createRule("no-restricted-deps", {
     type: "suggestion",
   },
   create(context) {
-    const sourceCode = getSourceCode(context);
+    const sourceCode = context.sourceCode;
     if (!sourceCode.parserServices.isJSON) {
       return {};
     }

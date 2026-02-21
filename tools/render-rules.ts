@@ -1,5 +1,5 @@
-import type { RuleCategory, RuleModule } from "../lib/types";
-import { rules } from "../lib/utils/rules";
+import type { RuleCategory, RuleModule } from "../lib/types.ts";
+import { rules } from "../lib/utils/rules.ts";
 
 export type BuildRulePathFn = (ruleName: string) => string;
 // eslint-disable-next-line func-style -- ignore

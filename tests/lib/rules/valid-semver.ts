@@ -1,5 +1,5 @@
-import { RuleTester } from "../utils/compat-eslint";
-import rule from "../../../lib/rules/valid-semver";
+import { RuleTester } from "eslint";
+import rule from "../../../lib/rules/valid-semver.ts";
 import * as jsoncParser from "jsonc-eslint-parser";
 const tester = new RuleTester({
   languageOptions: {

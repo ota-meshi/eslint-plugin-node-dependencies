@@ -1,12 +1,12 @@
-import Module from "module";
-import path, { dirname } from "path";
-import fs from "fs";
+import Module from "node:module";
+import path from "node:path";
+import fs from "node:fs";
 import type { Rule } from "eslint";
-import { getSemverRange, maxNextVersion } from "./semver";
+import { getSemverRange, maxNextVersion } from "./semver.ts";
 import { satisfies } from "semver";
 import npa from "npm-package-arg";
-import { syncPackageJson } from "./package-json";
-import { getCwd, getFilename } from "eslint-compat-utils";
+import { syncPackageJson } from "./package-json/index.ts";
+import { fileURLToPath } from "node:url";
 
 const TTL = 1000 * 60 * 60; // 1h
 
@@ -37,7 +37,8 @@ type CachedFileContent = {
   expired?: number;
 };
 
-const CACHED_META_ROOT = path.join(__dirname, `../../.cached_meta`);
+const dirname = path.dirname(fileURLToPath(import.meta.url));
+const CACHED_META_ROOT = path.join(dirname, `../../.cached_meta`);
 
 /**
  * Get the meta info from given module name
@@ -49,11 +50,11 @@ export function getMetaFromNodeModules(
 ): PackageMeta | null {
   try {
     const ownerJsonPath =
-      options.ownerPackageJsonPath || getFilename(options.context);
+      options.ownerPackageJsonPath || options.context.filename;
     const relativeTo = path.join(
       ownerJsonPath && path.isAbsolute(ownerJsonPath)
-        ? dirname(ownerJsonPath)
-        : getCwd(options.context),
+        ? path.dirname(ownerJsonPath)
+        : options.context.cwd,
       "__placeholder__.js",
     );
     const req = Module.createRequire(relativeTo);
@@ -223,9 +224,9 @@ function getMetaFromName(
     if (!fs.existsSync(cachedFilePath)) {
       return null;
     }
-    const data =
-      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires -- ignore
-      require(cachedFilePath) as CachedFileContent;
+    const data: CachedFileContent | null = JSON.parse(
+      fs.readFileSync(cachedFilePath, "utf8"),
+    );
     if (!data || data.meta == null) {
       return null;
     }
@@ -285,7 +286,6 @@ function getMetaFromNameWithoutCache(
     expired: timestamp + Math.floor(Math.random() * 1000 * 60 /* 1m */),
   };
   fs.writeFileSync(cachedFilePath, JSON.stringify(content));
-  delete require.cache[cachedFilePath];
   return meta;
 }
 

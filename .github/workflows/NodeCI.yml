@@ -69,7 +69,7 @@ jobs:
       - name: Build
         run: npm run build
       - name: Test
-        run: npm run test:nyc
+        run: npm run test:c8
       - name: Coveralls GitHub Action
         uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # v2.3.6
         with:
