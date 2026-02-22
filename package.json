@@ -69,6 +69,7 @@
     "eslint": ">=9.38.0"
   },
   "dependencies": {
+    "eslint-json-compat-utils": "^0.2.2",
     "jsonc-eslint-parser": "^3.1.0",
     "npm-package-arg": "^13.0.2",
     "package-json": "^10.0.1",
