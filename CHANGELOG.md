@@ -1,5 +1,11 @@
 # eslint-plugin-node-dependencies
 
+## 2.1.0
+
+### Minor Changes
+
+- [#260](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/260) [`6cb539f`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/6cb539fa55a328164e0e1f5e13a75fd8f768cfdc) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: use eslint-json-compat-utils for compatibility with eslint/json
+
 ## 2.0.0
 
 ### Major Changes
