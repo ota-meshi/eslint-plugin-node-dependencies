@@ -1,5 +1,5 @@
 import type { RuleModule, PartialRuleModule, RuleListener } from "../types.ts";
-
+import { toCompatCreate } from "eslint-json-compat-utils";
 import type { AST } from "jsonc-eslint-parser";
 import { getKey } from "./ast-utils.ts";
 
@@ -12,17 +12,16 @@ export function createRule(
   ruleName: string,
   rule: PartialRuleModule,
 ): RuleModule {
+  const docs = {
+    ...rule.meta.docs,
+    url: `https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/${ruleName}.html`,
+    ruleId: `node-dependencies/${ruleName}`,
+    ruleName,
+  };
+  const meta = { ...rule.meta, docs };
   return {
-    meta: {
-      ...rule.meta,
-      docs: {
-        ...rule.meta.docs,
-        url: `https://ota-meshi.github.io/eslint-plugin-node-dependencies/rules/${ruleName}.html`,
-        ruleId: `node-dependencies/${ruleName}`,
-        ruleName,
-      },
-    },
-    create: rule.create as never,
+    meta,
+    create: toCompatCreate(rule.create),
   };
 }
 

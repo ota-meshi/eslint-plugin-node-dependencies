@@ -108,4 +108,4 @@ docs/.vitepress/cache
 .tern-port
 
 #repo
-/.cached_meta
+.cached_meta
