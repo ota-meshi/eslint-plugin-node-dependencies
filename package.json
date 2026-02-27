@@ -83,7 +83,7 @@
     "@eslint-community/eslint-utils": "^4.6.1",
     "@ota-meshi/eslint-plugin": "^0.20.0",
     "@oxc-node/core": "^0.0.35",
-    "@shikijs/vitepress-twoslash": "^3.0.0",
+    "@shikijs/vitepress-twoslash": "^4.0.0",
     "@swc-node/register": "^1.10.10",
     "@types/chai": "^5.0.0",
     "@types/eslint-scope": "^9.0.0",
@@ -126,7 +126,7 @@
     "vitepress": "^1.0.1"
   },
   "overrides": {
-    "@shikijs/types": "^3.0.0"
+    "@shikijs/types": "^4.0.0"
   },
   "publishConfig": {
     "access": "public"
