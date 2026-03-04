@@ -188,6 +188,7 @@ export default createRule("compat-engines", {
         type: "object",
         properties: {
           deep: { type: "boolean" },
+          devDependencies: { type: "boolean" },
           comparisonType: { enum: ["normal", "major"] },
         },
         additionalProperties: false,
@@ -202,6 +203,7 @@ export default createRule("compat-engines", {
       return {};
     }
     const deep = context.options[0]?.deep !== false;
+    const devDependencies = context.options[0]?.devDependencies === true;
     const comparisonType: ComparisonType =
       context.options[0]?.comparisonType ?? "normal";
 
@@ -319,6 +321,19 @@ export default createRule("compat-engines", {
       }
     }
 
+    function visitDepNode(node: AST.JSONProperty) {
+      if (selfEngines.size === 0) {
+        return;
+      }
+      const name = getKeyFromJSONProperty(node);
+      const ver = getStaticJSONValue(node.value);
+      if (typeof name !== "string" || typeof ver !== "string") {
+        return;
+      }
+      const ctx = new EnginesContext(selfEngines.keys());
+      processDependencyModule(ctx, name, ver, [], node);
+    }
+
     return compositingVisitors(
       {
         JSONExpressionStatement(node: AST.JSONExpressionStatement) {
@@ -348,18 +363,9 @@ export default createRule("compat-engines", {
         },
       },
       defineJsonVisitor({
-        "dependencies, peerDependencies"(node) {
-          if (selfEngines.size === 0) {
-            return;
-          }
-          const name = getKeyFromJSONProperty(node);
-          const ver = getStaticJSONValue(node.value);
-          if (typeof name !== "string" || typeof ver !== "string") {
-            return;
-          }
-          const ctx = new EnginesContext(selfEngines.keys());
-          processDependencyModule(ctx, name, ver, [], node);
-        },
+        dependencies: visitDepNode,
+        peerDependencies: visitDepNode,
+        ...(devDependencies && {devDependencies: visitDepNode}),
       }),
     );
   },

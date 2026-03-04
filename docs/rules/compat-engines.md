@@ -34,12 +34,14 @@ This rule checks the `engines` of the dependencies and reports if they are compa
 {
   "node-dependencies/compat-engines": ["error", {
     "deep": true,
+    "devDependencies": false,
     "comparisonType": "normal"
   }]
 }
 ```
 
 - `deep` ... If `true`, if the dependency does not have `engines`, it will be checked further dependencies.
+- `devDependencies` ... If `true`, the rule also checks `devDependencies`.
 - `comparisonType` ... Defines the comparison method. Default is `"normal"`
   - `"normal"` ... This is the normal comparison method.
   - `"major"` ... If the versions match in the major version, it is considered a match. For example, `node@>=10` allows dependency modules for `node@>=10.12`.

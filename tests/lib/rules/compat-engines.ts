@@ -189,6 +189,33 @@ tester.run("compat-engines", rule as any, {
                 }
             }`,
     },
+    {
+      filename: "package.json",
+      code: `
+            {
+                "engines": {
+                    "node": ">=8"
+                },
+                "devDependencies": {
+                    "semver": "^7.3.5"
+                }
+            }
+            `,
+    },
+    {
+      filename: "package.json",
+      code: `
+            {
+                "engines": {
+                    "node": ">=12"
+                },
+                "devDependencies": {
+                    "semver": "^7.3.5"
+                }
+            }
+            `,
+      options: [{ devDependencies: true }],
+    },
   ],
   invalid: [
     {
@@ -427,6 +454,28 @@ tester.run("compat-engines", rule as any, {
         {
           message:
             '"eslint6@npm:eslint@^6" is not compatible with "node@^10.0.0||^12.0.0||>=14.0.0". Allowed is: "node@^8.10.0||^10.13.0||>=11.10.1"',
+          line: 7,
+          column: 21,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
+            {
+                "engines": {
+                    "node": ">=8"
+                },
+                "devDependencies": {
+                    "semver": "^7.3.5"
+                }
+            }
+            `,
+      options: [{ devDependencies: true }],
+      errors: [
+        {
+          message:
+            '"semver@^7.3.5" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
           line: 7,
           column: 21,
         },
