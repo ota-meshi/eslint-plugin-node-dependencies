@@ -1,5 +1,11 @@
 # eslint-plugin-node-dependencies
 
+## 2.2.0
+
+### Minor Changes
+
+- [#265](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/265) [`49eab72`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/49eab7268cdd682ed990953a03b1e7bbff25a21a) Thanks [@andreww2012](https://github.com/andreww2012)! - feat: add `devDependencies` option to `compat-engines`
+
 ## 2.1.0
 
 ### Minor Changes
