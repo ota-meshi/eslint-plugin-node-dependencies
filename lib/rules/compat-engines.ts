@@ -322,7 +322,7 @@ export default createRule("compat-engines", {
     }
 
     /**
-     *
+     * Check for dependency property node
      */
     function visitDepNode(node: AST.JSONProperty) {
       if (selfEngines.size === 0) {
