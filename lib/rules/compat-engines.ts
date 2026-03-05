@@ -321,6 +321,9 @@ export default createRule("compat-engines", {
       }
     }
 
+    /**
+     *
+     */
     function visitDepNode(node: AST.JSONProperty) {
       if (selfEngines.size === 0) {
         return;
@@ -365,7 +368,7 @@ export default createRule("compat-engines", {
       defineJsonVisitor({
         dependencies: visitDepNode,
         peerDependencies: visitDepNode,
-        ...(devDependencies && {devDependencies: visitDepNode}),
+        ...(devDependencies && { devDependencies: visitDepNode }),
       }),
     );
   },
