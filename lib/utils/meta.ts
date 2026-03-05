@@ -13,7 +13,6 @@ const TTL = 1000 * 60 * 60; // 1h
 export type PackageMeta = {
   engines: Record<string, string | undefined> | undefined;
   dependencies: Record<string, string | undefined> | undefined;
-  devDependencies: Record<string, string | undefined> | undefined;
   peerDependencies: Record<string, string | undefined> | undefined;
   optionalDependencies: Record<string, string | undefined> | undefined;
   version: string | undefined;
@@ -268,7 +267,6 @@ function getMetaFromNameWithoutCache(
         version: vm.version,
         engines: vm.engines,
         dependencies: vm.dependencies,
-        devDependencies: vm.devDependencies,
         peerDependencies: vm.peerDependencies,
         optionalDependencies: vm.optionalDependencies,
         "dist-tags": allMeta["dist-tags"],
@@ -302,11 +300,7 @@ export function getEngines(meta: unknown): Map<string, string> {
 /** Get the dependencies from given package.json value */
 export function getDependencies(
   meta: unknown,
-  kind:
-    | "dependencies"
-    | "devDependencies"
-    | "peerDependencies"
-    | "optionalDependencies",
+  kind: "dependencies" | "peerDependencies" | "optionalDependencies",
 ): Map<string, string> {
   if (!maybeMeta(meta)) {
     return new Map<string, string>();
