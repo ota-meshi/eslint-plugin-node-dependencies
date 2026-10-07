@@ -74,7 +74,7 @@
     "npm-package-arg": "^13.0.2",
     "package-json": "^10.0.1",
     "semver": "^7.7.4",
-    "synckit": "^0.11.12",
+    "synckit": "^0.12.0",
     "undici": "^7.22.0"
   },
   "devDependencies": {
