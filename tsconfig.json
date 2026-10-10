@@ -4,6 +4,7 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "lib": ["ES2024"],
+    "types": ["node", "mocha"],
     "allowJs": true,
     "checkJs": true,
     "declaration": true,
@@ -14,9 +15,8 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
     "paths": {
-      "*": ["typings/*"]
+      "*": ["./typings/*"]
     },
     "esModuleInterop": true,
     "resolveJsonModule": true,

@@ -4,9 +4,12 @@ import { recommendedConfig as flatRecommended } from "./configs/flat/recommended
 import * as meta from "./meta.ts";
 import type { Linter, Rule } from "eslint";
 
-const configs = {
-  recommended: flatRecommended as Linter.Config[],
-  "flat/recommended": flatRecommended as Linter.Config[],
+const configs: {
+  recommended: Linter.Config[];
+  "flat/recommended": Linter.Config[];
+} = {
+  recommended: flatRecommended,
+  "flat/recommended": flatRecommended,
 };
 
 const rules = ruleList.reduce(

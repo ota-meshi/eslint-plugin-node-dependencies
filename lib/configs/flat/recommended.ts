@@ -2,7 +2,7 @@ import type { ESLint, Linter } from "eslint";
 import recommendedRules from "../rules/recommended.ts";
 import * as jsonParser from "jsonc-eslint-parser";
 import plugin from "../../index.ts";
-export const recommendedConfig = [
+export const recommendedConfig: Linter.Config[] = [
   {
     plugins: {
       get "node-dependencies"(): ESLint.Plugin {
@@ -17,4 +17,4 @@ export const recommendedConfig = [
     },
     rules: recommendedRules.rules,
   },
-] satisfies Linter.Config[];
+];
