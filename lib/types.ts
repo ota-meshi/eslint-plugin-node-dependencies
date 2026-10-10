@@ -11,9 +11,7 @@ export interface RuleModule {
 }
 
 export type RuleCategory =
-  | "Possible Errors"
-  | "Best Practices"
-  | "Stylistic Issues";
+  "Possible Errors" | "Best Practices" | "Stylistic Issues";
 
 export interface RuleMetaData {
   docs: {
