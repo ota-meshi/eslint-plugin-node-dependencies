@@ -1,5 +1,8 @@
 import nodeDependenciesPlugin from "../../../../dist/index.mjs"
 
-export default [
+/** @type {import("eslint").Linter.Config[]} */
+const config = [
     ...nodeDependenciesPlugin.configs["recommended"],
 ];
+
+export default config;
