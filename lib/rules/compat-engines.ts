@@ -8,6 +8,7 @@ import {
 import semver from "semver";
 import { getKeyFromJSONProperty } from "../utils/ast-utils.ts";
 import {
+  Range,
   getSemverRange,
   normalizeSemverRange,
   normalizeVer,
@@ -26,10 +27,7 @@ class EnginesContext {
 
   private readonly unprocessedEngines = new Set<string>();
 
-  private readonly invalidEngines = new Map<
-    string,
-    Map<string, semver.Range>
-  >();
+  private readonly invalidEngines = new Map<string, Map<string, Range>>();
 
   private readonly validEngines = new Set<string>();
 
@@ -61,7 +59,7 @@ class EnginesContext {
     this.invalidEngines.delete(module);
   }
 
-  public addInvalid(module: string, allowedVer: semver.Range) {
+  public addInvalid(module: string, allowedVer: Range) {
     if (this.validEngines.has(module)) {
       return;
     }
@@ -77,7 +75,7 @@ class EnginesContext {
     return this.invalidEngines.size > 0;
   }
 
-  public getInvalid(): ReadonlyMap<string, Map<string, semver.Range>> {
+  public getInvalid(): ReadonlyMap<string, Map<string, Range>> {
     return this.invalidEngines;
   }
 
@@ -95,8 +93,8 @@ class EnginesContext {
  */
 function buildAdjustRangeForSelf(
   comparisonType: ComparisonType,
-  original: semver.Range,
-): semver.Range {
+  original: Range,
+): Range {
   // Adjust "node@>=16" and "node@^16" to be considered compatible.
   const adjustVers: string[] = [];
   for (const cc of original.set) {
@@ -110,7 +108,7 @@ function buildAdjustRangeForSelf(
     }
     adjustVers.push(cc.map((c) => c.value).join(" "));
   }
-  const range = new semver.Range(adjustVers.join("||"));
+  const range = new Range(adjustVers.join("||"));
   if (comparisonType === "normal") {
     return range;
   }
@@ -126,8 +124,8 @@ function buildAdjustRangeForSelf(
  */
 function buildAdjustRangeForDeps(
   comparisonType: ComparisonType,
-  original: semver.Range,
-): semver.Range {
+  original: Range,
+): Range {
   if (comparisonType === "normal") {
     return original;
   }
@@ -145,7 +143,7 @@ function buildAdjustRangeForDeps(
           .join(" "),
       );
     }
-    return new semver.Range(majorVers.join("||"));
+    return new Range(majorVers.join("||"));
   }
 
   throw new Error(`Illegal comparisonType: ${comparisonType}`);
@@ -153,7 +151,7 @@ function buildAdjustRangeForDeps(
 
 /** Extract dependencies */
 function extractDependencies(metaList: PackageMeta[]) {
-  const dependencies = new Map<string, semver.Range[]>();
+  const dependencies = new Map<string, Range[]>();
   for (const meta of metaList) {
     for (const [m, v] of [
       ...getDependencies(meta, "dependencies"),
@@ -207,10 +205,8 @@ export default createRule("compat-engines", {
     const comparisonType: ComparisonType =
       context.options[0]?.comparisonType ?? "normal";
 
-    const selfEngines: Map<
-      string,
-      { adjust: semver.Range; original: semver.Range }
-    > = new Map();
+    const selfEngines: Map<string, { adjust: Range; original: Range }> =
+      new Map();
 
     /**
      * Process meta data
@@ -228,8 +224,7 @@ export default createRule("compat-engines", {
           continue;
         }
         if (
-          semver.subset(
-            selfVer.adjust,
+          selfVer.adjust.isSubsetOf(
             buildAdjustRangeForDeps(comparisonType, depVer),
           )
         ) {
@@ -285,8 +280,7 @@ export default createRule("compat-engines", {
           normalizeSemverRange(...allowedVers.values()) ||
           [...allowedVers.values()].pop()!;
         if (
-          semver.subset(
-            selfVer.adjust,
+          selfVer.adjust.isSubsetOf(
             buildAdjustRangeForDeps(comparisonType, depVer),
           )
         ) {

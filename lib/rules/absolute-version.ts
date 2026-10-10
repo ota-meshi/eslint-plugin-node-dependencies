@@ -1,6 +1,6 @@
 import { getStaticJSONValue } from "jsonc-eslint-parser";
 import type { AST } from "jsonc-eslint-parser";
-import type { Range } from "semver";
+import type { Range } from "../utils/semver.ts";
 import { createRule, defineJsonVisitor } from "../utils/index.ts";
 import { getKeyFromJSONProperty } from "../utils/ast-utils.ts";
 import { toRegExp } from "../utils/regexp.ts";

@@ -1,10 +1,10 @@
 import assert from "node:assert";
 
 import {
+  Range,
   normalizeSemverRange,
   maxNextVersion,
 } from "../../../lib/utils/semver.ts";
-import { Range, subset } from "semver";
 
 describe("normalizeSemverRange", () => {
   const testcases = [
@@ -19,6 +19,22 @@ describe("normalizeSemverRange", () => {
     {
       input: ["*", "^13"],
       output: "*",
+    },
+    {
+      input: ["*", "56.0.0-preview.0"],
+      output: "*||56.0.0-preview.0",
+    },
+    {
+      input: ["56.0.0-preview.0", "*"],
+      output: "*||56.0.0-preview.0",
+    },
+    {
+      input: ["*", "0.0.0-preview.0"],
+      output: "*||0.0.0-preview.0",
+    },
+    {
+      input: ["0.0.0-preview.0", "*"],
+      output: "*||0.0.0-preview.0",
     },
     {
       input: ["~10.12", "^13"],
@@ -79,7 +95,7 @@ describe("normalizeSemverRange", () => {
 
       for (const inRange of inRanges) {
         assert.ok(
-          subset(inRange, outRange),
+          inRange.isSubsetOf(outRange),
           `"${inRange}" is a subset of "${outRange}".`,
         );
       }
