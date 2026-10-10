@@ -205,7 +205,7 @@ function isAbsoluteVersion(semver: Range) {
       if (isAnyComparator(comparator)) {
         return false;
       }
-      if (comparator.operator !== "=" && comparator.operator !== "") {
+      if (comparator.operator !== "") {
         return false;
       }
     }

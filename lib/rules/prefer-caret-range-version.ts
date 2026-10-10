@@ -1,5 +1,5 @@
 import type { AST } from "jsonc-eslint-parser";
-import { SemVer } from "semver";
+import { compare, normalize } from "verkit";
 import { createRule, defineJsonVisitor } from "../utils/index.ts";
 import { getSemverRange } from "../utils/semver.ts";
 import type { RangeResult } from "../utils/semver-range.ts";
@@ -32,23 +32,23 @@ export default createRule("prefer-caret-range-version", {
       }
       const start = range.comparators.find((c) => c.operator === ">=");
       const end = range.comparators.find((c) => c.operator === "<");
-      if (!start || !end) {
+      if (!start?.version || !end?.version) {
         return null;
       }
-      const caretRangeText = `^${start.semver.version}`;
+      const caretRangeText = `^${normalize(start.version)}`;
       const caretRange = getSemverRange(caretRangeText);
       if (!caretRange) {
         return null;
       }
       const caretEnd = caretRange.set[0].find((c) => c.operator === "<");
-      if (!caretEnd) {
+      if (!caretEnd?.version) {
         // invalid?
         return null;
       }
 
-      if (caretEnd.semver.compare(end.semver) !== 0) {
-        const endPre = new SemVer(`${end.semver.version}-0`);
-        if (caretEnd.semver.compare(endPre) !== 0) {
+      if (compare(caretEnd.version, end.version) !== 0) {
+        const endPre = `${normalize(end.version)}-0`;
+        if (compare(caretEnd.version, endPre) !== 0) {
           return null;
         }
       }

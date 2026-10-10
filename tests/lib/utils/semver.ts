@@ -1,4 +1,5 @@
 import assert from "node:assert";
+import { normalize } from "verkit";
 
 import {
   Range,
@@ -116,12 +117,30 @@ describe("maxNextVersion", () => {
       input: "*",
       output: null,
     },
+    {
+      input: "<=1.2.3",
+      output: "1.2.4-0",
+    },
+    {
+      input: "<=1.2.3-beta.2",
+      output: "1.2.3-beta.3",
+    },
+    {
+      input: "<=1.2.9007199254740991",
+      output: null,
+    },
+    {
+      input: "1.2.3+build.1",
+      output: "1.2.3",
+    },
   ];
   for (const { input, output } of testcases) {
     it(`Get max next version "${input}" should result in "${output}".`, () => {
       const inRange = new Range(input);
+      const originalComparators = structuredClone(inRange.set);
       const outRange = maxNextVersion(inRange);
-      assert.strictEqual(outRange?.raw ?? null, output);
+      assert.strictEqual(outRange ? normalize(outRange) : null, output);
+      assert.deepStrictEqual(inRange.set, originalComparators);
     });
   }
 });

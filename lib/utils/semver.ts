@@ -1,13 +1,20 @@
-import type { Comparator } from "semver";
-import { lt, inc, SemVer } from "semver";
+import type { SemVerComparator, SemVer } from "verkit";
+import {
+  compare,
+  isLessThan,
+  increment,
+  normalize,
+  parse,
+  tryParse,
+} from "verkit";
 import { Range } from "./semver/range.ts";
 
 export { Range };
 
 type RangeComparator =
-  | { min: Comparator; max: Comparator }
-  | { min: null; max: Comparator }
-  | { min: Comparator; max: null };
+  | { min: SemVerComparator; max: SemVerComparator }
+  | { min: null; max: SemVerComparator }
+  | { min: SemVerComparator; max: null };
 
 /** Get the semver range instance from given value */
 export function getSemverRange(value: string | undefined | null): Range | null {
@@ -34,7 +41,7 @@ export function normalizeVer(ver: Range): string {
 export function normalizeSemverRange(...values: Range[]): Range | null {
   const map = new Map<
     string,
-    { range: Range; comparators: readonly Comparator[] }
+    { range: Range; comparators: readonly SemVerComparator[] }
   >();
   for (const ver of values) {
     for (const comparators of ver.set) {
@@ -47,7 +54,10 @@ export function normalizeSemverRange(...values: Range[]): Range | null {
         continue;
       }
       let consume = false;
-      let target = { range: normalizedVer, comparators };
+      let target: { range: Range; comparators: readonly SemVerComparator[] } = {
+        range: normalizedVer,
+        comparators,
+      };
       for (const [k, data] of map) {
         if (target.range.isSubsetOf(data.range)) {
           consume = true;
@@ -78,20 +88,20 @@ export function normalizeSemverRange(...values: Range[]): Range | null {
       const aVer = getMinVer(a.comparators);
       const bVer = getMinVer(b.comparators);
 
-      return aVer.compare(bVer);
+      return compare(aVer, bVer);
     })
     .map(([v]) => v);
   return getSemverRange(ranges.join("||"));
 
   /** Get min version */
-  function getMinVer(comparators: readonly Comparator[]) {
+  function getMinVer(comparators: readonly SemVerComparator[]) {
     let min: SemVer | null = null;
     for (const comp of comparators) {
-      if (isAnyComparator(comp)) {
-        return new SemVer("0.0.0-0");
+      if (comp.version === null) {
+        return parse("0.0.0-0");
       }
-      if (!min || comp.semver.compare(min) < 0) {
-        min = comp.semver;
+      if (!min || compare(comp.version, min) < 0) {
+        min = comp.version;
       }
     }
     return min!;
@@ -99,31 +109,31 @@ export function normalizeSemverRange(...values: Range[]): Range | null {
 }
 
 /** Normalize comparators */
-function normalizeComparators(comparators: readonly Comparator[]): string {
+function normalizeComparators(
+  comparators: readonly SemVerComparator[],
+): string {
   const rangeComparator = toRangeComparator(comparators);
   if (rangeComparator && rangeComparator.min && rangeComparator.max) {
+    const minVersion = rangeComparator.min.version!;
+    const maxVersion = normalize(rangeComparator.max.version!);
     if (
       rangeComparator.min.operator === ">=" &&
       rangeComparator.max.operator === "<"
     ) {
       if (
-        rangeComparator.min.semver.major !== 0 &&
-        inc(rangeComparator.min.semver.version, "premajor") ===
-          rangeComparator.max.semver.version
+        minVersion.major !== 0 &&
+        increment(minVersion, "premajor") === maxVersion
       )
-        return `^${rangeComparator.min.semver.version}`;
-      if (
-        inc(rangeComparator.min.semver.version, "preminor") ===
-        rangeComparator.max.semver.version
-      )
-        return `~${rangeComparator.min.semver.version}`;
+        return `^${normalize(minVersion)}`;
+      if (increment(minVersion, "preminor") === maxVersion)
+        return `~${normalize(minVersion)}`;
     }
   }
   return comparators.map(normalizeComparator).join(" ");
 }
 
 /** Normalize comparator */
-function normalizeComparator(comparator: Comparator): string {
+function normalizeComparator(comparator: SemVerComparator): string {
   if (comparator.operator === "") {
     return comparator.value || "*";
   }
@@ -132,23 +142,25 @@ function normalizeComparator(comparator: Comparator): string {
 
 /** Join */
 function joinComparators(
-  a: readonly Comparator[],
-  b: readonly Comparator[],
-): readonly Comparator[] | null {
+  a: readonly SemVerComparator[],
+  b: readonly SemVerComparator[],
+): readonly SemVerComparator[] | null {
   const aRangeComparator = toRangeComparator(a);
   const bRangeComparator = toRangeComparator(b);
   if (aRangeComparator && bRangeComparator) {
-    const comparators: Comparator[] = [];
+    const comparators: SemVerComparator[] = [];
     if (aRangeComparator.min && bRangeComparator.min) {
       comparators.push(
-        aRangeComparator.min.semver.compare(bRangeComparator.min.semver) <= 0
+        compare(aRangeComparator.min.version!, bRangeComparator.min.version!) <=
+          0
           ? aRangeComparator.min
           : bRangeComparator.min,
       );
     }
     if (aRangeComparator.max && bRangeComparator.max) {
       comparators.push(
-        aRangeComparator.max.semver.compare(bRangeComparator.max.semver) >= 0
+        compare(aRangeComparator.max.version!, bRangeComparator.max.version!) >=
+          0
           ? aRangeComparator.max
           : bRangeComparator.max,
       );
@@ -164,7 +176,7 @@ function joinComparators(
 
 /** Convert to RangeComparator */
 function toRangeComparator(
-  comparators: readonly Comparator[],
+  comparators: readonly SemVerComparator[],
 ): RangeComparator | null {
   if (comparators.length === 2) {
     if (comparators[0].operator === ">" || comparators[0].operator === ">=") {
@@ -212,21 +224,19 @@ export function maxNextVersion(range: Range): SemVer | null {
     let max = null;
     let hasMin = false;
     for (const comparator of comparators) {
-      if (isAnyComparator(comparator)) {
+      const compVer =
+        comparator.operator === "<="
+          ? tryParse(increment(comparator.version!, "prerelease")!)
+          : comparator.version;
+      if (compVer === null) {
         return null;
       }
-      // Clone to avoid manipulating the comparators semver object.
-      const compVer = new SemVer(comparator.semver.version);
       if (
         comparator.operator === "<=" ||
         comparator.operator === "<" ||
         comparator.operator === ""
       ) {
-        if (comparator.operator === "<=") {
-          compVer.inc("prerelease");
-        }
-
-        if (!max || lt(max, compVer)) {
+        if (!max || isLessThan(max, compVer)) {
           max = compVer;
         }
       } else if (comparator.operator === ">=" || comparator.operator === ">") {
@@ -234,7 +244,7 @@ export function maxNextVersion(range: Range): SemVer | null {
       }
     }
     if (max) {
-      if (!maxVer || lt(maxVer, max)) {
+      if (!maxVer || isLessThan(maxVer, max)) {
         maxVer = max;
       }
     } else {
@@ -248,6 +258,6 @@ export function maxNextVersion(range: Range): SemVer | null {
 }
 
 /** Checks whether the given comparator is ANY comparator or not. */
-export function isAnyComparator(comparator: Comparator): boolean {
-  return !comparator.semver.version;
+export function isAnyComparator(comparator: SemVerComparator): boolean {
+  return comparator.version === null;
 }
