@@ -1,5 +1,15 @@
 # eslint-plugin-node-dependencies
 
+## 2.3.0
+
+### Minor Changes
+
+- [#305](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/305) [`3bc2fd4`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/3bc2fd407a06a214031857f7c744eae7a0d7a604) Thanks [@ota-meshi](https://github.com/ota-meshi)! - Replace `semver` with `verkit` for version and range handling. Differences in prerelease containment and intersection checks can change rule reports.
+
+### Patch Changes
+
+- [#304](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/304) [`9db00d2`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/9db00d215e0e0645b7cbb7002b027b10bc6d5612) Thanks [@ota-meshi](https://github.com/ota-meshi)! - Fix a `compat-engines` crash when dependency ranges combine wildcards and prerelease versions. Preserve explicitly allowed prereleases when combining and parsing ranges.
+
 ## 2.2.0
 
 ### Minor Changes
