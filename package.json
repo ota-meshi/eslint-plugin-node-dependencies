@@ -73,9 +73,9 @@
     "jsonc-eslint-parser": "^3.1.0",
     "npm-package-arg": "^13.0.2",
     "package-json": "^10.0.1",
-    "semver": "^7.7.4",
     "synckit": "^0.12.0",
-    "undici": "^7.22.0"
+    "undici": "^7.22.0",
+    "verkit": "^0.5.0"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^1.0.0",
@@ -93,7 +93,6 @@
     "@types/mocha": "^10.0.0",
     "@types/node": "^24.0.0",
     "@types/npm-package-arg": "^6.1.1",
-    "@types/semver": "^7.3.8",
     "c8": "^12.0.0",
     "chai": "^6.0.0",
     "clean-pkg-json": "^2.0.0",

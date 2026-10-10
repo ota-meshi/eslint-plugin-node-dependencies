@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { SemVer } from "semver";
+import { parse } from "verkit";
 import { Range } from "../../../../lib/utils/semver/range.ts";
 
 describe("Range", () => {
@@ -24,6 +24,18 @@ describe("Range", () => {
       assert.strictEqual(range.test("1.2.3-preview.0"), false);
     });
 
+    for (const input of ["* || 56.0.0", "56.0.0 || *", "* || ^56", "* || *"]) {
+      it(`removes branches already covered by the wildcard in "${input}"`, () => {
+        const range = new Range(input);
+        assert.strictEqual(range.raw, input);
+        assert.strictEqual(range.set.length, 1);
+        assert.strictEqual(range.set[0].length, 1);
+        assert.strictEqual(range.set[0][0].value, "");
+        assert.ok(range.test("56.0.0"));
+        assert.strictEqual(range.test("56.0.0-preview.0"), false);
+      });
+    }
+
     for (const input of ["* || invalid", "invalid || *"]) {
       it(`rejects an invalid OR clause in "${input}"`, () => {
         assert.throws(() => new Range(input), TypeError);
@@ -33,14 +45,19 @@ describe("Range", () => {
 
   describe("test", () => {
     for (const prerelease of ["56.0.0-preview.0", "0.0.0-preview.0"]) {
-      for (const input of [`*||${prerelease}`, `${prerelease}||*`]) {
+      for (const input of [
+        `*||${prerelease}`,
+        `${prerelease}||*`,
+        `*||56.0.0||${prerelease}`,
+        `${prerelease}||56.0.0||*`,
+      ]) {
         it(`preserves wildcard and explicit prerelease membership in "${input}"`, () => {
           const range = new Range(input);
           assert.strictEqual(range.set.length, 2);
           assert.ok(range.test("0.0.0"));
           assert.ok(range.test("56.0.0"));
           assert.ok(range.test(prerelease));
-          assert.ok(range.test(new SemVer(prerelease)));
+          assert.ok(range.test(parse(prerelease)));
           assert.strictEqual(
             range.test(prerelease.replace(/\.0$/u, ".1")),
             false,

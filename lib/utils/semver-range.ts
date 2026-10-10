@@ -1,9 +1,9 @@
-import type { Comparator } from "semver";
+import type { SemVerComparator } from "verkit";
 import { getSemverRange } from "./semver.ts";
 
 export type RangeResult = {
   value: string;
-  comparators: readonly Comparator[];
+  comparators: readonly SemVerComparator[];
   range: readonly [number, number];
 };
 /**

@@ -2,6 +2,7 @@ import Module from "node:module";
 import path from "node:path";
 import fs from "node:fs";
 import type { Rule } from "eslint";
+import { compare } from "verkit";
 import { getSemverRange, maxNextVersion } from "./semver.ts";
 import npa from "npm-package-arg";
 import { syncPackageJson } from "./package-json/index.ts";
@@ -159,7 +160,7 @@ function getMetaFromNameAndSpec(
       const maxNext = maxNextVersion(range);
       if (maxNext) {
         alive = cache.data.meta.some(
-          (m) => m.version && maxNext.compare(m.version) <= 0,
+          (m) => m.version && compare(maxNext, m.version) <= 0,
         );
       }
     }

@@ -5,7 +5,7 @@ import {
   defineJsonVisitor,
   createRule,
 } from "../utils/index.ts";
-import semver from "semver";
+import { increment } from "verkit";
 import { getKeyFromJSONProperty } from "../utils/ast-utils.ts";
 import {
   Range,
@@ -99,9 +99,12 @@ function buildAdjustRangeForSelf(
   const adjustVers: string[] = [];
   for (const cc of original.set) {
     if (cc.length === 1) {
-      if (cc[0].operator === ">" || cc[0].operator === ">=") {
+      if (
+        cc[0].version &&
+        (cc[0].operator === ">" || cc[0].operator === ">=")
+      ) {
         adjustVers.push(
-          `${cc[0].value} <${semver.inc(cc[0].semver.version, "premajor")}`,
+          `${cc[0].value} <${increment(cc[0].version, "premajor")}`,
         );
         continue;
       }
@@ -135,8 +138,8 @@ function buildAdjustRangeForDeps(
       majorVers.push(
         cc
           .map((c) => {
-            if (c.operator === ">" || c.operator === ">=") {
-              return `${c.operator}${c.semver.major}`;
+            if (c.version && (c.operator === ">" || c.operator === ">=")) {
+              return `${c.operator}${c.version.major}`;
             }
             return c.value;
           })
