@@ -1,7 +1,6 @@
 import { createRule, defineJsonVisitor } from "../utils/index.ts";
 import { toRegExp } from "../utils/regexp.ts";
-import type { Range } from "semver";
-import { intersects } from "semver";
+import type { Range } from "../utils/semver.ts";
 import {
   getSemverRange,
   normalizeSemverRange,
@@ -288,7 +287,7 @@ export default createRule("no-restricted-deps", {
         return true;
       }
       const range = getSemverRange(version);
-      return Boolean(range && intersects(range, optionVersion));
+      return Boolean(range && range.intersects(optionVersion));
     }
 
     /**

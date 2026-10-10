@@ -3,7 +3,6 @@ import path from "node:path";
 import fs from "node:fs";
 import type { Rule } from "eslint";
 import { getSemverRange, maxNextVersion } from "./semver.ts";
-import { satisfies } from "semver";
 import npa from "npm-package-arg";
 import { syncPackageJson } from "./package-json/index.ts";
 import { fileURLToPath } from "node:url";
@@ -62,10 +61,7 @@ export function getMetaFromNodeModules(
     const pkg = req(where);
     if (maybeMeta(pkg)) {
       const vr = getSemverRange(ver);
-      if (
-        typeof pkg.version === "string" &&
-        (!vr || satisfies(pkg.version, vr))
-      ) {
+      if (typeof pkg.version === "string" && (!vr || vr.test(pkg.version))) {
         pkg._where = where;
         return pkg;
       }

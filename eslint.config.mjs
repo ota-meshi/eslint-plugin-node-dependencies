@@ -4,7 +4,7 @@ import tsEslint from "typescript-eslint";
 
 export default defineConfig([
   globalIgnores([
-    ".cached_meta",
+    "**/.cached_meta/",
     ".nyc_output",
     "coverage",
     "dist",

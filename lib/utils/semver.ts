@@ -1,5 +1,8 @@
 import type { Comparator } from "semver";
-import { lt, intersects, inc, Range, subset, SemVer } from "semver";
+import { lt, inc, SemVer } from "semver";
+import { Range } from "./semver/range.ts";
+
+export { Range };
 
 type RangeComparator =
   | { min: Comparator; max: Comparator }
@@ -46,14 +49,14 @@ export function normalizeSemverRange(...values: Range[]): Range | null {
       let consume = false;
       let target = { range: normalizedVer, comparators };
       for (const [k, data] of map) {
-        if (subset(target.range, data.range)) {
+        if (target.range.isSubsetOf(data.range)) {
           consume = true;
           break;
         }
-        if (subset(data.range, target.range)) {
+        if (data.range.isSubsetOf(target.range)) {
           map.delete(k);
         }
-        if (intersects(target.range, data.range)) {
+        if (target.range.intersects(data.range)) {
           const newComparators = joinComparators(comparators, data.comparators);
           if (newComparators) {
             target = {
@@ -84,6 +87,9 @@ export function normalizeSemverRange(...values: Range[]): Range | null {
   function getMinVer(comparators: readonly Comparator[]) {
     let min: SemVer | null = null;
     for (const comp of comparators) {
+      if (isAnyComparator(comp)) {
+        return new SemVer("0.0.0-0");
+      }
       if (!min || comp.semver.compare(min) < 0) {
         min = comp.semver;
       }
