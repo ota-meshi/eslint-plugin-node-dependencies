@@ -33,16 +33,20 @@ jobs:
         node-version: [20.x, 22.x, 24.x]
     steps:
       - uses: actions/checkout@v7
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js for build
         uses: actions/setup-node@v7
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: lts/*
       - name: Install Packages
         run: npm i -f
       - name: Build
         run: npm run build
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: Test
-        run: npm test
+        run: npm run test:c8
   test-with-eslint10:
     runs-on: ubuntu-latest
     steps:
