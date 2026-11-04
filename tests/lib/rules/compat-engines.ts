@@ -216,6 +216,70 @@ tester.run("compat-engines", rule as any, {
             `,
       options: [{ devDependencies: true }],
     },
+    {
+      filename: "package.json",
+      code: `
+            {
+                "engines": {
+                    "node": ">=8"
+                },
+                "dependencies": {
+                    "semver": "^7.3.5"
+                }
+            }
+            `,
+      options: [{ allows: ["semver"] }],
+    },
+    {
+      filename: "package.json",
+      code: `
+            {
+                "engines": {
+                    "node": ">=8"
+                },
+                "devDependencies": {
+                    "semver": "7.3.5"
+                },
+                "peerDependencies": {
+                    "semver": "^7.3.5"
+                }
+            }
+            `,
+      options: [{ devDependencies: true, allows: ["semver"] }],
+    },
+    {
+      filename: "package.json",
+      code: `
+            {
+                "engines": {
+                    "node": ">=8"
+                },
+                "peerDependencies": {
+                    "eslint": "^7.0.0",
+                    "eslint-plugin-regexp": ">=0.13.0 <1.0.0",
+                    "eslint-plugin-eslint-comments": "^3.2.0"
+                },
+            }
+            `,
+      // Skipping both packages listed in package.json also hides the problems
+      // found deeper in the tree
+      options: [{ deep: true, allows: ["eslint", "eslint-plugin-regexp"] }],
+    },
+    {
+      filename: "package.json",
+      code: `
+            {
+                "engines": {
+                    "node": ">=8"
+                },
+                "dependencies": {
+                    "semver7": "npm:semver@^7.3.5"
+                }
+            }
+            `,
+      // An alias is skipped when the package it points to is listed
+      options: [{ allows: ["semver"] }],
+    },
   ],
   invalid: [
     {
@@ -476,6 +540,111 @@ tester.run("compat-engines", rule as any, {
         {
           message:
             '"semver@^7.3.5" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
+          line: 7,
+          column: 21,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
+            {
+                "engines": {
+                    "node": ">=8"
+                },
+                "peerDependencies": {
+                    "eslint": "^7.0.0",
+                    "eslint-plugin-regexp": ">=0.13.0 <1.0.0",
+                    "eslint-plugin-eslint-comments": "^3.2.0"
+                },
+            }
+            `,
+      // A package found only deeper in the tree is skipped there
+      options: [{ deep: true, allows: ["jsdoctypeparser"] }],
+      errors: [
+        {
+          message:
+            '"eslint@^7.0.0" is not compatible with "node@>=8.0.0". Allowed is: "node@^10.12.0||>=12.0.0"',
+          line: 7,
+          column: 21,
+        },
+        {
+          message:
+            '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "comment-parser@^1.1.2" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
+          line: 8,
+          column: 21,
+        },
+        {
+          message:
+            '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "eslint@>=6.0.0" is not compatible with "node@>=8.0.0". Allowed is: "node@^8.10.0||^10.12.0||>=11.10.1"',
+          line: 8,
+          column: 21,
+        },
+        {
+          message:
+            '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "eslint-utils@^3.0.0" is not compatible with "node@>=8.0.0". Allowed is: "node@^10.0.0||^12.0.0||>=14.0.0"',
+          line: 8,
+          column: 21,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
+            {
+                "engines": {
+                    "node": ">=8"
+                },
+                "peerDependencies": {
+                    "eslint": "^7.0.0",
+                    "eslint-plugin-regexp": ">=0.13.0 <1.0.0",
+                    "eslint-plugin-eslint-comments": "^3.2.0"
+                },
+            }
+            `,
+      // A direct dependency is skipped both there and deeper in the tree
+      options: [{ deep: true, allows: ["eslint"] }],
+      errors: [
+        {
+          message:
+            '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "comment-parser@^1.1.2" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
+          line: 8,
+          column: 21,
+        },
+        {
+          message:
+            '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "eslint-utils@^3.0.0" is not compatible with "node@>=8.0.0". Allowed is: "node@^10.0.0||^12.0.0||>=14.0.0"',
+          line: 8,
+          column: 21,
+        },
+        {
+          message:
+            '"eslint-plugin-regexp@>=0.13.0 <1.0.0" >> "jsdoctypeparser@^9.0.0" is not compatible with "node@>=8.0.0". Allowed is: "node@>=10.0.0"',
+          line: 8,
+          column: 21,
+        },
+      ],
+    },
+    {
+      filename: "package.json",
+      code: `
+            {
+                "engines": {
+                    "node": ">=8"
+                },
+                "peerDependencies": {
+                    "eslint": "^7.0.0",
+                    "eslint-plugin-regexp": ">=0.13.0 <1.0.0",
+                    "eslint-plugin-eslint-comments": "^3.2.0"
+                },
+            }
+            `,
+      // The dependencies of a skipped package are not checked either
+      options: [{ deep: true, allows: ["eslint-plugin-regexp"] }],
+      errors: [
+        {
+          message:
+            '"eslint@^7.0.0" is not compatible with "node@>=8.0.0". Allowed is: "node@^10.12.0||>=12.0.0"',
           line: 7,
           column: 21,
         },
