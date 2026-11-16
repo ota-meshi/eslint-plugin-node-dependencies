@@ -1,5 +1,6 @@
 import type { AST } from "jsonc-eslint-parser";
 import { getStaticJSONValue } from "jsonc-eslint-parser";
+import npa from "npm-package-arg";
 import {
   compositingVisitors,
   defineJsonVisitor,
@@ -176,6 +177,21 @@ function extractDependencies(metaList: PackageMeta[]) {
   return [...dependencies].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
 }
 
+/**
+ * Get the name of the package an `npm:` alias points to
+ */
+function getAliasedName(ver: string): string | null {
+  const trimmed = ver.trim();
+  if (!trimmed.startsWith("npm:")) {
+    return null;
+  }
+  try {
+    return npa(trimmed.slice(4).trim()).name ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export default createRule("compat-engines", {
   meta: {
     docs: {
@@ -191,6 +207,11 @@ export default createRule("compat-engines", {
           deep: { type: "boolean" },
           devDependencies: { type: "boolean" },
           comparisonType: { enum: ["normal", "major"] },
+          allows: {
+            type: "array",
+            items: { type: "string" },
+            uniqueItems: true,
+          },
         },
         additionalProperties: false,
       },
@@ -207,9 +228,21 @@ export default createRule("compat-engines", {
     const devDependencies = context.options[0]?.devDependencies === true;
     const comparisonType: ComparisonType =
       context.options[0]?.comparisonType ?? "normal";
+    const allows = new Set<string>(context.options[0]?.allows);
 
     const selfEngines: Map<string, { adjust: Range; original: Range }> =
       new Map();
+
+    /**
+     * Checks whether the given dependency is skipped by the `allows` option
+     */
+    function isAllowed(name: string, ver: string): boolean {
+      if (allows.has(name)) {
+        return true;
+      }
+      const aliasedName = getAliasedName(ver);
+      return aliasedName != null && allows.has(aliasedName);
+    }
 
     /**
      * Process meta data
@@ -250,6 +283,9 @@ export default createRule("compat-engines", {
       modules: string[],
       node: AST.JSONProperty,
     ) {
+      if (isAllowed(name, ver)) {
+        return;
+      }
       const currModules = [...modules, `${name}@${ver}`];
 
       const nodeModulesMeta = getMetaFromNodeModules(name, ver, { context });

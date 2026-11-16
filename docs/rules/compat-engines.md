@@ -35,7 +35,8 @@ This rule checks the `engines` of the dependencies and reports if they are compa
   "node-dependencies/compat-engines": ["error", {
     "deep": true,
     "devDependencies": false,
-    "comparisonType": "normal"
+    "comparisonType": "normal",
+    "allows": []
   }]
 }
 ```
@@ -45,6 +46,24 @@ This rule checks the `engines` of the dependencies and reports if they are compa
 - `comparisonType` ... Defines the comparison method. Default is `"normal"`
   - `"normal"` ... This is the normal comparison method.
   - `"major"` ... If the versions match in the major version, it is considered a match. For example, `node@>=10` allows dependency modules for `node@>=10.12`.
+- `allows` ... An array of package names to skip.
+  The rule does not check these packages or their dependencies.
+  With `deep`, the packages are also skipped when they are found among the dependencies of other packages.
+  An alias such as `"ts7": "npm:typescript@^7"` is skipped when either its name (`ts7`) or the package it points to (`typescript`) is listed.
+
+### :bulb: Example
+
+```jsonc
+/* eslint "node-dependencies/compat-engines": ["error", {"allows": ["semver"]}] */
+{
+  "engines": {
+    "node": ">=8"
+  },
+  "dependencies": {
+    "semver": "^7.3.5" /* ✓ GOOD: Not reported because it is in allows. */
+  }
+}
+```
 
 ## :rocket: Version
 
