@@ -1,5 +1,11 @@
 # eslint-plugin-node-dependencies
 
+## 2.4.0
+
+### Minor Changes
+
+- [#312](https://github.com/ota-meshi/eslint-plugin-node-dependencies/pull/312) [`e77868e`](https://github.com/ota-meshi/eslint-plugin-node-dependencies/commit/e77868e3859509c32944841914a0da97f4140a2e) Thanks [@andreww2012](https://github.com/andreww2012)! - Added a new `allows` option in `compat-engines` to skip checking listed packages
+
 ## 2.3.0
 
 ### Minor Changes
