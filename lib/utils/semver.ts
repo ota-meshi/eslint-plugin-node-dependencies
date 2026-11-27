@@ -67,7 +67,10 @@ export function normalizeSemverRange(...values: Range[]): Range | null {
           map.delete(k);
         }
         if (target.range.intersects(data.range)) {
-          const newComparators = joinComparators(comparators, data.comparators);
+          const newComparators = joinComparators(
+            target.comparators,
+            data.comparators,
+          );
           if (newComparators) {
             target = {
               range: new Range(normalizeComparators(newComparators)),
@@ -150,17 +153,23 @@ function joinComparators(
   if (aRangeComparator && bRangeComparator) {
     const comparators: SemVerComparator[] = [];
     if (aRangeComparator.min && bRangeComparator.min) {
+      const c = compare(
+        aRangeComparator.min.version!,
+        bRangeComparator.min.version!,
+      );
       comparators.push(
-        compare(aRangeComparator.min.version!, bRangeComparator.min.version!) <=
-          0
+        c < 0 || (c === 0 && aRangeComparator.min.operator === ">=")
           ? aRangeComparator.min
           : bRangeComparator.min,
       );
     }
     if (aRangeComparator.max && bRangeComparator.max) {
+      const c = compare(
+        aRangeComparator.max.version!,
+        bRangeComparator.max.version!,
+      );
       comparators.push(
-        compare(aRangeComparator.max.version!, bRangeComparator.max.version!) >=
-          0
+        c > 0 || (c === 0 && aRangeComparator.max.operator === "<=")
           ? aRangeComparator.max
           : bRangeComparator.max,
       );
