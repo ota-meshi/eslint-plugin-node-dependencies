@@ -120,7 +120,7 @@
     "stylelint-stylus": "^1.0.0",
     "tsdown": "^0.23.0",
     "twoslash-eslint": "^0.3.0",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.0",
     "typescript-eslint": "^8.31.0",
     "vitepress": "^1.0.1"
   },
